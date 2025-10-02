@@ -46,9 +46,9 @@ body {
 }
 
 .container {
-    max-width: 1200px;
+    max-width: 1400px;
     margin: 0 auto;
-    padding: 0 20px;
+    padding: 0 30px;
 }
 
 /* Navigation */
@@ -104,7 +104,7 @@ body {
 .nav-menu {
     display: flex;
     list-style: none;
-    gap: 30px;
+    gap: 20px;
     align-items: center;
 }
 
@@ -115,11 +115,23 @@ body {
     transition: var(--transition-smooth);
     padding: 8px 16px;
     border-radius: 8px;
+    white-space: nowrap;
 }
 
 .nav-link:hover {
     color: var(--success-green);
     background: rgba(6, 214, 160, 0.1);
+}
+
+.nav-download-btn {
+    padding: 4px 12px;
+    display: flex;
+    align-items: center;
+}
+
+.nav-play-badge {
+    height: 40px;
+    width: auto;
 }
 
 .btn-primary {
@@ -136,6 +148,21 @@ body {
 .btn-primary:hover {
     transform: translateY(-2px);
     box-shadow: 0 6px 25px rgba(6, 214, 160, 0.5);
+}
+
+/* Google Play Badge Styles */
+.btn-download-image {
+    display: inline-block;
+    transition: var(--transition-smooth);
+}
+
+.btn-download-image:hover {
+    transform: translateY(-3px);
+}
+
+.play-badge-large {
+    height: 70px;
+    width: auto;
 }
 
 /* Hero Section */
@@ -227,6 +254,7 @@ body {
     display: flex;
     gap: 20px;
     flex-wrap: wrap;
+    align-items: center;
 }
 
 .btn {
@@ -858,19 +886,6 @@ section {
     font-size: 1.3rem;
 }
 
-.btn-download {
-    background: var(--text-white);
-    color: var(--primary-blue);
-    font-size: 1.2rem;
-    padding: 18px 40px;
-    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.3);
-}
-
-.btn-download:hover {
-    transform: translateY(-3px);
-    box-shadow: 0 12px 40px rgba(0, 0, 0, 0.4);
-}
-
 .download-note {
     margin-top: 15px;
     color: rgba(255, 255, 255, 0.7);
@@ -1003,6 +1018,26 @@ section {
 }
 
 /* Responsive Design */
+@media (max-width: 1200px) {
+    .container {
+        max-width: 100%;
+        padding: 0 25px;
+    }
+    
+    .nav-menu {
+        gap: 15px;
+    }
+    
+    .nav-link {
+        padding: 8px 12px;
+        font-size: 0.95rem;
+    }
+    
+    .nav-play-badge {
+        height: 35px;
+    }
+}
+
 @media (max-width: 1024px) {
     .hero-content,
     .benefit-content,
@@ -1100,6 +1135,10 @@ section {
     .btn {
         width: 100%;
         justify-content: center;
+    }
+    
+    .play-badge-large {
+        height: 60px;
     }
     
     .problem-grid,
