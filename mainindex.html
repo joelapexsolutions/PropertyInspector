@@ -16,7 +16,16 @@
     <link rel="stylesheet" href="calculator.css">
     
     <!-- Favicon -->
-    <link rel="icon" type="image/png" href="images/logo.png">
+    <link rel="icon" type="image/jpeg" href="images/logo.jpg">
+    
+    <!-- Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-2MN5R2QXNC"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', 'G-2MN5R2QXNC');
+    </script>
 </head>
 <body>
     <!-- Navigation -->
@@ -24,7 +33,7 @@
         <div class="container">
             <div class="nav-content">
                 <div class="nav-logo">
-                    <img src="images/logo.png" alt="Property Inspector Logo">
+                    <img src="images/logo.jpg" alt="Property Inspector Logo">
                     <span>Property Inspector</span>
                 </div>
                 <button class="nav-toggle" id="navToggle">
@@ -280,7 +289,7 @@
                     <div class="tab-pane" id="agents">
                         <div class="benefit-content">
                             <div class="benefit-image">
-                                <img src="images/screenshots/report.jpg" alt="Professional Report">
+                                <img src="images/screenshots/assessmentresults.jpg" alt="Professional Report">
                             </div>
                             <div class="benefit-text">
                                 <h3>Deliver Professional Service</h3>
@@ -321,7 +330,7 @@
                     <div class="tab-pane" id="sellers">
                         <div class="benefit-content">
                             <div class="benefit-image">
-                                <img src="images/screenshots/calculator.jpg" alt="Cost Calculator">
+                                <img src="images/screenshots/assessmentchecklist.jpg" alt="Cost Calculator">
                             </div>
                             <div class="benefit-text">
                                 <h3>Sell Faster, Sell Smarter</h3>
@@ -412,7 +421,7 @@
                 <p>Calculate accurate monthly costs and transfer fees for South African properties</p>
             </div>
             <div class="calculator-wrapper">
-                <div id="standaloneCostCalculator"></div>
+                <div id="propertyCalculator"></div>
             </div>
             <div class="calculator-info">
                 <div class="info-card">
@@ -534,7 +543,7 @@
                             <li><i class="fas fa-check"></i> Detailed recommendations</li>
                             <li><i class="fas fa-check"></i> Negotiation strategies</li>
                         </ul>
-                        <a href="samples/detailed-assessment-sample.pdf" download class="btn btn-primary">
+                        <a href="samples/quick-assessment-sample.pdf" download class="btn btn-primary">
                             <i class="fas fa-download"></i>
                             Download Sample
                         </a>
@@ -626,7 +635,7 @@
             <div class="footer-content">
                 <div class="footer-brand">
                     <div class="footer-logo">
-                        <img src="images/logo.png" alt="Property Inspector">
+                        <img src="images/logo.jpg" alt="Property Inspector">
                         <span>Property Inspector</span>
                     </div>
                     <p>Professional property assessment for informed decisions. Know before you buy.</p>
