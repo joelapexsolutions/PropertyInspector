@@ -3,359 +3,658 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Property Inspector - Privacy Policy</title>
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(135deg, #f8f9fa, #e9ecef);
-            color: #333333;
-            line-height: 1.6;
-            min-height: 100vh;
-        }
-
-        .container {
-            max-width: 800px;
-            margin: 0 auto;
-            padding: 20px;
-        }
-
-        .header {
-            text-align: center;
-            padding: 0;
-            margin-bottom: 30px;
-            border-radius: 15px;
-            overflow: hidden;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
-        }
-
-        .banner {
-            width: 100%;
-            height: 200px;
-            background: url('images/property-inspector-banner.jpg') center/cover;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            position: relative;
-        }
-
-        .banner::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: rgba(0,0,0,0.2);
-        }
-
-        .banner-content {
-            position: relative;
-            z-index: 1;
-            color: white;
-            text-align: center;
-        }
-
-        .banner h1 {
-            font-size: 2.5rem;
-            font-weight: 800;
-            margin-bottom: 5px;
-            text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
-        }
-
-        .banner p {
-            font-size: 1.1rem;
-            text-shadow: 1px 1px 2px rgba(0,0,0,0.5);
-        }
-
-        .content {
-            background: white;
-            border-radius: 15px;
-            padding: 30px;
-            margin-bottom: 30px;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-            border: 1px solid #e9ecef;
-        }
-
-        h2 {
-            color: #2E86AB;
-            font-size: 1.5rem;
-            margin-bottom: 15px;
-            padding-bottom: 5px;
-            border-bottom: 2px solid #06D6A0;
-        }
-
-        h3 {
-            color: #1B5E7C;
-            font-size: 1.2rem;
-            margin: 20px 0 10px 0;
-        }
-
-        p {
-            margin-bottom: 15px;
-            color: #555555;
-        }
-
-        ul {
-            margin: 15px 0;
-            padding-left: 20px;
-        }
-
-        li {
-            margin-bottom: 8px;
-            color: #555555;
-        }
-
-        .highlight {
-            background: rgba(6, 214, 160, 0.1);
-            padding: 15px;
-            border-radius: 8px;
-            border-left: 4px solid #06D6A0;
-            margin: 20px 0;
-        }
-
-        .warning {
-            background: rgba(255, 107, 53, 0.1);
-            padding: 15px;
-            border-radius: 8px;
-            border-left: 4px solid #FF6B35;
-            margin: 20px 0;
-        }
-
-        .contact-info {
-            background: linear-gradient(135deg, #2E86AB, #06D6A0);
-            padding: 20px;
-            border-radius: 10px;
-            text-align: center;
-            color: white;
-        }
-
-        .footer {
-            text-align: center;
-            padding: 30px 0;
-            border-top: 1px solid #e9ecef;
-            margin-top: 40px;
-        }
-
-        .footer img {
-            width: 80px;
-            height: 80px;
-            margin-bottom: 15px;
-            border-radius: 15px;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-        }
-
-        .last-updated {
-            color: #666666;
-            font-size: 0.9rem;
-        }
-
-        .icon {
-            color: #06D6A0;
-            margin-right: 8px;
-        }
-    </style>
+    <meta name="description" content="Property Inspector - Professional property assessment app for buyers, sellers, and estate agents in South Africa. Know before you buy with guided inspections, cost calculators, and professional reports.">
+    <meta name="keywords" content="property inspection, property assessment, home buying, estate agent tools, property valuation, South Africa">
+    <title>Property Inspector - Know Before You Buy</title>
+    
+    <!-- Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    
+    <!-- Styles -->
+    <link rel="stylesheet" href="website-styles.css">
+    <link rel="stylesheet" href="calculator.css">
+    
+    <!-- Favicon -->
+    <link rel="icon" type="image/jpeg" href="images/logo.jpg">
+    
+    <!-- Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-2MN5R2QXNC"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', 'G-2MN5R2QXNC');
+    </script>
 </head>
 <body>
-    <div class="container">
-        <div class="header">
-            <div class="banner">
+    <!-- Navigation -->
+    <nav class="navbar" id="navbar">
+        <div class="container">
+            <div class="nav-content">
+                <div class="nav-logo">
+                    <img src="images/logo.jpg" alt="Property Inspector Logo">
+                    <span>Property Inspector</span>
+                </div>
+                <button class="nav-toggle" id="navToggle">
+                    <i class="fas fa-bars"></i>
+                </button>
+                <ul class="nav-menu" id="navMenu">
+                    <li><a href="#home" class="nav-link">Home</a></li>
+                    <li><a href="#features" class="nav-link">Features</a></li>
+                    <li><a href="#benefits" class="nav-link">Benefits</a></li>
+                    <li><a href="#calculator" class="nav-link">Calculator</a></li>
+                    <li><a href="#guide" class="nav-link">Guide</a></li>
+                    <li><a href="#samples" class="nav-link">Samples</a></li>
+                    <li><a href="https://play.google.com/store/apps/details?id=com.joelapexs.propertyinspector" target="_blank" class="nav-link btn-primary">Download App</a></li>
+                </ul>
             </div>
         </div>
+    </nav>
 
-        <div class="content">
-            <div style="text-align: center; margin-bottom: 30px;">
-                <h1 style="color: #2E86AB; font-size: 2.5rem; margin-bottom: 8px; font-weight: 800;">Privacy Policy</h1>
-                <p style="color: #06D6A0; font-size: 1.2rem; font-weight: 600; margin-bottom: 25px;">Your privacy is our priority</p>
-            </div>
-            
-            <h2><span class="icon">📋</span>Overview</h2>
-            <p>Property Inspector is committed to protecting your privacy. This app helps property buyers, sellers, and estate agents assess properties through detailed inspections, photo documentation, and scoring systems. All data is stored locally on your device.</p>
-            
-            <div class="highlight">
-                <strong>Key Privacy Principle:</strong> Your property data never leaves your device unless you explicitly choose to export or share it.
-            </div>
-        </div>
-
-        <div class="content">
-            <h2><span class="icon">📊</span>Information We Collect</h2>
-            
-            <h3>Property Information</h3>
-            <ul>
-                <li>Property addresses and details (bedrooms, bathrooms, etc.)</li>
-                <li>Property photos taken during assessments</li>
-                <li>Assessment scores and ratings</li>
-                <li>Inspector notes and comments</li>
-                <li>Financial calculations and cost estimates</li>
-                <li>Assessment dates and reminders</li>
-            </ul>
-
-            <h3>App Usage Data</h3>
-            <ul>
-                <li>App preferences and settings</li>
-                <li>Assessment progress and completion status</li>
-                <li>Custom room configurations</li>
-            </ul>
-
-            <h3>Device Information</h3>
-            <ul>
-                <li>Camera access for photo capture</li>
-                <li>Storage access for saving data locally</li>
-                <li>Notification permissions for assessment reminders</li>
-            </ul>
-        </div>
-
-        <div class="content">
-            <h2><span class="icon">💾</span>How We Store Your Data</h2>
-            
-            <h3>Local Storage Only</h3>
-            <p>All your data is stored exclusively on your device using:</p>
-            <ul>
-                <li><strong>Local Browser Storage:</strong> Property details and settings</li>
-                <li><strong>IndexedDB:</strong> Photos and detailed assessment data</li>
-                <li><strong>Device File System:</strong> Exported reports and backups</li>
-            </ul>
-
-            <div class="highlight">
-                <strong>No Cloud Storage:</strong> We do not store any of your property data on external servers or cloud services.
+    <!-- Hero Section -->
+    <section id="home" class="hero">
+        <div class="hero-background"></div>
+        <div class="container">
+            <div class="hero-content">
+                <div class="hero-text">
+                    <h1 class="hero-title">Know Before You Buy</h1>
+                    <p class="hero-subtitle">Professional property assessment at your fingertips. Make informed decisions with guided inspections, detailed reports, and expert cost calculations.</p>
+                    <div class="hero-stats">
+                        <div class="stat-item">
+                            <i class="fas fa-check-circle"></i>
+                            <div>
+                                <strong>Guided Inspections</strong>
+                                <span>Never miss critical issues</span>
+                            </div>
+                        </div>
+                        <div class="stat-item">
+                            <i class="fas fa-file-pdf"></i>
+                            <div>
+                                <strong>Professional Reports</strong>
+                                <span>Instant PDF generation</span>
+                            </div>
+                        </div>
+                        <div class="stat-item">
+                            <i class="fas fa-calculator"></i>
+                            <div>
+                                <strong>Cost Calculator</strong>
+                                <span>Accurate budget planning</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="hero-cta">
+                        <a href="https://play.google.com/store/apps/details?id=com.joelapexs.propertyinspector" target="_blank" class="btn-download-image">
+                            <img src="images/google-play-badge.png" alt="Get it on Google Play" class="play-badge-large">
+                        </a>
+                        <a href="#features" class="btn btn-large btn-secondary">
+                            <i class="fas fa-info-circle"></i>
+                            Learn More
+                        </a>
+                    </div>
+                </div>
+                <div class="hero-image">
+                    <div class="phone-mockup">
+                        <img src="images/screenshots/home-screen.jpg" alt="Property Inspector App Screenshot">
+                    </div>
+                </div>
             </div>
         </div>
+        <div class="hero-wave"></div>
+    </section>
 
-        <div class="content">
-            <h2><span class="icon">🔐</span>Data Security</h2>
-            
-            <h3>Protection Measures</h3>
-            <ul>
-                <li>All data remains on your personal device</li>
-                <li>No data transmission to external servers</li>
-                <li>Standard device-level security protections apply</li>
-                <li>You control all data export and sharing</li>
-            </ul>
-
-            <h3>Your Responsibilities</h3>
-            <ul>
-                <li>Secure your device with appropriate locks/passwords</li>
-                <li>Regular device backups if you want to preserve data</li>
-                <li>Be cautious when sharing exported reports</li>
-            </ul>
-        </div>
-
-        <div class="content">
-            <h2><span class="icon">📤</span>Data Sharing and Export</h2>
-            
-            <h3>When Data Leaves Your Device</h3>
-            <p>Your data only leaves your device when you explicitly choose to:</p>
-            <ul>
-                <li>Export PDF assessment reports</li>
-                <li>Share assessment results via email/messaging</li>
-                <li>Export data backups</li>
-                <li>Use device sharing features (AirDrop, etc.)</li>
-            </ul>
-
-            <div class="warning">
-                <strong>Important:</strong> When you share or export data, it becomes subject to the privacy policies of the receiving platforms or recipients.
+    <!-- Problem Solution Section -->
+    <section class="problem-solution">
+        <div class="container">
+            <div class="section-header centered">
+                <h2>The Problem We Solve</h2>
+                <p>Property buying in South Africa is fraught with hidden risks and uncertainty</p>
+            </div>
+            <div class="problem-grid">
+                <div class="problem-card">
+                    <div class="problem-icon">
+                        <i class="fas fa-exclamation-triangle"></i>
+                    </div>
+                    <h3>For Buyers</h3>
+                    <p class="problem-text">Don't know what to look for during viewings, leading to costly surprises after purchase</p>
+                    <div class="solution-badge">
+                        <i class="fas fa-check"></i>
+                        Guided inspection checklists
+                    </div>
+                </div>
+                <div class="problem-card">
+                    <div class="problem-icon">
+                        <i class="fas fa-chart-line"></i>
+                    </div>
+                    <h3>For Estate Agents</h3>
+                    <p class="problem-text">Lack standardized assessment tools and struggle to create professional reports quickly</p>
+                    <div class="solution-badge">
+                        <i class="fas fa-check"></i>
+                        Instant professional PDFs
+                    </div>
+                </div>
+                <div class="problem-card">
+                    <div class="problem-icon">
+                        <i class="fas fa-tags"></i>
+                    </div>
+                    <h3>For Sellers</h3>
+                    <p class="problem-text">Uncertainty about accurate property pricing and how to prepare for sale</p>
+                    <div class="solution-badge">
+                        <i class="fas fa-check"></i>
+                        Data-driven valuations
+                    </div>
+                </div>
             </div>
         </div>
+    </section>
 
-        <div class="content">
-            <h2><span class="icon">🔒</span>Permissions Explained</h2>
-            
-            <h3>Camera Permission</h3>
-            <p>Required to capture photos during property assessments. Photos are stored locally and linked to specific assessment items.</p>
-
-            <h3>Storage Permission</h3>
-            <p>Needed to save photos, assessment data, and exported reports on your device.</p>
-
-            <h3>Notifications Permission</h3>
-            <p>Optional permission for assessment reminders and scheduled property viewings.</p>
-        </div>
-
-        <div class="content">
-            <h2><span class="icon">👶</span>Children's Privacy</h2>
-            <p>Property Inspector is designed for adult use in property assessment and purchasing decisions. We do not knowingly collect information from children under 13. The app requires decision-making capabilities appropriate for adult users.</p>
-        </div>
-
-        <div class="content">
-            <h2><span class="icon">🔄</span>Data Control</h2>
-            
-            <h3>Your Rights</h3>
-            <ul>
-                <li><strong>Access:</strong> View all stored data within the app</li>
-                <li><strong>Export:</strong> Generate backups of your property data</li>
-                <li><strong>Delete:</strong> Remove specific properties or reset all data</li>
-                <li><strong>Modify:</strong> Edit any assessment data or property details</li>
-            </ul>
-
-            <h3>Data Deletion</h3>
-            <p>You can delete data by:</p>
-            <ul>
-                <li>Removing individual properties</li>
-                <li>Using the "Reset All Data" option in settings</li>
-                <li>Uninstalling the app (removes all local data)</li>
-            </ul>
-        </div>
-
-        <div class="content">
-            <h2><span class="icon">📱</span>Third-Party Services</h2>
-            
-            <h3>Google AdMob</h3>
-            <p>We use Google AdMob to display advertisements within the app. AdMob may collect device information and usage data for ad personalization and analytics.</p>
-            <ul>
-                <li>Device identifiers (Advertising ID)</li>
-                <li>App usage and interaction data</li>
-                <li>Location data (if enabled)</li>
-            </ul>
-            <p><strong>Google Privacy Policy:</strong> <a href="https://policies.google.com/privacy" target="_blank">https://policies.google.com/privacy</a></p>
-
-            <h3>Firebase & Google Analytics</h3>
-            <p>We use Firebase and Google Analytics to understand app usage, improve performance, and track engagement metrics.</p>
-            <ul>
-                <li>App usage statistics and crash reports</li>
-                <li>Device performance data</li>
-                <li>Feature usage analytics</li>
-                <li>Download and engagement metrics</li>
-            </ul>
-            <p><strong>Firebase Privacy:</strong> <a href="https://firebase.google.com/support/privacy" target="_blank">https://firebase.google.com/support/privacy</a></p>
-
-            <h3>Removing Advertisements</h3>
-            <p>Advertisements are displayed to support the free version of the app. To remove ads:</p>
-            <ul>
-                <li><strong>Premium Subscription:</strong> Purchase a premium subscription to use the app ad-free</li>
-                <li><strong>Ad Settings:</strong> You can adjust personalized ad preferences in your device settings, but ads will still be shown</li>
-            </ul>
-
-            <div class="warning">
-                <strong>Note:</strong> Third-party services have their own privacy policies. We recommend reviewing them to understand how your data is handled.
+    <!-- Features Section -->
+    <section id="features" class="features">
+        <div class="container">
+            <div class="section-header centered">
+                <h2>Powerful Features</h2>
+                <p>Everything you need for professional property assessment</p>
+            </div>
+            <div class="features-grid">
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-clipboard-check"></i>
+                    </div>
+                    <h3>Guided Assessments</h3>
+                    <p>Step-by-step checklists covering every aspect of the property. Quick (15-30 min) or Detailed (45-90 min) modes available.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-camera"></i>
+                    </div>
+                    <h3>Photo Documentation</h3>
+                    <p>Capture and organize photos by room. Build visual evidence for negotiations or professional consultations.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-chart-bar"></i>
+                    </div>
+                    <h3>Smart Scoring</h3>
+                    <p>Automatic property scoring based on professional criteria. Identify issues and understand overall condition instantly.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-file-pdf"></i>
+                    </div>
+                    <h3>Professional Reports</h3>
+                    <p>Generate detailed PDF reports with photos, scores, and recommendations. Perfect for sharing with family or contractors.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-calculator"></i>
+                    </div>
+                    <h3>Cost Calculator</h3>
+                    <p>Calculate accurate monthly costs including bond repayments, transfer duties, and attorney fees specific to SA.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-handshake"></i>
+                    </div>
+                    <h3>Negotiation Power</h3>
+                    <p>Get expert tips and leverage documented issues for better pricing negotiations with sellers.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-mobile-alt"></i>
+                    </div>
+                    <h3>Offline Capability</h3>
+                    <p>All data stored locally on your device. Conduct assessments anywhere without internet connection.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-shield-alt"></i>
+                    </div>
+                    <h3>Data Privacy</h3>
+                    <p>Your property data never leaves your device. Complete privacy and security for sensitive information.</p>
+                </div>
             </div>
         </div>
+    </section>
 
-        <div class="content">
-            <h2><span class="icon">🔄</span>Policy Updates</h2>
-            <p>We may update this privacy policy to reflect app improvements or legal requirements. Significant changes will be communicated through app updates. Continued use constitutes acceptance of updated terms.</p>
-        </div>
-
-        <div class="content">
-            <div class="contact-info">
-                <h2><span class="icon">📞</span>Contact Information</h2>
-                <p>For privacy questions or concerns, contact us:</p>
-                <p><strong>Email:</strong> joelapexs@gmail.com</p>
-                <p><strong>Developer:</strong> Joel Apex Solutions</p>
+    <!-- Benefits by User Type -->
+    <section id="benefits" class="benefits">
+        <div class="container">
+            <div class="section-header centered">
+                <h2>Benefits for Everyone</h2>
+                <p>Tailored solutions for buyers, sellers, agents, and investors</p>
+            </div>
+            <div class="benefits-tabs">
+                <div class="tabs-nav">
+                    <button class="tab-btn active" data-tab="buyers">
+                        <i class="fas fa-user"></i>
+                        Buyers
+                    </button>
+                    <button class="tab-btn" data-tab="agents">
+                        <i class="fas fa-briefcase"></i>
+                        Estate Agents
+                    </button>
+                    <button class="tab-btn" data-tab="sellers">
+                        <i class="fas fa-home"></i>
+                        Sellers
+                    </button>
+                    <button class="tab-btn" data-tab="investors">
+                        <i class="fas fa-chart-line"></i>
+                        Investors
+                    </button>
+                </div>
+                <div class="tabs-content">
+                    <!-- Buyers Tab -->
+                    <div class="tab-pane active" id="buyers">
+                        <div class="benefit-content">
+                            <div class="benefit-image">
+                                <img src="images/screenshots/assessment.jpg" alt="Property Assessment">
+                            </div>
+                            <div class="benefit-text">
+                                <h3>Make Confident Buying Decisions</h3>
+                                <ul class="benefit-list">
+                                    <li>
+                                        <i class="fas fa-check"></i>
+                                        <div>
+                                            <strong>Avoid Costly Surprises</strong>
+                                            <p>Identify potential issues before purchase with guided inspection checklists</p>
+                                        </div>
+                                    </li>
+                                    <li>
+                                        <i class="fas fa-check"></i>
+                                        <div>
+                                            <strong>Compare Properties Objectively</strong>
+                                            <p>Side-by-side scoring helps you evaluate multiple properties fairly</p>
+                                        </div>
+                                    </li>
+                                    <li>
+                                        <i class="fas fa-check"></i>
+                                        <div>
+                                            <strong>Negotiate with Confidence</strong>
+                                            <p>Use documented issues to justify price reductions and better terms</p>
+                                        </div>
+                                    </li>
+                                    <li>
+                                        <i class="fas fa-check"></i>
+                                        <div>
+                                            <strong>Budget Accurately</strong>
+                                            <p>Calculate exact monthly costs and understand your true financial commitment</p>
+                                        </div>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Estate Agents Tab -->
+                    <div class="tab-pane" id="agents">
+                        <div class="benefit-content">
+                            <div class="benefit-image">
+                                <img src="images/screenshots/assessmentresults.jpg" alt="Professional Report">
+                            </div>
+                            <div class="benefit-text">
+                                <h3>Deliver Professional Service</h3>
+                                <ul class="benefit-list">
+                                    <li>
+                                        <i class="fas fa-check"></i>
+                                        <div>
+                                            <strong>Instant Professional Reports</strong>
+                                            <p>Generate branded PDF reports on-site during viewings</p>
+                                        </div>
+                                    </li>
+                                    <li>
+                                        <i class="fas fa-check"></i>
+                                        <div>
+                                            <strong>Standardized Assessments</strong>
+                                            <p>Consistent evaluation criteria across all properties</p>
+                                        </div>
+                                    </li>
+                                    <li>
+                                        <i class="fas fa-check"></i>
+                                        <div>
+                                            <strong>Build Client Trust</strong>
+                                            <p>Demonstrate transparency and professionalism with detailed assessments</p>
+                                        </div>
+                                    </li>
+                                    <li>
+                                        <i class="fas fa-check"></i>
+                                        <div>
+                                            <strong>Justify Pricing</strong>
+                                            <p>Support listing prices with documented property conditions</p>
+                                        </div>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Sellers Tab -->
+                    <div class="tab-pane" id="sellers">
+                        <div class="benefit-content">
+                            <div class="benefit-image">
+                                <img src="images/screenshots/assessmentchecklist.jpg" alt="Cost Calculator">
+                            </div>
+                            <div class="benefit-text">
+                                <h3>Sell Faster, Sell Smarter</h3>
+                                <ul class="benefit-list">
+                                    <li>
+                                        <i class="fas fa-check"></i>
+                                        <div>
+                                            <strong>Price Accurately</strong>
+                                            <p>Understand your property's true condition for accurate pricing</p>
+                                        </div>
+                                    </li>
+                                    <li>
+                                        <i class="fas fa-check"></i>
+                                        <div>
+                                            <strong>Prepare Strategically</strong>
+                                            <p>Identify which improvements offer best return on investment</p>
+                                        </div>
+                                    </li>
+                                    <li>
+                                        <i class="fas fa-check"></i>
+                                        <div>
+                                            <strong>Address Issues Proactively</strong>
+                                            <p>Fix problems before listing to avoid deal-breaking surprises</p>
+                                        </div>
+                                    </li>
+                                    <li>
+                                        <i class="fas fa-check"></i>
+                                        <div>
+                                            <strong>Market with Confidence</strong>
+                                            <p>Highlight property strengths with documented assessment scores</p>
+                                        </div>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Investors Tab -->
+                    <div class="tab-pane" id="investors">
+                        <div class="benefit-content">
+                            <div class="benefit-image">
+                                <img src="images/screenshots/home-screen.jpg" alt="Property Portfolio">
+                            </div>
+                            <div class="benefit-text">
+                                <h3>Maximize Investment Returns</h3>
+                                <ul class="benefit-list">
+                                    <li>
+                                        <i class="fas fa-check"></i>
+                                        <div>
+                                            <strong>Quick Property Screening</strong>
+                                            <p>Evaluate multiple properties efficiently with standardized scoring</p>
+                                        </div>
+                                    </li>
+                                    <li>
+                                        <i class="fas fa-check"></i>
+                                        <div>
+                                            <strong>Accurate Renovation Budgets</strong>
+                                            <p>Document current conditions and calculate true investment costs</p>
+                                        </div>
+                                    </li>
+                                    <li>
+                                        <i class="fas fa-check"></i>
+                                        <div>
+                                            <strong>Portfolio Management</strong>
+                                            <p>Track conditions across multiple properties with organized records</p>
+                                        </div>
+                                    </li>
+                                    <li>
+                                        <i class="fas fa-check"></i>
+                                        <div>
+                                            <strong>Data-Driven Decisions</strong>
+                                            <p>Compare investment opportunities with objective assessment data</p>
+                                        </div>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
+    </section>
 
-        <div class="footer">
-            <img src="images/logo.jpg" alt="Property Inspector Logo">
-            <div class="last-updated">
-                <p><strong>Property Inspector</strong></p>
-                <p>Last Updated: August 2025 | Version 1.0</p>
-                <p>© 2025 Joel Apex Solutions</p>
+    <!-- Calculator Section -->
+    <section id="calculator" class="calculator-section">
+        <div class="container">
+            <div class="section-header centered">
+                <h2>Property Cost Calculator</h2>
+                <p>Calculate accurate monthly costs and transfer fees for South African properties</p>
+            </div>
+            <div class="calculator-wrapper">
+                <div id="propertyCalculator"></div>
+            </div>
+            <div class="calculator-info">
+                <div class="info-card">
+                    <i class="fas fa-info-circle"></i>
+                    <p>All calculations based on current South African regulations and market rates. Results are estimates - consult with professionals for exact quotes.</p>
+                </div>
             </div>
         </div>
-    </div>
+    </section>
+
+    <!-- Guide Section -->
+    <section id="guide" class="guide-section">
+        <div class="container">
+            <div class="section-header centered">
+                <h2>Property Viewing Guide</h2>
+                <p>Expert tips to maximize your property viewings</p>
+            </div>
+            <div class="guide-grid">
+                <!-- Preparation -->
+                <div class="guide-card">
+                    <div class="guide-icon">
+                        <i class="fas fa-clipboard-list"></i>
+                    </div>
+                    <h3>Before the Viewing</h3>
+                    <ul>
+                        <li>Research the area crime statistics and property prices</li>
+                        <li>Check municipal rates and levies</li>
+                        <li>Prepare questions about property history</li>
+                        <li>Charge your phone for photos</li>
+                        <li>Download Property Inspector app</li>
+                    </ul>
+                </div>
+                <!-- What to Look For -->
+                <div class="guide-card">
+                    <div class="guide-icon">
+                        <i class="fas fa-search"></i>
+                    </div>
+                    <h3>During the Viewing</h3>
+                    <ul>
+                        <li>Test all taps, lights, and appliances</li>
+                        <li>Check for water damage and damp</li>
+                        <li>Inspect roof condition (if accessible)</li>
+                        <li>Test water pressure and drainage</li>
+                        <li>Document everything with photos</li>
+                        <li>Read the tooltips in the app - they guide you on what to look for</li>
+                    </ul>
+                </div>
+                <!-- Questions to Ask -->
+                <div class="guide-card">
+                    <div class="guide-icon">
+                        <i class="fas fa-comments"></i>
+                    </div>
+                    <h3>Questions to Ask</h3>
+                    <ul>
+                        <li>Why is the property being sold?</li>
+                        <li>Age of electrical and plumbing systems?</li>
+                        <li>Any building work without approval?</li>
+                        <li>Average monthly utility costs?</li>
+                        <li>Any known defects or issues?</li>
+                    </ul>
+                </div>
+                <!-- Red Flags -->
+                <div class="guide-card alert">
+                    <div class="guide-icon">
+                        <i class="fas fa-exclamation-triangle"></i>
+                    </div>
+                    <h3>Red Flags to Watch</h3>
+                    <ul>
+                        <li>Fresh paint covering wall cracks</li>
+                        <li>Musty smells or visible mold</li>
+                        <li>Sloping or uneven floors</li>
+                        <li>Electrical hazards or old wiring</li>
+                        <li>Rushed viewings or pressure tactics</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Sample Reports Section -->
+    <section id="samples" class="samples-section">
+        <div class="container">
+            <div class="section-header centered">
+                <h2>Sample Report</h2>
+                <p>See what Property Inspector generates for you</p>
+            </div>
+            <div class="samples-grid" style="max-width: 600px; margin: 0 auto;">
+                <div class="sample-card featured">
+                    <div class="sample-preview">
+                        <i class="fas fa-file-pdf"></i>
+                        <div class="sample-badge">Property Assessment</div>
+                    </div>
+                    <div class="sample-content">
+                        <h3>Professional Assessment Report</h3>
+                        <p>Comprehensive property evaluation with detailed analysis and professional recommendations.</p>
+                        <ul class="sample-features">
+                            <li><i class="fas fa-check"></i> Overall property score & grade</li>
+                            <li><i class="fas fa-check"></i> Executive summary with purchase recommendation</li>
+                            <li><i class="fas fa-check"></i> Detailed room-by-room assessment results</li>
+                            <li><i class="fas fa-check"></i> Photo documentation</li>
+                            <li><i class="fas fa-check"></i> Issues requiring attention with cost estimates</li>
+                            <li><i class="fas fa-check"></i> Budget considerations & negotiation strategies</li>
+                            <li><i class="fas fa-check"></i> Assessment questions & responses</li>
+                        </ul>
+                        <a href="samples/quick-assessment-sample.pdf" download class="btn btn-primary">
+                            <i class="fas fa-download"></i>
+                            Download Sample Report
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- How It Works -->
+    <section class="how-it-works">
+        <div class="container">
+            <div class="section-header centered">
+                <h2>How It Works</h2>
+                <p>Get started in minutes</p>
+            </div>
+            <div class="steps-container">
+                <div class="step">
+                    <div class="step-number">1</div>
+                    <div class="step-content">
+                        <h3>Download & Setup</h3>
+                        <p>Install from Google Play Store and add your first property in seconds</p>
+                    </div>
+                </div>
+                <div class="step">
+                    <div class="step-number">2</div>
+                    <div class="step-content">
+                        <h3>Conduct Assessment</h3>
+                        <p>Follow guided checklists during your property viewing. Read the tooltips that guide you on what to look for, and capture photos as you go</p>
+                    </div>
+                </div>
+                <div class="step">
+                    <div class="step-number">3</div>
+                    <div class="step-content">
+                        <h3>Generate Report</h3>
+                        <p>Instantly create professional PDF reports with scores, photos, and recommendations</p>
+                    </div>
+                </div>
+                <div class="step">
+                    <div class="step-number">4</div>
+                    <div class="step-content">
+                        <h3>Make Decision</h3>
+                        <p>Compare properties, negotiate confidently, and buy with complete information</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Download Section -->
+    <section id="download" class="download-section">
+        <div class="container">
+            <div class="download-content">
+                <div class="download-text">
+                    <h2>Ready to Make Smarter Property Decisions?</h2>
+                    <p>Join thousands of South Africans who are buying and selling properties with confidence</p>
+                    <div class="download-features">
+                        <div class="download-feature">
+                            <i class="fas fa-check-circle"></i>
+                            <span>100% Free to use</span>
+                        </div>
+                        <div class="download-feature">
+                            <i class="fas fa-check-circle"></i>
+                            <span>No account required</span>
+                        </div>
+                        <div class="download-feature">
+                            <i class="fas fa-check-circle"></i>
+                            <span>Complete privacy</span>
+                        </div>
+                    </div>
+                    <a href="https://play.google.com/store/apps/details?id=com.joelapexs.propertyinspector" target="_blank" class="btn-download-image">
+                        <img src="images/google-play-badge.png" alt="Get it on Google Play" class="play-badge-large">
+                    </a>
+                    <p class="download-note">Available for Android devices</p>
+                </div>
+                <div class="download-image">
+                    <div class="phone-showcase">
+                        <img src="images/screenshots/home-screen.jpg" alt="Property Inspector App">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-brand">
+                    <div class="footer-logo">
+                        <img src="images/logo.jpg" alt="Property Inspector">
+                        <span>Property Inspector</span>
+                    </div>
+                    <p>Professional property assessment for informed decisions. Know before you buy.</p>
+                </div>
+                <div class="footer-links">
+                    <div class="footer-column">
+                        <h4>Product</h4>
+                        <ul>
+                            <li><a href="#features">Features</a></li>
+                            <li><a href="#calculator">Calculator</a></li>
+                            <li><a href="#samples">Sample Reports</a></li>
+                            <li><a href="#download">Download App</a></li>
+                        </ul>
+                    </div>
+                    <div class="footer-column">
+                        <h4>Resources</h4>
+                        <ul>
+                            <li><a href="#guide">Viewing Guide</a></li>
+                            <li><a href="#benefits">Benefits</a></li>
+                            <li><a href="index.html">Privacy Policy</a></li>
+                        </ul>
+                    </div>
+                    <div class="footer-column">
+                        <h4>Contact</h4>
+                        <ul>
+                            <li><a href="mailto:joelapexs@gmail.com">joelapexs@gmail.com</a></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2025 Joel Apex Solutions - Property Inspector. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Scripts -->
+    <script src="calculator.js"></script>
+    <script src="website-main.js"></script>
 </body>
 </html>
