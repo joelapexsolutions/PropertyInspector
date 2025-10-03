@@ -1,5 +1,5 @@
 /* ====================================================================
-   PROPERTY INSPECTOR WEBSITE STYLES
+   PROPERTY INSPECTOR WEBSITE STYLES - ENHANCED VERSION
    ==================================================================== */
 
 /* CSS Variables */
@@ -16,6 +16,7 @@
     --gradient-primary: linear-gradient(135deg, #2E86AB, #06D6A0);
     --gradient-success: linear-gradient(135deg, #06D6A0, #28A745);
     --gradient-dark: linear-gradient(135deg, #1A1A1A, #2D2D2D);
+    --gradient-warning: linear-gradient(135deg, #EF476F, #F77F00);
     
     --shadow-float: 0 10px 40px rgba(0, 0, 0, 0.3);
     --shadow-hover: 0 15px 50px rgba(0, 0, 0, 0.4);
@@ -118,20 +119,9 @@ body {
     white-space: nowrap;
 }
 
-.nav-link:hover {
+.nav-link:hover, .nav-link.active {
     color: var(--success-green);
     background: rgba(6, 214, 160, 0.1);
-}
-
-.nav-download-btn {
-    padding: 4px 12px;
-    display: flex;
-    align-items: center;
-}
-
-.nav-play-badge {
-    height: 40px;
-    width: auto;
 }
 
 .btn-primary {
@@ -143,6 +133,9 @@ body {
     text-decoration: none;
     transition: var(--transition-smooth);
     box-shadow: 0 4px 15px rgba(6, 214, 160, 0.3);
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
 }
 
 .btn-primary:hover {
@@ -150,7 +143,7 @@ body {
     box-shadow: 0 6px 25px rgba(6, 214, 160, 0.5);
 }
 
-/* Google Play Badge Styles */
+/* Google Play Badge */
 .btn-download-image {
     display: inline-block;
     transition: var(--transition-smooth);
@@ -168,7 +161,7 @@ body {
 /* Hero Section */
 .hero {
     position: relative;
-    padding: 120px 0 80px;
+    padding: 140px 0 80px;
     min-height: 100vh;
     display: flex;
     align-items: center;
@@ -197,6 +190,20 @@ body {
 
 .hero-text {
     animation: fadeInUp 0.8s ease-out;
+}
+
+.hero-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    background: rgba(6, 214, 160, 0.15);
+    color: var(--success-green);
+    padding: 10px 20px;
+    border-radius: 25px;
+    font-weight: 600;
+    font-size: 0.9rem;
+    margin-bottom: 25px;
+    border: 1px solid rgba(6, 214, 160, 0.3);
 }
 
 .hero-title {
@@ -290,13 +297,13 @@ body {
     animation: fadeInRight 0.8s ease-out 0.2s both;
 }
 
-.phone-mockup {
+.phone-mockup, .phone-showcase {
     position: relative;
     max-width: 400px;
     margin: 0 auto;
 }
 
-.phone-mockup img {
+.phone-mockup img, .phone-showcase img {
     width: 100%;
     border-radius: 30px;
     box-shadow: 0 30px 80px rgba(0, 0, 0, 0.5);
@@ -309,6 +316,122 @@ body {
     right: 0;
     height: 100px;
     background: linear-gradient(to top, rgba(26, 26, 26, 1), transparent);
+}
+
+/* Real Stories Section */
+.real-stories {
+    background: linear-gradient(135deg, rgba(239, 71, 111, 0.08), rgba(247, 127, 0, 0.08));
+    padding: 100px 0;
+}
+
+.stories-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+    gap: 35px;
+    margin-bottom: 60px;
+}
+
+.story-card {
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: var(--border-radius);
+    padding: 35px;
+    border: 2px solid rgba(239, 71, 111, 0.3);
+    transition: var(--transition-smooth);
+    position: relative;
+    overflow: hidden;
+}
+
+.story-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 5px;
+    background: var(--gradient-warning);
+}
+
+.story-card:hover {
+    transform: translateY(-5px);
+    box-shadow: var(--shadow-hover);
+    border-color: var(--warning-orange);
+}
+
+.story-icon {
+    width: 70px;
+    height: 70px;
+    background: rgba(239, 71, 111, 0.2);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 20px;
+}
+
+.story-icon i {
+    font-size: 2rem;
+    color: var(--warning-orange);
+}
+
+.story-card h3 {
+    font-size: 1.5rem;
+    margin-bottom: 10px;
+    color: var(--text-white);
+}
+
+.story-cost {
+    display: inline-block;
+    background: rgba(239, 71, 111, 0.2);
+    color: var(--warning-orange);
+    padding: 8px 16px;
+    border-radius: 20px;
+    font-weight: 700;
+    font-size: 0.95rem;
+    margin-bottom: 20px;
+}
+
+.story-text {
+    color: var(--text-light);
+    margin-bottom: 20px;
+    line-height: 1.8;
+    font-size: 1.05rem;
+}
+
+.story-result {
+    background: rgba(239, 71, 111, 0.1);
+    padding: 15px;
+    border-radius: 12px;
+    margin-bottom: 20px;
+    border-left: 3px solid var(--warning-orange);
+}
+
+.story-result strong {
+    color: var(--warning-orange);
+    display: block;
+    margin-bottom: 5px;
+}
+
+.cta-box {
+    background: var(--gradient-success);
+    padding: 50px;
+    border-radius: var(--border-radius);
+    text-align: center;
+    box-shadow: var(--shadow-float);
+}
+
+.cta-box h3 {
+    font-size: 2rem;
+    margin-bottom: 15px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 15px;
+}
+
+.cta-box p {
+    font-size: 1.2rem;
+    margin-bottom: 30px;
+    opacity: 0.95;
 }
 
 /* Section Styles */
@@ -343,7 +466,6 @@ section {
 /* Problem Solution Section */
 .problem-solution {
     background: linear-gradient(135deg, rgba(239, 71, 111, 0.05), rgba(247, 127, 0, 0.05));
-    position: relative;
 }
 
 .problem-grid {
@@ -573,41 +695,186 @@ section {
     line-height: 1.6;
 }
 
-/* Calculator Section */
-.calculator-section {
-    background: linear-gradient(135deg, rgba(46, 134, 171, 0.1), rgba(6, 214, 160, 0.05));
+/* Calculator Page Styles */
+.calculator-hero {
+    background: var(--gradient-primary);
+    padding: 140px 0 80px;
+    text-align: center;
 }
 
-.calculator-wrapper {
+.calculator-hero-content h1 {
+    font-size: 3rem;
+    margin-bottom: 20px;
+}
+
+.calculator-benefits {
+    display: flex;
+    justify-content: center;
+    gap: 40px;
+    margin-top: 40px;
+    flex-wrap: wrap;
+}
+
+.calc-benefit-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    color: var(--text-white);
+    font-weight: 600;
+}
+
+.calc-benefit-item i {
+    font-size: 1.5rem;
+}
+
+.calculator-main-section {
+    padding: 80px 0;
+}
+
+.calculator-wrapper-page {
     max-width: 900px;
-    margin: 0 auto;
+    margin: 0 auto 80px;
 }
 
-.calculator-info {
-    max-width: 800px;
-    margin: 30px auto 0;
+.calc-explainers {
+    margin: 80px 0;
 }
 
-.info-card {
+.explainer-heading {
+    text-align: center;
+    font-size: 2.5rem;
+    margin-bottom: 50px;
+    color: var(--text-white);
+}
+
+.explainer-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 30px;
+}
+
+.explainer-card {
     background: rgba(255, 255, 255, 0.05);
     border: 1px solid rgba(255, 255, 255, 0.1);
-    border-radius: var(--border-radius-small);
-    padding: 20px;
+    border-radius: var(--border-radius);
+    padding: 30px;
+}
+
+.explainer-icon {
+    width: 60px;
+    height: 60px;
+    background: var(--gradient-primary);
+    border-radius: 50%;
     display: flex;
-    gap: 15px;
-    align-items: flex-start;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 20px;
 }
 
-.info-card i {
-    color: var(--primary-blue);
-    font-size: 1.5rem;
-    margin-top: 2px;
+.explainer-icon i {
+    font-size: 1.6rem;
+    color: var(--text-white);
 }
 
-.info-card p {
+.explainer-card h3 {
+    font-size: 1.4rem;
+    margin-bottom: 15px;
+    color: var(--text-white);
+}
+
+.explainer-card p {
     color: var(--text-light);
+    margin-bottom: 15px;
+    line-height: 1.7;
+}
+
+.explainer-list {
+    list-style: none;
+    padding-left: 0;
+}
+
+.explainer-list li {
+    color: var(--text-light);
+    padding: 8px 0;
+    padding-left: 25px;
+    position: relative;
     line-height: 1.6;
-    margin: 0;
+}
+
+.explainer-list li::before {
+    content: '→';
+    position: absolute;
+    left: 0;
+    color: var(--success-green);
+    font-weight: bold;
+}
+
+.calculator-tips {
+    background: rgba(255, 255, 255, 0.03);
+    padding: 60px 40px;
+    border-radius: var(--border-radius);
+    margin: 80px 0;
+}
+
+.calculator-tips h2 {
+    text-align: center;
+    font-size: 2rem;
+    margin-bottom: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 15px;
+}
+
+.tips-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 25px;
+}
+
+.tip-card {
+    background: rgba(255, 255, 255, 0.05);
+    padding: 25px;
+    border-radius: var(--border-radius-small);
+    border-left: 4px solid var(--success-green);
+}
+
+.tip-card h4 {
+    color: var(--text-white);
+    margin-bottom: 12px;
+    font-size: 1.1rem;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.tip-card h4 i {
+    color: var(--success-green);
+}
+
+.tip-card p {
+    color: var(--text-light);
+    line-height: 1.7;
+    font-size: 0.95rem;
+}
+
+.calculator-cta {
+    text-align: center;
+    background: var(--gradient-primary);
+    padding: 60px 40px;
+    border-radius: var(--border-radius);
+    margin-top: 60px;
+}
+
+.calculator-cta h3 {
+    font-size: 2rem;
+    margin-bottom: 15px;
+}
+
+.calculator-cta p {
+    font-size: 1.2rem;
+    margin-bottom: 30px;
+    opacity: 0.95;
 }
 
 /* Guide Section */
@@ -700,8 +967,6 @@ section {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
     gap: 40px;
-    max-width: 900px;
-    margin: 0 auto;
 }
 
 .sample-card {
@@ -730,7 +995,6 @@ section {
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    position: relative;
 }
 
 .sample-preview i {
@@ -892,17 +1156,6 @@ section {
     font-size: 0.9rem;
 }
 
-.phone-showcase {
-    position: relative;
-}
-
-.phone-showcase img {
-    width: 100%;
-    max-width: 350px;
-    border-radius: 30px;
-    box-shadow: 0 30px 80px rgba(0, 0, 0, 0.4);
-}
-
 /* Footer */
 .footer {
     background: #0D0D0D;
@@ -964,9 +1217,6 @@ section {
     color: var(--text-light);
     text-decoration: none;
     transition: var(--transition-smooth);
-    display: inline-flex;
-    align-items: center;
-    gap: 8px;
 }
 
 .footer-column a:hover {
@@ -987,12 +1237,8 @@ section {
 
 /* Animations */
 @keyframes fadeIn {
-    from {
-        opacity: 0;
-    }
-    to {
-        opacity: 1;
-    }
+    from { opacity: 0; }
+    to { opacity: 1; }
 }
 
 @keyframes fadeInUp {
@@ -1020,21 +1266,10 @@ section {
 /* Responsive Design */
 @media (max-width: 1200px) {
     .container {
-        max-width: 100%;
         padding: 0 25px;
     }
-    
     .nav-menu {
         gap: 15px;
-    }
-    
-    .nav-link {
-        padding: 8px 12px;
-        font-size: 0.95rem;
-    }
-    
-    .nav-play-badge {
-        height: 35px;
     }
 }
 
@@ -1044,12 +1279,10 @@ section {
     .download-content {
         grid-template-columns: 1fr;
     }
-    
     .hero-image,
     .benefit-image {
         order: -1;
     }
-    
     .footer-content {
         grid-template-columns: repeat(2, 1fr);
     }
@@ -1068,43 +1301,36 @@ section {
         box-shadow: 0 10px 27px rgba(0, 0, 0, 0.5);
         padding: 30px 0;
     }
-    
     .nav-menu.active {
         left: 0;
     }
-    
     .nav-toggle {
         display: block;
     }
-    
     .hero-title {
         font-size: 2.5rem;
     }
-    
     .hero-subtitle {
         font-size: 1.1rem;
     }
-    
     .section-header h2 {
         font-size: 2rem;
     }
-    
     .tabs-nav {
         flex-wrap: wrap;
     }
-    
     .tab-btn {
         flex: 1 1 45%;
     }
-    
     .tabs-content {
         padding: 30px 20px;
     }
-    
+    .stories-grid {
+        grid-template-columns: 1fr;
+    }
     .download-text h2 {
         font-size: 2rem;
     }
-    
     .footer-content {
         grid-template-columns: 1fr;
         gap: 30px;
@@ -1115,44 +1341,24 @@ section {
     .container {
         padding: 0 15px;
     }
-    
     section {
         padding: 50px 0;
     }
-    
     .hero {
         padding: 100px 0 60px;
     }
-    
     .hero-title {
         font-size: 2rem;
     }
-    
     .hero-cta {
         flex-direction: column;
     }
-    
     .btn {
         width: 100%;
         justify-content: center;
     }
-    
-    .play-badge-large {
-        height: 60px;
-    }
-    
-    .problem-grid,
-    .features-grid,
-    .guide-grid,
-    .samples-grid {
-        grid-template-columns: 1fr;
-    }
-    
-    .section-header h2 {
-        font-size: 1.75rem;
-    }
-    
-    .benefit-text h3 {
-        font-size: 1.5rem;
+    .calculator-benefits {
+        flex-direction: column;
+        gap: 20px;
     }
 }
