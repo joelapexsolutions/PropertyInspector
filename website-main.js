@@ -12,6 +12,7 @@ document.addEventListener('DOMContentLoaded', function() {
     initializeStandaloneCostCalculator();
     initializeLazyLoading();
     initializeAnalytics();
+    initializeStoriesToggle();
     
     console.log('✅ Property Inspector Website Loaded Successfully');
 });
@@ -437,5 +438,47 @@ style.textContent = `
     }
 `;
 document.head.appendChild(style);
+
+/**
+ * Initialize collapsible stories on mobile
+ */
+function initializeStoriesToggle() {
+    const toggle = document.getElementById('storiesToggle');
+    const grid = document.getElementById('storiesGrid');
+    
+    if (!toggle || !grid) return;
+    
+    // Show toggle button on mobile only
+    function checkMobile() {
+        if (window.innerWidth <= 768) {
+            toggle.style.display = 'inline-flex';
+            grid.classList.add('collapsed');
+        } else {
+            toggle.style.display = 'none';
+            grid.classList.remove('collapsed', 'expanded');
+        }
+    }
+    
+    // Toggle stories visibility
+    toggle.addEventListener('click', function() {
+        const isExpanded = grid.classList.contains('expanded');
+        
+        if (isExpanded) {
+            grid.classList.remove('expanded');
+            grid.classList.add('collapsed');
+            toggle.querySelector('.toggle-text').textContent = 'Show All Stories';
+            toggle.classList.remove('expanded');
+        } else {
+            grid.classList.remove('collapsed');
+            grid.classList.add('expanded');
+            toggle.querySelector('.toggle-text').textContent = 'Hide Stories';
+            toggle.classList.add('expanded');
+        }
+    });
+    
+    // Check on load and resize
+    checkMobile();
+    window.addEventListener('resize', checkMobile);
+}
 
 console.log('🚀 Property Inspector Website Scripts Initialized');
