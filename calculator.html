@@ -3,359 +3,256 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Property Inspector - Privacy Policy</title>
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(135deg, #f8f9fa, #e9ecef);
-            color: #333333;
-            line-height: 1.6;
-            min-height: 100vh;
-        }
-
-        .container {
-            max-width: 800px;
-            margin: 0 auto;
-            padding: 20px;
-        }
-
-        .header {
-            text-align: center;
-            padding: 0;
-            margin-bottom: 30px;
-            border-radius: 15px;
-            overflow: hidden;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
-        }
-
-        .banner {
-            width: 100%;
-            height: 200px;
-            background: url('images/property-inspector-banner.jpg') center/cover;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            position: relative;
-        }
-
-        .banner::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: rgba(0,0,0,0.2);
-        }
-
-        .banner-content {
-            position: relative;
-            z-index: 1;
-            color: white;
-            text-align: center;
-        }
-
-        .banner h1 {
-            font-size: 2.5rem;
-            font-weight: 800;
-            margin-bottom: 5px;
-            text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
-        }
-
-        .banner p {
-            font-size: 1.1rem;
-            text-shadow: 1px 1px 2px rgba(0,0,0,0.5);
-        }
-
-        .content {
-            background: white;
-            border-radius: 15px;
-            padding: 30px;
-            margin-bottom: 30px;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-            border: 1px solid #e9ecef;
-        }
-
-        h2 {
-            color: #2E86AB;
-            font-size: 1.5rem;
-            margin-bottom: 15px;
-            padding-bottom: 5px;
-            border-bottom: 2px solid #06D6A0;
-        }
-
-        h3 {
-            color: #1B5E7C;
-            font-size: 1.2rem;
-            margin: 20px 0 10px 0;
-        }
-
-        p {
-            margin-bottom: 15px;
-            color: #555555;
-        }
-
-        ul {
-            margin: 15px 0;
-            padding-left: 20px;
-        }
-
-        li {
-            margin-bottom: 8px;
-            color: #555555;
-        }
-
-        .highlight {
-            background: rgba(6, 214, 160, 0.1);
-            padding: 15px;
-            border-radius: 8px;
-            border-left: 4px solid #06D6A0;
-            margin: 20px 0;
-        }
-
-        .warning {
-            background: rgba(255, 107, 53, 0.1);
-            padding: 15px;
-            border-radius: 8px;
-            border-left: 4px solid #FF6B35;
-            margin: 20px 0;
-        }
-
-        .contact-info {
-            background: linear-gradient(135deg, #2E86AB, #06D6A0);
-            padding: 20px;
-            border-radius: 10px;
-            text-align: center;
-            color: white;
-        }
-
-        .footer {
-            text-align: center;
-            padding: 30px 0;
-            border-top: 1px solid #e9ecef;
-            margin-top: 40px;
-        }
-
-        .footer img {
-            width: 80px;
-            height: 80px;
-            margin-bottom: 15px;
-            border-radius: 15px;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-        }
-
-        .last-updated {
-            color: #666666;
-            font-size: 0.9rem;
-        }
-
-        .icon {
-            color: #06D6A0;
-            margin-right: 8px;
-        }
-    </style>
+    
+    <!-- SEO Meta Tags -->
+    <title>Property Cost Calculator | Calculate Transfer Duties & Bond Costs South Africa</title>
+    <meta name="description" content="Free SA property cost calculator. Calculate accurate monthly bond repayments, transfer duties, attorney fees, and total ownership costs. Get instant results for any property price in South Africa.">
+    <meta name="keywords" content="property cost calculator South Africa, bond calculator, transfer duty calculator, property transfer fees, monthly bond repayment, SA home loan calculator">
+    
+    <!-- Canonical URL -->
+    <link rel="canonical" href="https://propertyinspector.site/calculator.html">
+    
+    <!-- Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    
+    <!-- Styles -->
+    <link rel="stylesheet" href="website-styles.css">
+    <link rel="stylesheet" href="calculator.css">
+    
+    <!-- Favicon -->
+    <link rel="icon" type="image/jpeg" href="images/logo.jpg">
+    
+    <!-- Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-2MN5R2QXNC"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', 'G-2MN5R2QXNC');
+    </script>
+    
+    <!-- Structured Data for Calculator -->
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "WebApplication",
+        "name": "Property Cost Calculator South Africa",
+        "description": "Calculate property costs including transfer duties, bond costs, and monthly repayments for South African properties",
+        "applicationCategory": "FinanceApplication",
+        "offers": {
+            "@type": "Offer",
+            "price": "0",
+            "priceCurrency": "ZAR"
+        },
+        "operatingSystem": "Any"
+    }
+    </script>
 </head>
 <body>
-    <div class="container">
-        <div class="header">
-            <div class="banner">
+    <!-- Navigation -->
+    <nav class="navbar" id="navbar">
+        <div class="container">
+            <div class="nav-content">
+                <a href="mainindex.html" class="nav-logo">
+                    <img src="images/logo.jpg" alt="Property Inspector Logo">
+                    <span>Property Inspector</span>
+                </a>
+                <button class="nav-toggle" id="navToggle" aria-label="Toggle navigation">
+                    <i class="fas fa-bars"></i>
+                </button>
+                <ul class="nav-menu" id="navMenu">
+                    <li><a href="mainindex.html" class="nav-link">Home</a></li>
+                    <li><a href="mainindex.html#real-stories" class="nav-link">Real Stories</a></li>
+                    <li><a href="mainindex.html#features" class="nav-link">Features</a></li>
+                    <li><a href="mainindex.html#benefits" class="nav-link">Benefits</a></li>
+                    <li><a href="calculator.html" class="nav-link active">Calculator</a></li>
+                    <li><a href="mainindex.html#guide" class="nav-link">Guide</a></li>
+                    <li><a href="mainindex.html#samples" class="nav-link">Samples</a></li>
+                    <li><a href="https://play.google.com/store/apps/details?id=com.joelapexs.propertyinspector" target="_blank" class="nav-link btn-primary">Download App</a></li>
+                </ul>
             </div>
         </div>
+    </nav>
 
-        <div class="content">
-            <div style="text-align: center; margin-bottom: 30px;">
-                <h1 style="color: #2E86AB; font-size: 2.5rem; margin-bottom: 8px; font-weight: 800;">Privacy Policy</h1>
-                <p style="color: #06D6A0; font-size: 1.2rem; font-weight: 600; margin-bottom: 25px;">Your privacy is our priority</p>
-            </div>
-            
-            <h2><span class="icon"></span>Overview</h2>
-            <p>Property Inspector is committed to protecting your privacy. This app helps property buyers, sellers, and estate agents assess properties through detailed inspections, photo documentation, and scoring systems. All data is stored locally on your device.</p>
-            
-            <div class="highlight">
-                <strong>Key Privacy Principle:</strong> Your property data never leaves your device unless you explicitly choose to export or share it.
-            </div>
-        </div>
-
-        <div class="content">
-            <h2><span class="icon"></span>Information We Collect</h2>
-            
-            <h3>Property Information</h3>
-            <ul>
-                <li>Property addresses and details (bedrooms, bathrooms, etc.)</li>
-                <li>Property photos taken during assessments</li>
-                <li>Assessment scores and ratings</li>
-                <li>Inspector notes and comments</li>
-                <li>Financial calculations and cost estimates</li>
-                <li>Assessment dates and reminders</li>
-            </ul>
-
-            <h3>App Usage Data</h3>
-            <ul>
-                <li>App preferences and settings</li>
-                <li>Assessment progress and completion status</li>
-                <li>Custom room configurations</li>
-            </ul>
-
-            <h3>Device Information</h3>
-            <ul>
-                <li>Camera access for photo capture</li>
-                <li>Storage access for saving data locally</li>
-                <li>Notification permissions for assessment reminders</li>
-            </ul>
-        </div>
-
-        <div class="content">
-            <h2><span class="icon"></span>How We Store Your Data</h2>
-            
-            <h3>Local Storage Only</h3>
-            <p>All your data is stored exclusively on your device using:</p>
-            <ul>
-                <li><strong>Local Browser Storage:</strong> Property details and settings</li>
-                <li><strong>IndexedDB:</strong> Photos and detailed assessment data</li>
-                <li><strong>Device File System:</strong> Exported reports and backups</li>
-            </ul>
-
-            <div class="highlight">
-                <strong>No Cloud Storage:</strong> We do not store any of your property data on external servers or cloud services.
+    <!-- Calculator Hero -->
+    <section class="calculator-hero">
+        <div class="container">
+            <div class="calculator-hero-content">
+                <h1>Property Cost Calculator</h1>
+                <p class="hero-subtitle">Calculate accurate monthly costs, transfer duties, and once-off fees for any South African property. Know exactly what you'll pay before making an offer.</p>
+                
+                <div class="calculator-benefits">
+                    <div class="calc-benefit-item">
+                        <i class="fas fa-calculator"></i>
+                        <span>Accurate SA Calculations</span>
+                    </div>
+                    <div class="calc-benefit-item">
+                        <i class="fas fa-file-invoice-dollar"></i>
+                        <span>Transfer Duties Included</span>
+                    </div>
+                    <div class="calc-benefit-item">
+                        <i class="fas fa-chart-pie"></i>
+                        <span>Complete Cost Breakdown</span>
+                    </div>
+                </div>
             </div>
         </div>
+    </section>
 
-        <div class="content">
-            <h2><span class="icon"></span>Data Security</h2>
+    <!-- Calculator Section -->
+    <section class="calculator-main-section">
+        <div class="container">
+            <div class="calculator-wrapper-page">
+                <div id="propertyCalculator"></div>
+            </div>
             
-            <h3>Protection Measures</h3>
-            <ul>
-                <li>All data remains on your personal device</li>
-                <li>No data transmission to external servers</li>
-                <li>Standard device-level security protections apply</li>
-                <li>You control all data export and sharing</li>
-            </ul>
-
-            <h3>Your Responsibilities</h3>
-            <ul>
-                <li>Secure your device with appropriate locks/passwords</li>
-                <li>Regular device backups if you want to preserve data</li>
-                <li>Be cautious when sharing exported reports</li>
-            </ul>
-        </div>
-
-        <div class="content">
-            <h2><span class="icon"></span>Data Sharing and Export</h2>
+            <!-- Explanation Cards -->
+            <div class="calc-explainers">
+                <h2 class="explainer-heading">Understanding Your Property Costs</h2>
+                <div class="explainer-grid">
+                    <article class="explainer-card">
+                        <div class="explainer-icon">
+                            <i class="fas fa-landmark"></i>
+                        </div>
+                        <h3>Transfer Duty</h3>
+                        <p>Government tax on property ownership transfer. Progressive rates apply based on purchase price:</p>
+                        <ul class="explainer-list">
+                            <li><strong>R0 - R1,100,000:</strong> 0% (first-time buyers benefit)</li>
+                            <li><strong>R1,100,001 - R1,512,500:</strong> 3% of amount above R1.1M</li>
+                            <li><strong>R1,512,501 - R2,250,000:</strong> 6% of amount above R1.5M</li>
+                            <li><strong>Above R2,250,000:</strong> 8% of amount above R2.25M</li>
+                        </ul>
+                    </article>
+                    
+                    <article class="explainer-card">
+                        <div class="explainer-icon">
+                            <i class="fas fa-file-contract"></i>
+                        </div>
+                        <h3>Transfer Attorney Fees</h3>
+                        <p>Legal fees for transferring property ownership to your name. Includes conveyancing, deeds office registration, and documentation:</p>
+                        <ul class="explainer-list">
+                            <li>Attorney professional fees (scale-based)</li>
+                            <li>VAT at 15%</li>
+                            <li>Deeds office fees</li>
+                            <li>Document preparation and searches</li>
+                            <li>Typically R15,000 - R60,000+ depending on price</li>
+                        </ul>
+                    </article>
+                    
+                    <article class="explainer-card">
+                        <div class="explainer-icon">
+                            <i class="fas fa-university"></i>
+                        </div>
+                        <h3>Bond Registration Costs</h3>
+                        <p>Costs to register your home loan with the Deeds Office (only if financing with bond):</p>
+                        <ul class="explainer-list">
+                            <li>Bond attorney fees (separate from transfer attorney)</li>
+                            <li>Deeds office registration fees</li>
+                            <li>Bank initiation fees (typically R5,000-R7,000)</li>
+                            <li>Document preparation</li>
+                            <li>Total typically R25,000 - R45,000</li>
+                        </ul>
+                    </article>
+                    
+                    <article class="explainer-card">
+                        <div class="explainer-icon">
+                            <i class="fas fa-percentage"></i>
+                        </div>
+                        <h3>Monthly Bond Repayment</h3>
+                        <p>Your home loan repayment depends on three factors:</p>
+                        <ul class="explainer-list">
+                            <li><strong>Loan amount:</strong> Purchase price minus deposit</li>
+                            <li><strong>Interest rate:</strong> Currently 11.75% prime rate (adjust in calculator)</li>
+                            <li><strong>Loan term:</strong> 20-30 years typical</li>
+                            <li>Includes principal and interest</li>
+                            <li>Longer terms = lower monthly, but more total interest</li>
+                        </ul>
+                    </article>
+                </div>
+            </div>
             
-            <h3>When Data Leaves Your Device</h3>
-            <p>Your data only leaves your device when you explicitly choose to:</p>
-            <ul>
-                <li>Export PDF assessment reports</li>
-                <li>Share assessment results via email/messaging</li>
-                <li>Export data backups</li>
-                <li>Use device sharing features (AirDrop, etc.)</li>
-            </ul>
-
-            <div class="warning">
-                <strong>Important:</strong> When you share or export data, it becomes subject to the privacy policies of the receiving platforms or recipients.
+            <!-- Tips Section -->
+            <div class="calculator-tips">
+                <h2><i class="fas fa-lightbulb"></i> Smart Buying Tips</h2>
+                <div class="tips-grid">
+                    <div class="tip-card">
+                        <h4><i class="fas fa-piggy-bank"></i> Budget for 10-20% Deposit</h4>
+                        <p>While 100% bonds exist, 10-20% deposit gets you better interest rates and approval odds. On R1.5M property, aim for R150,000-R300,000 deposit.</p>
+                    </div>
+                    <div class="tip-card">
+                        <h4><i class="fas fa-coins"></i> Don't Forget Once-Off Costs</h4>
+                        <p>Budget R50,000-R100,000+ for transfer duties, attorney fees, and bond costs. Many buyers overlook these and face cash flow problems at transfer.</p>
+                    </div>
+                    <div class="tip-card">
+                        <h4><i class="fas fa-chart-line"></i> Monthly Costs Beyond Bond</h4>
+                        <p>Add rates (R1,500-R3,500), utilities (R1,500-R3,000), levies for complexes (R1,000-R3,000), and maintenance (1% of value annually) to your budget.</p>
+                    </div>
+                    <div class="tip-card">
+                        <h4><i class="fas fa-hand-holding-usd"></i> Rule of Thumb: 30% Income</h4>
+                        <p>Total housing costs shouldn't exceed 30% of gross monthly income. Banks typically lend 3-4x annual salary. Calculate affordability before property hunting.</p>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- CTA -->
+            <div class="calculator-cta">
+                <h3>Ready to Start Your Property Journey?</h3>
+                <p>Download Property Inspector to assess properties professionally and avoid costly surprises</p>
+                <a href="https://play.google.com/store/apps/details?id=com.joelapexs.propertyinspector" target="_blank" class="btn btn-large btn-primary">
+                    <i class="fas fa-download"></i>
+                    Download Free App
+                </a>
             </div>
         </div>
+    </section>
 
-        <div class="content">
-            <h2><span class="icon"></span>Permissions Explained</h2>
-            
-            <h3>Camera Permission</h3>
-            <p>Required to capture photos during property assessments. Photos are stored locally and linked to specific assessment items.</p>
-
-            <h3>Storage Permission</h3>
-            <p>Needed to save photos, assessment data, and exported reports on your device.</p>
-
-            <h3>Notifications Permission</h3>
-            <p>Optional permission for assessment reminders and scheduled property viewings.</p>
-        </div>
-
-        <div class="content">
-            <h2><span class="icon"></span>Children's Privacy</h2>
-            <p>Property Inspector is designed for adult use in property assessment and purchasing decisions. We do not knowingly collect information from children under 13. The app requires decision-making capabilities appropriate for adult users.</p>
-        </div>
-
-        <div class="content">
-            <h2><span class="icon"></span>Data Control</h2>
-            
-            <h3>Your Rights</h3>
-            <ul>
-                <li><strong>Access:</strong> View all stored data within the app</li>
-                <li><strong>Export:</strong> Generate backups of your property data</li>
-                <li><strong>Delete:</strong> Remove specific properties or reset all data</li>
-                <li><strong>Modify:</strong> Edit any assessment data or property details</li>
-            </ul>
-
-            <h3>Data Deletion</h3>
-            <p>You can delete data by:</p>
-            <ul>
-                <li>Removing individual properties</li>
-                <li>Using the "Reset All Data" option in settings</li>
-                <li>Uninstalling the app (removes all local data)</li>
-            </ul>
-        </div>
-
-        <div class="content">
-            <h2><span class="icon"></span>Third-Party Services</h2>
-            
-            <h3>Google AdMob</h3>
-            <p>We use Google AdMob to display advertisements within the app. AdMob may collect device information and usage data for ad personalization and analytics.</p>
-            <ul>
-                <li>Device identifiers (Advertising ID)</li>
-                <li>App usage and interaction data</li>
-                <li>Location data (if enabled)</li>
-            </ul>
-            <p><strong>Google Privacy Policy:</strong> <a href="https://policies.google.com/privacy" target="_blank">https://policies.google.com/privacy</a></p>
-
-            <h3>Firebase & Google Analytics</h3>
-            <p>We use Firebase and Google Analytics to understand app usage, improve performance, and track engagement metrics.</p>
-            <ul>
-                <li>App usage statistics and crash reports</li>
-                <li>Device performance data</li>
-                <li>Feature usage analytics</li>
-                <li>Download and engagement metrics</li>
-            </ul>
-            <p><strong>Firebase Privacy:</strong> <a href="https://firebase.google.com/support/privacy" target="_blank">https://firebase.google.com/support/privacy</a></p>
-
-            <h3>Removing Advertisements</h3>
-            <p>Advertisements are displayed to support the free version of the app. To remove ads:</p>
-            <ul>
-                <li><strong>Premium Subscription:</strong> Purchase a premium subscription to use the app ad-free</li>
-                <li><strong>Ad Settings:</strong> You can adjust personalized ad preferences in your device settings, but ads will still be shown</li>
-            </ul>
-
-            <div class="warning">
-                <strong>Note:</strong> Third-party services have their own privacy policies. We recommend reviewing them to understand how your data is handled.
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-brand">
+                    <div class="footer-logo">
+                        <img src="images/logo.jpg" alt="Property Inspector">
+                        <span>Property Inspector</span>
+                    </div>
+                    <p>Professional property assessment for informed decisions. Know before you buy.</p>
+                </div>
+                <div class="footer-links">
+                    <div class="footer-column">
+                        <h4>Product</h4>
+                        <ul>
+                            <li><a href="mainindex.html#features">Features</a></li>
+                            <li><a href="calculator.html">Calculator</a></li>
+                            <li><a href="mainindex.html#samples">Sample Reports</a></li>
+                            <li><a href="mainindex.html#download">Download App</a></li>
+                        </ul>
+                    </div>
+                    <div class="footer-column">
+                        <h4>Resources</h4>
+                        <ul>
+                            <li><a href="mainindex.html#guide">Viewing Guide</a></li>
+                            <li><a href="mainindex.html#real-stories">Real Stories</a></li>
+                            <li><a href="mainindex.html#benefits">Benefits</a></li>
+                            <li><a href="index.html">Privacy Policy</a></li>
+                        </ul>
+                    </div>
+                    <div class="footer-column">
+                        <h4>Contact</h4>
+                        <ul>
+                            <li><a href="mailto:joelapexs@gmail.com">joelapexs@gmail.com</a></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2025 Joel Apex Solutions - Property Inspector. All rights reserved.</p>
             </div>
         </div>
+    </footer>
 
-        <div class="content">
-            <h2><span class="icon"></span>Policy Updates</h2>
-            <p>We may update this privacy policy to reflect app improvements or legal requirements. Significant changes will be communicated through app updates. Continued use constitutes acceptance of updated terms.</p>
-        </div>
-
-        <div class="content">
-            <div class="contact-info">
-                <h2><span class="icon"></span>Contact Information</h2>
-                <p>For privacy questions or concerns, contact us:</p>
-                <p><strong>Email:</strong> joelapexs@gmail.com</p>
-                <p><strong>Developer:</strong> Joel Apex Solutions</p>
-            </div>
-        </div>
-
-        <div class="footer">
-            <img src="images/logo.jpg" alt="Property Inspector Logo">
-            <div class="last-updated">
-                <p><strong>Property Inspector</strong></p>
-                <p>Last Updated: August 2025 | Version 1.0</p>
-                <p>© 2025 Joel Apex Solutions</p>
-            </div>
-        </div>
-    </div>
+    <!-- Scripts -->
+    <script src="calculator.js"></script>
+    <script src="website-main.js"></script>
 </body>
 </html>
