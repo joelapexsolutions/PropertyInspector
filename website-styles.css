@@ -1,4 +1,8 @@
-/* ====================================================================
+/* Feature, Problem, Guide, Sample, Step, Explainer Cards - Always Visible */
+.feature-card, .problem-card, .guide-card, .sample-card, .step, .explainer-card, .story-card {
+    opacity: 1 !important;
+    transform: translateY(0) !important;
+}/* ====================================================================
    PROPERTY INSPECTOR WEBSITE STYLES - ENHANCED VERSION
    ==================================================================== */
 
