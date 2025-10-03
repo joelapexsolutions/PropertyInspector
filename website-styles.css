@@ -324,6 +324,31 @@ body {
     padding: 100px 0;
 }
 
+.stories-toggle {
+    display: none;
+    margin: 20px auto 0;
+    padding: 12px 24px;
+    background: var(--gradient-warning);
+    color: var(--text-white);
+    border: none;
+    border-radius: 25px;
+    font-weight: 600;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: var(--transition-smooth);
+    font-family: 'Poppins', sans-serif;
+    gap: 10px;
+    align-items: center;
+}
+
+.stories-toggle i {
+    transition: transform 0.3s ease;
+}
+
+.stories-toggle.expanded i {
+    transform: rotate(180deg);
+}
+
 .stories-grid {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
@@ -1325,9 +1350,27 @@ section {
     .tabs-content {
         padding: 30px 20px;
     }
+    
+    /* Collapsible stories on mobile */
     .stories-grid {
         grid-template-columns: 1fr;
+        max-height: 0;
+        overflow: hidden;
+        transition: max-height 0.5s ease;
     }
+    
+    .stories-grid.collapsed {
+        max-height: 0;
+    }
+    
+    .stories-grid.expanded {
+        max-height: 5000px;
+    }
+    
+    .stories-toggle {
+        display: inline-flex !important;
+    }
+    
     .download-text h2 {
         font-size: 2rem;
     }
