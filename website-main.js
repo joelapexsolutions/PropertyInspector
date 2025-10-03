@@ -1,5 +1,5 @@
 /**
- * Property Inspector Website - Main JavaScript
+ * Property Inspector Website - Enhanced JavaScript
  */
 
 // Initialize website when DOM is loaded
@@ -10,6 +10,8 @@ document.addEventListener('DOMContentLoaded', function() {
     initializeTabs();
     initializeScrollEffects();
     initializeStandaloneCostCalculator();
+    initializeLazyLoading();
+    initializeAnalytics();
     
     console.log('✅ Property Inspector Website Loaded Successfully');
 });
@@ -72,6 +74,36 @@ function initializeNavigation() {
             }
         });
     });
+
+    // Highlight active section in navigation
+    window.addEventListener('scroll', highlightActiveNavLink);
+}
+
+/**
+ * Highlight active navigation link based on scroll position
+ */
+function highlightActiveNavLink() {
+    const sections = document.querySelectorAll('section[id]');
+    const navLinks = document.querySelectorAll('.nav-link[href^="#"]');
+    
+    let current = '';
+    const scrollPosition = window.scrollY + 100;
+    
+    sections.forEach(section => {
+        const sectionTop = section.offsetTop;
+        const sectionHeight = section.offsetHeight;
+        
+        if (scrollPosition >= sectionTop && scrollPosition < sectionTop + sectionHeight) {
+            current = section.getAttribute('id');
+        }
+    });
+    
+    navLinks.forEach(link => {
+        link.classList.remove('active');
+        if (link.getAttribute('href') === `#${current}`) {
+            link.classList.add('active');
+        }
+    });
 }
 
 /**
@@ -106,12 +138,13 @@ function observeElements() {
             if (entry.isIntersecting) {
                 entry.target.style.opacity = '1';
                 entry.target.style.transform = 'translateY(0)';
+                entry.target.classList.add('animated');
             }
         });
     }, observerOptions);
     
     // Observe cards and sections
-    const cards = document.querySelectorAll('.feature-card, .problem-card, .guide-card, .sample-card');
+    const cards = document.querySelectorAll('.feature-card, .problem-card, .guide-card, .sample-card, .story-card, .step, .explainer-card');
     cards.forEach((card, index) => {
         card.style.opacity = '0';
         card.style.transform = 'translateY(30px)';
@@ -141,47 +174,42 @@ function initializeTabs() {
             if (targetPane) {
                 targetPane.classList.add('active');
             }
+            
+            // Track tab click
+            trackEvent('Engagement', 'Tab Click', targetTab);
         });
     });
 }
 
 /**
- * Format price input with spaces
+ * Lazy Loading for Images
  */
-function formatPrice(input) {
-    // Remove all non-numeric characters
-    let value = input.value.replace(/\D/g, '');
-    
-    // Add spaces every 3 digits from right
-    if (value) {
-        value = value.replace(/\B(?=(\d{3})+(?!\d))/g, ' ');
-    }
-    
-    input.value = value;
-}
-
-/**
- * Utility function for showing modals/alerts
- */
-function showModal(title, message) {
-    // Simple alert for now - can be enhanced with custom modal
-    alert(title + '\n\n' + message);
-}
-
-/**
- * Google Analytics Event Tracking
- */
-function trackEvent(category, action, label) {
-    if (typeof gtag !== 'undefined') {
-        gtag('event', action, {
-            'event_category': category,
-            'event_label': label
+function initializeLazyLoading() {
+    if ('IntersectionObserver' in window) {
+        const imageObserver = new IntersectionObserver((entries, observer) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    const img = entry.target;
+                    if (img.dataset.src) {
+                        img.src = img.dataset.src;
+                        img.removeAttribute('data-src');
+                        observer.unobserve(img);
+                    }
+                }
+            });
+        });
+        
+        document.querySelectorAll('img[data-src]').forEach(img => {
+            imageObserver.observe(img);
         });
     }
 }
 
-// Track download button clicks
-document.addEventListener('DOMContentLoaded', function() {
+/**
+ * Initialize Analytics Tracking
+ */
+function initializeAnalytics() {
+    // Track download button clicks
     const downloadButtons = document.querySelectorAll('a[href*="play.google.com"]');
     downloadButtons.forEach(button => {
         button.addEventListener('click', function() {
@@ -193,152 +221,37 @@ document.addEventListener('DOMContentLoaded', function() {
     const sampleLinks = document.querySelectorAll('a[download]');
     sampleLinks.forEach(link => {
         link.addEventListener('click', function() {
-            const fileName = this.getAttribute('download');
+            const fileName = this.getAttribute('download') || 'sample-report';
             trackEvent('Sample', 'Download', fileName);
         });
     });
-});
-
-/**
- * Set minimum datetime for assessment date input
- */
-function setMinDateTime() {
-    const dateInputs = document.querySelectorAll('input[type="datetime-local"]');
-    if (dateInputs.length > 0) {
-        const now = new Date();
-        const year = now.getFullYear();
-        const month = String(now.getMonth() + 1).padStart(2, '0');
-        const day = String(now.getDate()).padStart(2, '0');
-        const hours = String(now.getHours()).padStart(2, '0');
-        const minutes = String(now.getMinutes()).padStart(2, '0');
-        const minDateTime = `${year}-${month}-${day}T${hours}:${minutes}`;
-        
-        dateInputs.forEach(input => {
-            input.setAttribute('min', minDateTime);
-        });
-    }
-}
-
-// Call on load
-setMinDateTime();
-
-/**
- * Smooth scroll to top function
- */
-function scrollToTop() {
-    window.scrollTo({
-        top: 0,
-        behavior: 'smooth'
-    });
-}
-
-/**
- * Handle external links
- */
-document.addEventListener('click', function(e) {
-    if (e.target.tagName === 'A' && e.target.hostname !== window.location.hostname) {
-        e.preventDefault();
-        window.open(e.target.href, '_blank', 'noopener,noreferrer');
-    }
-});
-
-/**
- * Lazy loading for images
- */
-if ('IntersectionObserver' in window) {
-    const imageObserver = new IntersectionObserver((entries, observer) => {
-        entries.forEach(entry => {
-            if (entry.isIntersecting) {
-                const img = entry.target;
-                if (img.dataset.src) {
-                    img.src = img.dataset.src;
-                    img.removeAttribute('data-src');
-                    observer.unobserve(img);
-                }
-            }
+    
+    // Track calculator usage
+    const calculatorInputs = document.querySelectorAll('.calc-input, .calc-select, .calc-slider');
+    calculatorInputs.forEach(input => {
+        input.addEventListener('change', function() {
+            trackEvent('Calculator', 'Input Changed', this.id || 'unknown');
         });
     });
     
-    document.querySelectorAll('img[data-src]').forEach(img => {
-        imageObserver.observe(img);
+    // Track external link clicks
+    const externalLinks = document.querySelectorAll('a[href^="http"]:not([href*="' + window.location.hostname + '"])');
+    externalLinks.forEach(link => {
+        link.addEventListener('click', function() {
+            trackEvent('External Link', 'Click', this.href);
+        });
     });
 }
 
 /**
- * Handle contact form submission (if added)
+ * Google Analytics Event Tracking
  */
-function handleContactForm(event) {
-    event.preventDefault();
-    
-    const form = event.target;
-    const formData = new FormData(form);
-    
-    // Track form submission
-    trackEvent('Contact', 'Submit', 'Contact Form');
-    
-    // Show success message
-    alert('Thank you for your message! We will get back to you soon.');
-    form.reset();
-}
-
-/**
- * Mobile-specific optimizations
- */
-function initializeMobileOptimizations() {
-    // Detect touch device
-    const isTouchDevice = 'ontouchstart' in window || navigator.maxTouchPoints > 0;
-    
-    if (isTouchDevice) {
-        document.body.classList.add('touch-device');
-        
-        // Remove hover effects on mobile
-        const cards = document.querySelectorAll('.feature-card, .problem-card, .guide-card');
-        cards.forEach(card => {
-            card.addEventListener('touchstart', function() {
-                this.style.transform = 'translateY(-5px)';
-            });
-            
-            card.addEventListener('touchend', function() {
-                setTimeout(() => {
-                    this.style.transform = '';
-                }, 300);
-            });
+function trackEvent(category, action, label) {
+    if (typeof gtag !== 'undefined') {
+        gtag('event', action, {
+            'event_category': category,
+            'event_label': label
         });
-    }
-}
-
-// Initialize mobile optimizations
-initializeMobileOptimizations();
-
-/**
- * Print current page
- */
-function printPage() {
-    window.print();
-}
-
-/**
- * Share functionality
- */
-async function shareWebsite() {
-    const shareData = {
-        title: 'Property Inspector',
-        text: 'Know Before You Buy - Professional property assessment app',
-        url: window.location.href
-    };
-    
-    try {
-        if (navigator.share) {
-            await navigator.share(shareData);
-            trackEvent('Share', 'Native', 'Website');
-        } else {
-            // Fallback - copy to clipboard
-            await navigator.clipboard.writeText(window.location.href);
-            alert('Link copied to clipboard!');
-            trackEvent('Share', 'Copy', 'Website');
-        }
-    } catch (err) {
-        console.error('Error sharing:', err);
     }
 }
 
@@ -389,22 +302,140 @@ window.addEventListener('error', function(e) {
     // Track errors in Google Analytics
     if (typeof gtag !== 'undefined') {
         gtag('event', 'exception', {
-            'description': e.error.message,
+            'description': e.error?.message || 'Unknown error',
             'fatal': false
         });
     }
 });
 
 /**
- * Service Worker registration (for PWA functionality - optional)
+ * Smooth scroll to top function
  */
-if ('serviceWorker' in navigator) {
-    window.addEventListener('load', function() {
-        // Uncomment to enable service worker
-        // navigator.serviceWorker.register('/sw.js')
-        //     .then(reg => console.log('Service Worker registered'))
-        //     .catch(err => console.log('Service Worker registration failed'));
+function scrollToTop() {
+    window.scrollTo({
+        top: 0,
+        behavior: 'smooth'
     });
 }
+
+/**
+ * Share functionality
+ */
+async function shareWebsite() {
+    const shareData = {
+        title: 'Property Inspector - Know Before You Buy',
+        text: 'Professional property assessment app for South Africa. Avoid costly mistakes!',
+        url: window.location.href
+    };
+    
+    try {
+        if (navigator.share) {
+            await navigator.share(shareData);
+            trackEvent('Share', 'Native', 'Website');
+        } else {
+            // Fallback - copy to clipboard
+            await navigator.clipboard.writeText(window.location.href);
+            showNotification('Link copied to clipboard!');
+            trackEvent('Share', 'Copy', 'Website');
+        }
+    } catch (err) {
+        console.error('Error sharing:', err);
+    }
+}
+
+/**
+ * Show notification
+ */
+function showNotification(message, type = 'success') {
+    const notification = document.createElement('div');
+    notification.className = `notification notification-${type}`;
+    notification.textContent = message;
+    notification.style.cssText = `
+        position: fixed;
+        bottom: 30px;
+        right: 30px;
+        background: ${type === 'success' ? '#06D6A0' : '#EF476F'};
+        color: white;
+        padding: 15px 25px;
+        border-radius: 10px;
+        box-shadow: 0 5px 20px rgba(0,0,0,0.3);
+        z-index: 10000;
+        animation: slideInUp 0.3s ease-out;
+    `;
+    
+    document.body.appendChild(notification);
+    
+    setTimeout(() => {
+        notification.style.animation = 'slideOutDown 0.3s ease-out';
+        setTimeout(() => notification.remove(), 300);
+    }, 3000);
+}
+
+/**
+ * Mobile-specific optimizations
+ */
+function initializeMobileOptimizations() {
+    // Detect touch device
+    const isTouchDevice = 'ontouchstart' in window || navigator.maxTouchPoints > 0;
+    
+    if (isTouchDevice) {
+        document.body.classList.add('touch-device');
+    }
+}
+
+initializeMobileOptimizations();
+
+/**
+ * Handle form submissions (if contact form added)
+ */
+function handleFormSubmit(event) {
+    event.preventDefault();
+    const form = event.target;
+    const formData = new FormData(form);
+    
+    // Track form submission
+    trackEvent('Contact', 'Submit', 'Contact Form');
+    
+    // Here you would send data to your backend
+    showNotification('Thank you! We will get back to you soon.');
+    form.reset();
+}
+
+/**
+ * Initialize standalone calculator on calculator page
+ */
+function initializeStandaloneCostCalculator() {
+    // This function is called, and calculator.js handles the actual implementation
+    console.log('📊 Calculator initialized');
+}
+
+/**
+ * Add CSS animation keyframes dynamically
+ */
+const style = document.createElement('style');
+style.textContent = `
+    @keyframes slideInUp {
+        from {
+            transform: translateY(100%);
+            opacity: 0;
+        }
+        to {
+            transform: translateY(0);
+            opacity: 1;
+        }
+    }
+    
+    @keyframes slideOutDown {
+        from {
+            transform: translateY(0);
+            opacity: 1;
+        }
+        to {
+            transform: translateY(100%);
+            opacity: 0;
+        }
+    }
+`;
+document.head.appendChild(style);
 
 console.log('🚀 Property Inspector Website Scripts Initialized');
