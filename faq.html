@@ -1,0 +1,711 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <!-- SEO Meta Tags -->
+    <title>FAQ - Home Buying Checklist Questions | Property Inspector South Africa</title>
+    <meta name="description" content="Frequently asked questions about home buying checklists, property viewings, and when you need professional property inspections in South Africa - for all property buyers.">
+    <meta name="keywords" content="home buying checklist FAQ, property inspection questions, when to hire inspector, house viewing questions, first time buyer FAQ south africa">
+    
+    <!-- Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    
+    <!-- Styles -->
+    <link rel="stylesheet" href="website-styles.css">
+    
+    <!-- Favicon -->
+    <link rel="icon" type="image/jpeg" href="images/logo.jpg">
+    
+    <!-- Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-2MN5R2QXNC"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', 'G-2MN5R2QXNC');
+    </script>
+    
+    <style>
+        .faq-hero {
+            background: linear-gradient(135deg, #2E86AB, #06D6A0);
+            padding: 140px 0 80px;
+            text-align: center;
+        }
+        
+        .faq-hero h1 {
+            font-size: 3rem;
+            margin-bottom: 20px;
+            color: #fff;
+        }
+        
+        .faq-hero p {
+            font-size: 1.2rem;
+            color: rgba(255,255,255,0.9);
+            max-width: 700px;
+            margin: 0 auto;
+        }
+        
+        .faq-section {
+            padding: 80px 0;
+        }
+        
+        .faq-container {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+        
+        .faq-category {
+            margin-bottom: 50px;
+        }
+        
+        .faq-category h2 {
+            font-size: 2rem;
+            margin-bottom: 30px;
+            color: #fff;
+            padding-bottom: 15px;
+            border-bottom: 3px solid #06D6A0;
+        }
+        
+        .faq-item {
+            background: rgba(255,255,255,0.05);
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 15px;
+            margin-bottom: 20px;
+            overflow: hidden;
+            transition: all 0.3s ease;
+        }
+        
+        .faq-item:hover {
+            border-color: #06D6A0;
+            box-shadow: 0 5px 20px rgba(6,214,160,0.2);
+        }
+        
+        .faq-question {
+            padding: 25px 30px;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            user-select: none;
+        }
+        
+        .faq-question h3 {
+            font-size: 1.2rem;
+            color: #fff;
+            margin: 0;
+            flex: 1;
+        }
+        
+        .faq-question i {
+            font-size: 1.2rem;
+            color: #06D6A0;
+            transition: transform 0.3s ease;
+        }
+        
+        .faq-item.active .faq-question i {
+            transform: rotate(180deg);
+        }
+        
+        .faq-answer {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.4s ease;
+        }
+        
+        .faq-answer-content {
+            padding: 0 30px 25px 30px;
+            color: rgba(255,255,255,0.85);
+            line-height: 1.8;
+            font-size: 1.05rem;
+        }
+        
+        .faq-answer-content p {
+            margin-bottom: 15px;
+        }
+        
+        .faq-answer-content ul {
+            margin: 15px 0;
+            padding-left: 25px;
+        }
+        
+        .faq-answer-content li {
+            margin-bottom: 10px;
+        }
+        
+        .faq-answer-content strong {
+            color: #fff;
+        }
+        
+        .faq-cta {
+            background: linear-gradient(135deg, #2E86AB, #06D6A0);
+            padding: 60px 40px;
+            border-radius: 20px;
+            text-align: center;
+            margin-top: 60px;
+        }
+        
+        .faq-cta h2 {
+            font-size: 2rem;
+            margin-bottom: 15px;
+            color: #fff;
+        }
+        
+        .faq-cta p {
+            font-size: 1.2rem;
+            margin-bottom: 30px;
+            color: rgba(255,255,255,0.9);
+        }
+        
+        @media (max-width: 768px) {
+            .faq-hero h1 {
+                font-size: 2rem;
+            }
+            
+            .faq-question h3 {
+                font-size: 1.05rem;
+            }
+            
+            .faq-answer-content {
+                font-size: 1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar" id="navbar">
+        <div class="container">
+            <div class="nav-content">
+                <a href="index.html" class="nav-logo">
+                    <img src="images/logo.jpg" alt="Property Inspector Logo">
+                    <span>Property Inspector</span>
+                </a>
+                <button class="nav-toggle" id="navToggle" aria-label="Toggle navigation">
+                    <i class="fas fa-bars"></i>
+                </button>
+                <ul class="nav-menu" id="navMenu">
+                    <li><a href="index.html" class="nav-link">Home</a></li>
+                    <li><a href="index.html#features" class="nav-link">Features</a></li>
+                    <li><a href="calculator.html" class="nav-link">Calculator</a></li>
+                    <li><a href="index.html#guide" class="nav-link">Viewing Guide</a></li>
+                    <li><a href="faq.html" class="nav-link active">FAQ</a></li>
+                    <li><a href="blog.html" class="nav-link">Blog</a></li>
+                    <li><a href="https://play.google.com/store/apps/details?id=com.joelapexs.propertyinspector" target="_blank" class="nav-link btn-primary">Download App</a></li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <header class="faq-hero">
+        <div class="container">
+            <h1>Frequently Asked Questions</h1>
+            <p>Everything you need to know about home buying checklists, property viewings, and professional inspections in South Africa</p>
+        </div>
+    </header>
+
+    <!-- FAQ Section -->
+    <section class="faq-section">
+        <div class="container">
+            <div class="faq-container">
+                
+                <!-- Home Buying Checklist Questions -->
+                <div class="faq-category">
+                    <h2><i class="fas fa-clipboard-check"></i> Home Buying Checklist</h2>
+                    
+                    <div class="faq-item">
+                        <div class="faq-question">
+                            <h3>What is a home buying checklist?</h3>
+                            <i class="fas fa-chevron-down"></i>
+                        </div>
+                        <div class="faq-answer">
+                            <div class="faq-answer-content">
+                                <p>A home buying checklist is a systematic guide that helps buyers know what to look for when viewing properties. It covers all critical areas you should inspect during property viewings, including:</p>
+                                <ul>
+                                    <li>Structural integrity (walls, foundations, roof)</li>
+                                    <li>Plumbing and water systems</li>
+                                    <li>Electrical systems and safety</li>
+                                    <li>Windows, doors, and finishes</li>
+                                    <li>Exterior features and drainage</li>
+                                    <li>Legal and financial considerations</li>
+                                </ul>
+                                <p><strong>Property Inspector app provides a digital home buying checklist</strong> with built-in guidance on what to look for at each step, making it perfect for first-time buyers who don't know what red flags to watch for.</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="faq-item">
+                        <div class="faq-question">
+                            <h3>Why do I need a home buying checklist?</h3>
+                            <i class="fas fa-chevron-down"></i>
+                        </div>
+                        <div class="faq-answer">
+                            <div class="faq-answer-content">
+                                <p>Without a proper checklist, most buyers miss critical issues during property viewings that can cost R50,000 to R200,000+ in repairs. A home buying checklist helps you:</p>
+                                <ul>
+                                    <li><strong>Avoid costly mistakes:</strong> Identify hidden defects before you buy</li>
+                                    <li><strong>Compare properties objectively:</strong> Use consistent criteria for all viewings</li>
+                                    <li><strong>Negotiate better prices:</strong> Document issues to justify price reductions</li>
+                                    <li><strong>Know when to walk away:</strong> Recognize deal-breaker issues early</li>
+                                    <li><strong>Make informed decisions:</strong> Understand the true condition and cost of ownership</li>
+                                </ul>
+                                <p>In South Africa's voetstoots property market, buyers purchase "as-is," so discovering issues before signing is critical to protect your investment.</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="faq-item">
+                        <div class="faq-question">
+                            <h3>How is Property Inspector different from other house viewing checklists?</h3>
+                            <i class="fas fa-chevron-down"></i>
+                        </div>
+                        <div class="faq-answer">
+                            <div class="faq-answer-content">
+                                <p>Unlike paper checklists or generic PDFs, Property Inspector is an <strong>interactive app designed specifically for South African buyers</strong> that:</p>
+                                <ul>
+                                    <li>Provides built-in tooltips explaining what each item means and why it matters</li>
+                                    <li>Lets you capture and organize photos during viewings</li>
+                                    <li>Generates professional PDF reports with your findings</li>
+                                    <li>Includes SA-specific items (body corporate, NHBRC, municipal compliance)</li>
+                                    <li>Offers smart scoring that prioritizes critical issues</li>
+                                    <li>Works offline - all data stays on your device</li>
+                                    <li>Includes cost calculator for bond, transfer duties, and monthly expenses</li>
+                                </ul>
+                                <p>It's like having an experienced property advisor guiding you through every viewing.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Property Inspection Questions -->
+                <div class="faq-category">
+                    <h2><i class="fas fa-hard-hat"></i> Professional Property Inspections</h2>
+                    
+                    <div class="faq-item">
+                        <div class="faq-question">
+                            <h3>What is a professional property inspection?</h3>
+                            <i class="fas fa-chevron-down"></i>
+                        </div>
+                        <div class="faq-answer">
+                            <div class="faq-answer-content">
+                                <p>A professional property inspection is a detailed technical assessment conducted by qualified inspectors (often structural engineers or building professionals) who:</p>
+                                <ul>
+                                    <li>Inspect roof cavities, crawl spaces, and structural elements</li>
+                                    <li>Analyze foundation integrity and load-bearing structures</li>
+                                    <li>Test electrical compliance and safety</li>
+                                    <li>Assess plumbing and drainage systems thoroughly</li>
+                                    <li>Check for damp, wood rot, and pest damage</li>
+                                    <li>Identify building code violations</li>
+                                    <li>Provide detailed technical reports with cost estimates</li>
+                                </ul>
+                                <p><strong>Professional inspections typically cost R3,000-R8,000</strong> and take 2-4 hours, providing in-depth analysis beyond what buyers can see during normal viewings.</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="faq-item">
+                        <div class="faq-question">
+                            <h3>When do I need a professional property inspection?</h3>
+                            <i class="fas fa-chevron-down"></i>
+                        </div>
+                        <div class="faq-answer">
+                            <div class="faq-answer-content">
+                                <p>You should hire a professional property inspector when:</p>
+                                <ul>
+                                    <li><strong>Serious red flags identified:</strong> Large cracks, significant water damage, or structural concerns found during your viewing</li>
+                                    <li><strong>Older properties:</strong> Homes 20+ years old often have hidden issues</li>
+                                    <li><strong>Major renovations:</strong> Extensions or alterations that may affect structure</li>
+                                    <li><strong>High-value purchases:</strong> The R3,000-R8,000 inspection cost is worth it on properties over R1.5 million</li>
+                                    <li><strong>Investment properties:</strong> Rental properties need thorough assessment for maintenance budgeting</li>
+                                    <li><strong>Bank requirement:</strong> Some banks require inspections for certain bond applications</li>
+                                    <li><strong>Seller resistance:</strong> If seller refuses to answer questions about defects</li>
+                                </ul>
+                                <p><strong>Property Inspector app tells you when identified issues warrant professional inspection,</strong> helping you decide when the expense is justified.</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="faq-item">
+                        <div class="faq-question">
+                            <h3>Does Property Inspector replace professional inspectors?</h3>
+                            <i class="fas fa-chevron-down"></i>
+                        </div>
+                        <div class="faq-answer">
+                            <div class="faq-answer-content">
+                                <p><strong>No, Property Inspector does not replace professional property inspectors.</strong> Here's how they work together:</p>
+                                <p><strong>Property Inspector app:</strong></p>
+                                <ul>
+                                    <li>Guides regular buyers during property viewings</li>
+                                    <li>Helps identify visible red flags and warning signs</li>
+                                    <li>Teaches you what questions to ask sellers</li>
+                                    <li>Tells you WHEN to hire professional inspectors</li>
+                                    <li>Documents issues for negotiation or professional review</li>
+                                </ul>
+                                <p><strong>Professional property inspectors:</strong></p>
+                                <ul>
+                                    <li>Conduct detailed technical assessments</li>
+                                    <li>Access areas buyers can't (roof cavities, under floors)</li>
+                                    <li>Use specialized equipment (moisture meters, thermal cameras)</li>
+                                    <li>Provide legal liability and professional indemnity</li>
+                                    <li>Give detailed cost estimates for repairs</li>
+                                </ul>
+                                <p>Think of Property Inspector as your first line of defense during viewings, helping you decide which properties warrant the expense of professional inspection.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Property Viewing Questions -->
+                <div class="faq-category">
+                    <h2><i class="fas fa-home"></i> Property Viewings</h2>
+                    
+                    <div class="faq-item">
+                        <div class="faq-question">
+                            <h3>What should I look for when viewing a house for the first time?</h3>
+                            <i class="fas fa-chevron-down"></i>
+                        </div>
+                        <div class="faq-answer">
+                            <div class="faq-answer-content">
+                                <p>During your first property viewing, focus on these key areas:</p>
+                                <p><strong>Exterior:</strong></p>
+                                <ul>
+                                    <li>Roof condition (missing tiles, sagging sections)</li>
+                                    <li>Foundation cracks or settlement signs</li>
+                                    <li>Water drainage and gutters</li>
+                                    <li>Boundary walls and fencing</li>
+                                    <li>Garden and exterior maintenance</li>
+                                </ul>
+                                <p><strong>Interior:</strong></p>
+                                <ul>
+                                    <li>Water stains on ceilings (roof leaks)</li>
+                                    <li>Wall cracks (especially above doors/windows)</li>
+                                    <li>Damp smells or visible mould</li>
+                                    <li>Floor levelness (use marble test)</li>
+                                    <li>Fresh paint covering suspicious areas</li>
+                                </ul>
+                                <p><strong>Systems:</strong></p>
+                                <ul>
+                                    <li>Test all taps for water pressure</li>
+                                    <li>Check electrical panel and visible wiring</li>
+                                    <li>Ask about geyser age and condition</li>
+                                    <li>Inspect window and door operation</li>
+                                </ul>
+                                <p>Property Inspector app guides you through all these areas with detailed prompts and photo capture.</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="faq-item">
+                        <div class="faq-question">
+                            <h3>How many times should I view a property before buying?</h3>
+                            <i class="fas fa-chevron-down"></i>
+                        </div>
+                        <div class="faq-answer">
+                            <div class="faq-answer-content">
+                                <p><strong>Most buyers should view a property 2-3 times</strong> before making an offer:</p>
+                                <p><strong>First viewing (30-45 minutes):</strong></p>
+                                <ul>
+                                    <li>Get overall feel for the property</li>
+                                    <li>Complete quick assessment checklist</li>
+                                    <li>Identify obvious red flags</li>
+                                    <li>Take photos of all rooms</li>
+                                </ul>
+                                <p><strong>Second viewing (60-90 minutes):</strong></p>
+                                <ul>
+                                    <li>Conduct detailed assessment with checklist</li>
+                                    <li>Test all systems thoroughly</li>
+                                    <li>Ask detailed questions to seller/agent</li>
+                                    <li>View at different time of day (traffic, noise)</li>
+                                    <li>Bring family member or trusted advisor</li>
+                                </ul>
+                                <p><strong>Third viewing (optional):</strong></p>
+                                <ul>
+                                    <li>Bring professional inspector if issues found</li>
+                                    <li>Verify specific concerns</li>
+                                    <li>Final decision confirmation</li>
+                                </ul>
+                                <p>In competitive markets, you may need to make faster decisions, which is why having Property Inspector on your first viewing helps you assess quickly and thoroughly.</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="faq-item">
+                        <div class="faq-question">
+                            <h3>What questions should I ask during a property viewing?</h3>
+                            <i class="fas fa-chevron-down"></i>
+                        </div>
+                        <div class="faq-answer">
+                            <div class="faq-answer-content">
+                                <p>Essential questions to ask sellers or estate agents:</p>
+                                <p><strong>Property History:</strong></p>
+                                <ul>
+                                    <li>Why are you selling?</li>
+                                    <li>How long have you lived here?</li>
+                                    <li>Any major repairs or renovations done?</li>
+                                    <li>Any known defects or past insurance claims?</li>
+                                </ul>
+                                <p><strong>Systems & Maintenance:</strong></p>
+                                <ul>
+                                    <li>How old is the geyser? When last serviced?</li>
+                                    <li>When was the roof last repaired?</li>
+                                    <li>Age of electrical wiring and plumbing?</li>
+                                    <li>Any issues with damp or water leaks?</li>
+                                </ul>
+                                <p><strong>Legal & Financial:</strong></p>
+                                <ul>
+                                    <li>Are all alterations approved by municipality?</li>
+                                    <li>Any building plan approvals available?</li>
+                                    <li>For sectional title: what are levies? Any special levies pending?</li>
+                                    <li>Average monthly utility costs?</li>
+                                </ul>
+                                <p><strong>Neighborhood:</strong></p>
+                                <ul>
+                                    <li>Any issues with neighbors?</li>
+                                    <li>Crime or security concerns?</li>
+                                    <li>Municipal service delivery issues?</li>
+                                </ul>
+                                <p>Property Inspector app includes these critical questions in the assessment checklist, ensuring you don't forget to ask.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Red Flags & Issues -->
+                <div class="faq-category">
+                    <h2><i class="fas fa-exclamation-triangle"></i> Red Flags & Common Issues</h2>
+                    
+                    <div class="faq-item">
+                        <div class="faq-question">
+                            <h3>What are the biggest red flags when buying property in South Africa?</h3>
+                            <i class="fas fa-chevron-down"></i>
+                        </div>
+                        <div class="faq-answer">
+                            <div class="faq-answer-content">
+                                <p><strong>Critical red flags that should make you reconsider or negotiate hard:</strong></p>
+                                <p><strong>Structural Issues:</strong></p>
+                                <ul>
+                                    <li>Wide cracks (coin-width or larger) in walls or foundations</li>
+                                    <li>Sloping or uneven floors</li>
+                                    <li>Doors and windows that won't close properly</li>
+                                    <li>Visible sagging in roof structure</li>
+                                </ul>
+                                <p><strong>Water & Damp:</strong></p>
+                                <ul>
+                                    <li>Musty smells or visible mould</li>
+                                    <li>Fresh paint on ceilings (covering water stains)</li>
+                                    <li>Damp patches on walls, especially after rain</li>
+                                    <li>Poor drainage around foundations</li>
+                                </ul>
+                                <p><strong>Legal & Compliance:</strong></p>
+                                <ul>
+                                    <li>Extensions/alterations without municipal approval</li>
+                                    <li>Missing building plan approvals</li>
+                                    <li>High body corporate debt or pending special levies</li>
+                                    <li>Seller reluctance to provide documentation</li>
+                                </ul>
+                                <p><strong>Electrical & Plumbing:</strong></p>
+                                <ul>
+                                    <li>Old electrical panels or exposed wiring</li>
+                                    <li>Low water pressure throughout property</li>
+                                    <li>Geyser over 10-15 years old with no maintenance</li>
+                                    <li>Evidence of DIY electrical work</li>
+                                </ul>
+                                <p><strong>Seller Behavior:</strong></p>
+                                <ul>
+                                    <li>Rushed viewings or pressure to make quick offers</li>
+                                    <li>Reluctance to answer basic questions</li>
+                                    <li>Fresh cosmetic improvements hiding issues</li>
+                                    <li>Property on market for extended period (6+ months)</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="faq-item">
+                        <div class="faq-question">
+                            <h3>What are the most common issues buyers miss during viewings?</h3>
+                            <i class="fas fa-chevron-down"></i>
+                        </div>
+                        <div class="faq-answer">
+                            <div class="faq-answer-content">
+                                <p>Buyers commonly overlook these expensive issues:</p>
+                                <ul>
+                                    <li><strong>Hidden water damage:</strong> Fresh paint covering ceiling stains from roof leaks</li>
+                                    <li><strong>Foundation settlement:</strong> Small cracks that indicate ongoing movement</li>
+                                    <li><strong>Geyser age:</strong> Not asking when it was installed or last maintained</li>
+                                    <li><strong>Electrical capacity:</strong> Old panels insufficient for modern appliances</li>
+                                    <li><strong>Body corporate debt:</strong> Not checking financial statements for sectional title</li>
+                                    <li><strong>Unpermitted work:</strong> Extensions or alterations without municipal approval</li>
+                                    <li><strong>Boundary disputes:</strong> Unclear property lines or encroachments</li>
+                                    <li><strong>Drainage issues:</strong> Water pooling that causes foundation problems</li>
+                                    <li><strong>Pest damage:</strong> Termites or wood borer in roof structures</li>
+                                    <li><strong>True monthly costs:</strong> Not calculating total ownership expenses beyond bond</li>
+                                </ul>
+                                <p>These issues typically cost R30,000 to R150,000+ to fix. Property Inspector's guided checklist ensures you check for all of them.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- App-Specific Questions -->
+                <div class="faq-category">
+                    <h2><i class="fas fa-mobile-alt"></i> Using Property Inspector App</h2>
+                    
+                    <div class="faq-item">
+                        <div class="faq-question">
+                            <h3>How much does Property Inspector cost?</h3>
+                            <i class="fas fa-chevron-down"></i>
+                        </div>
+                        <div class="faq-answer">
+                            <div class="faq-answer-content">
+                                <p><strong>Property Inspector is FREE to download and try.</strong></p>
+                                <p><strong>Free version includes:</strong></p>
+                                <ul>
+                                    <li>Assess up to 2 properties</li>
+                                    <li>Full guided checklist access</li>
+                                    <li>Photo documentation</li>
+                                    <li>Basic scoring and results</li>
+                                    <li>Cost calculator</li>
+                                </ul>
+                                <p><strong>Premium upgrade (one-time purchase):</strong></p>
+                                <ul>
+                                    <li>Unlimited property assessments</li>
+                                    <li>PDF report generation and sharing</li>
+                                    <li>Advanced comparison features</li>
+                                    <li>Priority support</li>
+                                </ul>
+                                <p>No subscription fees - pay once, own forever. Try the free version to ensure it meets your needs before upgrading.</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="faq-item">
+                        <div class="faq-question">
+                            <h3>Is my property viewing data private and secure?</h3>
+                            <i class="fas fa-chevron-down"></i>
+                        </div>
+                        <div class="faq-answer">
+                            <div class="faq-answer-content">
+                                <p><strong>Yes, your data is completely private.</strong> Property Inspector stores all information locally on your device:</p>
+                                <ul>
+                                    <li>No cloud storage or backups</li>
+                                    <li>No data shared with third parties</li>
+                                    <li>No account or login required</li>
+                                    <li>No tracking or analytics on your property data</li>
+                                    <li>You control all photos and reports</li>
+                                </ul>
+                                <p>Your property viewing information, photos, and assessments remain on your phone. When you share PDF reports, you choose who receives them.</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="faq-item">
+                        <div class="faq-question">
+                            <h3>Can estate agents use Property Inspector for client viewings?</h3>
+                            <i class="fas fa-chevron-down"></i>
+                        </div>
+                        <div class="faq-answer">
+                            <div class="faq-answer-content">
+                                <p><strong>Yes, Property Inspector is perfect for estate agents</strong> who want to provide professional service:</p>
+                                <p><strong>Benefits for estate agents:</strong></p>
+                                <ul>
+                                    <li>Generate instant professional reports during viewings</li>
+                                    <li>Standardize property assessments across all listings</li>
+                                    <li>Provide clients with objective condition reports</li>
+                                    <li>Justify pricing with documented property conditions</li>
+                                    <li>Build trust through transparency</li>
+                                    <li>Save time on manual report creation</li>
+                                    <li>Stand out from competitors with professional tools</li>
+                                </ul>
+                                <p>Many agents use Property Inspector to assess properties before listing and provide buyers with detailed viewing reports, closing deals faster by preventing late-stage surprises.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- CTA Box -->
+                <div class="faq-cta">
+                    <h2>Still Have Questions?</h2>
+                    <p>Download Property Inspector and see how our guided home buying checklist helps you during property viewings</p>
+                    <a href="https://play.google.com/store/apps/details?id=com.joelapexs.propertyinspector" target="_blank" class="btn btn-large" style="background: white; color: #2E86AB; padding: 16px 36px; border-radius: 30px; font-weight: 600; text-decoration: none; display: inline-flex; align-items: center; gap: 10px;">
+                        <i class="fas fa-download"></i>
+                        Download Free App
+                    </a>
+                </div>
+                
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-brand">
+                    <div class="footer-logo">
+                        <img src="images/logo.jpg" alt="Property Inspector">
+                        <span>Property Inspector</span>
+                    </div>
+                    <p>The essential house viewing checklist app for informed property decisions in South Africa.</p>
+                </div>
+                <div class="footer-links">
+                    <div class="footer-column">
+                        <h4>Product</h4>
+                        <ul>
+                            <li><a href="index.html#features">Features</a></li>
+                            <li><a href="calculator.html">Calculator</a></li>
+                            <li><a href="index.html#guide">Viewing Guide</a></li>
+                        </ul>
+                    </div>
+                    <div class="footer-column">
+                        <h4>Resources</h4>
+                        <ul>
+                            <li><a href="faq.html">FAQ</a></li>
+                            <li><a href="blog.html">Blog</a></li>
+                            <li><a href="privacy.html">Privacy Policy</a></li>
+                        </ul>
+                    </div>
+                    <div class="footer-column">
+                        <h4>Contact</h4>
+                        <ul>
+                            <li><a href="mailto:joelapexs@gmail.com">joelapexs@gmail.com</a></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2025 Joel Apex Solutions - Property Inspector. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Scripts -->
+    <script src="website-main.js"></script>
+    <script>
+        // FAQ Accordion
+        document.querySelectorAll('.faq-item').forEach(item => {
+            const question = item.querySelector('.faq-question');
+            const answer = item.querySelector('.faq-answer');
+            
+            question.addEventListener('click', () => {
+                const isActive = item.classList.contains('active');
+                
+                // Close all other items
+                document.querySelectorAll('.faq-item').forEach(otherItem => {
+                    otherItem.classList.remove('active');
+                    otherItem.querySelector('.faq-answer').style.maxHeight = null;
+                });
+                
+                // Toggle current item
+                if (!isActive) {
+                    item.classList.add('active');
+                    answer.style.maxHeight = answer.scrollHeight + 'px';
+                }
+            });
+        });
+    </script>
+</body>
+</html>
