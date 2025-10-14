@@ -1,13 +1,13 @@
 /**
  * Property Inspector - Website Calculator
- * UPDATED VERSION - Matches App Calculator with Fixed Rates
+ * UPDATED VERSION - Real-time calculation with proper field visibility
  */
 
 // SA Transfer Duty Brackets (2024-2025) - FIXED
 const transferDutyBrackets = [
     { min: 0, max: 1100000, rate: 0 },
     { min: 1100001, max: 1512500, rate: 0.03 },
-    { min: 1512501, max: 2100000, rate: 0.044 },  // FIXED from 0.06
+    { min: 1512501, max: 2100000, rate: 0.044 },
     { min: 2100001, max: Infinity, rate: 0.08 }
 ];
 
@@ -59,7 +59,7 @@ function renderCalculator() {
                                oninput="handlePriceInput(this, 'purchasePrice')">
                     </div>
                     
-                    <div class="calc-input-group">
+                    <div class="calc-input-group" id="depositGroup" style="${calcState.hasBond ? '' : 'display: none;'}">
                         <label class="calc-label">
                             Deposit Amount (R)
                             <i class="fas fa-info-circle calc-info-icon" title="Cash deposit - typically 10-20%"></i>
@@ -69,10 +69,10 @@ function renderCalculator() {
                                oninput="handlePriceInput(this, 'deposit')">
                     </div>
                     
-                    <div class="calc-input-group">
+                    <div class="calc-input-group" id="loanAmountGroup" style="${calcState.hasBond ? '' : 'display: none;'}">
                         <label class="calc-label">
                             Loan Amount (R)
-                            <i class="fas fa-info-circle calc-info-icon" title="Auto-calculated or enter manually"></i>
+                            <i class="fas fa-info-circle calc-info-icon" title="Auto-calculated: Purchase Price - Deposit"></i>
                         </label>
                         <input type="text" class="calc-input" id="loanAmount" 
                                placeholder="e.g. 1 350 000"
@@ -88,12 +88,12 @@ function renderCalculator() {
                     <div class="calc-input-group">
                         <label class="calc-label">Financing with Bond?</label>
                         <div class="calc-toggle">
-                            <button class="calc-toggle-btn active" onclick="toggleBond(true)">Yes</button>
-                            <button class="calc-toggle-btn" onclick="toggleBond(false)">No</button>
+                            <button class="calc-toggle-btn ${calcState.hasBond ? 'active' : ''}" onclick="toggleBond(true)">Yes</button>
+                            <button class="calc-toggle-btn ${!calcState.hasBond ? 'active' : ''}" onclick="toggleBond(false)">No</button>
                         </div>
                     </div>
                     
-                    <div class="calc-input-group" id="loanTermGroup">
+                    <div class="calc-input-group" id="loanTermGroup" style="${calcState.hasBond ? '' : 'display: none;'}">
                         <label class="calc-label">Loan Term</label>
                         <select class="calc-select" id="loanTerm" onchange="updateLoanTerm(this.value)">
                             <option value="10">10 years</option>
@@ -104,7 +104,7 @@ function renderCalculator() {
                         </select>
                     </div>
                     
-                    <div class="calc-input-group" id="interestGroup">
+                    <div class="calc-input-group" id="interestGroup" style="${calcState.hasBond ? '' : 'display: none;'}">
                         <label class="calc-label">
                             Interest Rate: <span id="rateDisplay">11.75%</span>
                         </label>
@@ -186,13 +186,12 @@ function calculateTransferFeesBase() {
     let baseFees = 0;
     const price = calcState.purchasePrice;
     
-    // Market-aligned transfer attorney fees (2024/2025 rates)
     if (price <= 500000) {
         baseFees = price * 0.026;
     } else if (price <= 1000000) {
         baseFees = 13000 + (price - 500000) * 0.022;
     } else if (price <= 2000000) {
-        baseFees = 24000 + (price - 1000000) * 0.0108;  // OPTIMIZED for accuracy
+        baseFees = 24000 + (price - 1000000) * 0.0108;
     } else if (price <= 4000000) {
         baseFees = 34800 + (price - 2000000) * 0.0092;
     } else {
@@ -203,10 +202,9 @@ function calculateTransferFeesBase() {
 }
 
 /**
- * Calculate transfer fees breakdown - FIXED to return zeros when no purchase price
+ * Calculate transfer fees breakdown
  */
 function calculateTransferFeesBreakdown() {
-    // Return zeros if no purchase price
     if (calcState.purchasePrice <= 0) {
         return {
             attorneyFees: 0,
@@ -261,7 +259,6 @@ function calculateBondCostsBreakdown() {
     let deedsOfficeFee = 0;
     let attorneyFeesBase = 0;
     
-    // Deeds office fees
     if (loan <= 100000) deedsOfficeFee = 750;
     else if (loan <= 300000) deedsOfficeFee = 1500;
     else if (loan <= 600000) deedsOfficeFee = 2250;
@@ -269,7 +266,6 @@ function calculateBondCostsBreakdown() {
     else if (loan <= 2000000) deedsOfficeFee = 6000;
     else deedsOfficeFee = 9000;
     
-    // Attorney fees
     if (loan <= 100000) {
         attorneyFeesBase = 5750;
     } else if (loan <= 500000) {
@@ -312,10 +308,9 @@ function calculateMonthlyBond() {
 }
 
 /**
- * Calculate all values and render - FIXED to show empty state when no inputs
+ * Calculate all values and render
  */
 function calculateAll() {
-    // Show empty state if no purchase price
     if (calcState.purchasePrice <= 0) {
         renderEmptyState();
         return;
@@ -531,7 +526,7 @@ function toggleSection(sectionId) {
 }
 
 /**
- * Handle price input with formatting - FIXED for editable loan amount
+ * Handle price input with formatting - FIXED for real-time updates
  */
 function handlePriceInput(input, field) {
     let value = input.value.replace(/\s/g, '');
@@ -539,15 +534,14 @@ function handlePriceInput(input, field) {
     if (value && !isNaN(value)) {
         calcState[field] = parseFloat(value);
         
-        // Auto-calculate loan amount ONLY if user is changing purchase price or deposit
-        // Don't override if user manually edits loan amount
+        // ALWAYS auto-calculate loan amount when purchase price or deposit changes
         if (field === 'purchasePrice' || field === 'deposit') {
             const autoLoanAmount = Math.max(0, calcState.purchasePrice - calcState.deposit);
+            calcState.loanAmount = autoLoanAmount;
             
-            // Only update if loan amount input is empty or hasn't been manually changed
+            // Update the loan amount display immediately
             const loanAmountInput = document.getElementById('loanAmount');
-            if (loanAmountInput && (loanAmountInput.value === '' || calcState.loanAmount === 0)) {
-                calcState.loanAmount = autoLoanAmount;
+            if (loanAmountInput) {
                 loanAmountInput.value = autoLoanAmount > 0 ? formatNumber(autoLoanAmount) : '';
             }
         }
@@ -558,12 +552,14 @@ function handlePriceInput(input, field) {
     } else {
         calcState[field] = 0;
         
-        // Clear loan amount if purchase price is cleared
-        if (field === 'purchasePrice') {
-            calcState.loanAmount = 0;
+        // Recalculate loan amount when fields are cleared
+        if (field === 'purchasePrice' || field === 'deposit') {
+            const autoLoanAmount = Math.max(0, calcState.purchasePrice - calcState.deposit);
+            calcState.loanAmount = autoLoanAmount;
+            
             const loanAmountInput = document.getElementById('loanAmount');
             if (loanAmountInput) {
-                loanAmountInput.value = '';
+                loanAmountInput.value = autoLoanAmount > 0 ? formatNumber(autoLoanAmount) : '';
             }
         }
         
@@ -572,23 +568,45 @@ function handlePriceInput(input, field) {
 }
 
 /**
- * Toggle bond financing
+ * Toggle bond financing - UPDATED to hide/show deposit and loan amount
  */
 function toggleBond(hasBond) {
     calcState.hasBond = hasBond;
     
+    // Update button states
     const buttons = document.querySelectorAll('.calc-toggle-btn');
     buttons.forEach((btn, i) => {
         btn.classList.toggle('active', i === (hasBond ? 0 : 1));
     });
     
-    // Show/hide bond fields
-    const loanGroup = document.getElementById('loanTermGroup');
+    // Show/hide deposit and loan amount fields
+    const depositGroup = document.getElementById('depositGroup');
+    const loanAmountGroup = document.getElementById('loanAmountGroup');
+    const loanTermGroup = document.getElementById('loanTermGroup');
     const interestGroup = document.getElementById('interestGroup');
     
-    if (loanGroup && interestGroup) {
-        loanGroup.style.display = hasBond ? 'flex' : 'none';
-        interestGroup.style.display = hasBond ? 'flex' : 'none';
+    if (depositGroup) depositGroup.style.display = hasBond ? '' : 'none';
+    if (loanAmountGroup) loanAmountGroup.style.display = hasBond ? '' : 'none';
+    if (loanTermGroup) loanTermGroup.style.display = hasBond ? '' : 'none';
+    if (interestGroup) interestGroup.style.display = hasBond ? '' : 'none';
+    
+    // Clear deposit and loan amount when switching to cash purchase
+    if (!hasBond) {
+        calcState.deposit = 0;
+        calcState.loanAmount = 0;
+        const depositInput = document.getElementById('deposit');
+        const loanAmountInput = document.getElementById('loanAmount');
+        if (depositInput) depositInput.value = '';
+        if (loanAmountInput) loanAmountInput.value = '';
+    } else {
+        // Recalculate loan amount when switching back to bond
+        if (calcState.purchasePrice > 0) {
+            calcState.loanAmount = Math.max(0, calcState.purchasePrice - calcState.deposit);
+            const loanAmountInput = document.getElementById('loanAmount');
+            if (loanAmountInput && calcState.loanAmount > 0) {
+                loanAmountInput.value = formatNumber(calcState.loanAmount);
+            }
+        }
     }
     
     calculateAll();
