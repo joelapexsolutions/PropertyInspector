@@ -1,6 +1,6 @@
 /**
  * Property Inspector - Website Calculator
- * UPDATED VERSION - Matches App Calculator
+ * UPDATED VERSION - Matches App Calculator with Fixed Rates
  */
 
 // SA Transfer Duty Brackets (2024-2025) - FIXED
@@ -67,6 +67,16 @@ function renderCalculator() {
                         <input type="text" class="calc-input" id="deposit" 
                                placeholder="e.g. 150 000" 
                                oninput="handlePriceInput(this, 'deposit')">
+                    </div>
+                    
+                    <div class="calc-input-group">
+                        <label class="calc-label">
+                            Loan Amount (R)
+                            <i class="fas fa-info-circle calc-info-icon" title="Auto-calculated or enter manually"></i>
+                        </label>
+                        <input type="text" class="calc-input" id="loanAmount" 
+                               placeholder="e.g. 1 350 000"
+                               oninput="handlePriceInput(this, 'loanAmount')">
                     </div>
                 </div>
             </div>
@@ -193,9 +203,19 @@ function calculateTransferFeesBase() {
 }
 
 /**
- * Calculate transfer fees breakdown
+ * Calculate transfer fees breakdown - FIXED to return zeros when no purchase price
  */
 function calculateTransferFeesBreakdown() {
+    // Return zeros if no purchase price
+    if (calcState.purchasePrice <= 0) {
+        return {
+            attorneyFees: 0,
+            deedsOfficeFees: 0,
+            additionalFees: 0,
+            total: 0
+        };
+    }
+    
     const baseFees = calculateTransferFeesBase();
     const feesWithVAT = Math.round(baseFees * 1.15);
     const additionalFees = 2200;
@@ -292,9 +312,15 @@ function calculateMonthlyBond() {
 }
 
 /**
- * Calculate all values and render
+ * Calculate all values and render - FIXED to show empty state when no inputs
  */
 function calculateAll() {
+    // Show empty state if no purchase price
+    if (calcState.purchasePrice <= 0) {
+        renderEmptyState();
+        return;
+    }
+    
     const monthlyBond = calcState.hasBond ? calculateMonthlyBond() : 0;
     const transferDuty = calculateTransferDuty();
     const transferBreakdown = calculateTransferFeesBreakdown();
@@ -316,6 +342,22 @@ function calculateAll() {
     };
     
     renderResults(results);
+}
+
+/**
+ * Render empty state when no inputs
+ */
+function renderEmptyState() {
+    const container = document.getElementById('calcResults');
+    container.innerHTML = `
+        <div class="calc-empty-state">
+            <div class="empty-state-icon">
+                <i class="fas fa-calculator"></i>
+            </div>
+            <h3>Enter Property Details Above</h3>
+            <p>Fill in the purchase price to calculate your property costs</p>
+        </div>
+    `;
 }
 
 /**
@@ -391,7 +433,7 @@ function renderResults(results) {
             </div>
             <div class="breakdown-content ${calcState.sectionsExpanded.onceOff ? 'expanded' : 'collapsed'}">
                 
-                ${calcState.hasBond ? `
+                ${calcState.hasBond && results.bondBreakdown.total > 0 ? `
                 <!-- Bond Registration Costs Subsection -->
                 <div class="breakdown-subsection">
                     <div class="subsection-header">
@@ -489,7 +531,7 @@ function toggleSection(sectionId) {
 }
 
 /**
- * Handle price input with formatting
+ * Handle price input with formatting - FIXED for editable loan amount
  */
 function handlePriceInput(input, field) {
     let value = input.value.replace(/\s/g, '');
@@ -497,9 +539,17 @@ function handlePriceInput(input, field) {
     if (value && !isNaN(value)) {
         calcState[field] = parseFloat(value);
         
-        // Auto-calculate loan amount
+        // Auto-calculate loan amount ONLY if user is changing purchase price or deposit
+        // Don't override if user manually edits loan amount
         if (field === 'purchasePrice' || field === 'deposit') {
-            calcState.loanAmount = Math.max(0, calcState.purchasePrice - calcState.deposit);
+            const autoLoanAmount = Math.max(0, calcState.purchasePrice - calcState.deposit);
+            
+            // Only update if loan amount input is empty or hasn't been manually changed
+            const loanAmountInput = document.getElementById('loanAmount');
+            if (loanAmountInput && (loanAmountInput.value === '' || calcState.loanAmount === 0)) {
+                calcState.loanAmount = autoLoanAmount;
+                loanAmountInput.value = autoLoanAmount > 0 ? formatNumber(autoLoanAmount) : '';
+            }
         }
         
         // Format with spaces
@@ -507,6 +557,17 @@ function handlePriceInput(input, field) {
         calculateAll();
     } else {
         calcState[field] = 0;
+        
+        // Clear loan amount if purchase price is cleared
+        if (field === 'purchasePrice') {
+            calcState.loanAmount = 0;
+            const loanAmountInput = document.getElementById('loanAmount');
+            if (loanAmountInput) {
+                loanAmountInput.value = '';
+            }
+        }
+        
+        calculateAll();
     }
 }
 
@@ -565,4 +626,4 @@ function formatNumber(num) {
     return Math.round(num).toLocaleString('en-ZA').replace(/,/g, ' ');
 }
 
-console.log('✅ Property Calculator Loaded (Updated Version)');
+console.log('✅ Property Calculator Loaded (Updated Version with Fixed Rates)');
