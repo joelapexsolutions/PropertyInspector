@@ -7,6 +7,10 @@
     
     <!-- Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    
+    <!-- Link to main website styles for navigation -->
+    <link rel="stylesheet" href="website-styles.css">
     
     <style>
         * {
@@ -313,12 +317,40 @@
     </style>
 </head>
 <body>
+    <!-- Navigation -->
+    <nav class="navbar" id="navbar" style="position: fixed;">
+        <div class="container">
+            <div class="nav-content">
+                <a href="index.html" class="nav-logo">
+                    <img src="images/logo.jpg" alt="Property Inspector Logo">
+                    <span>Property Inspector</span>
+                </a>
+                <button class="nav-toggle" id="navToggle" aria-label="Toggle navigation">
+                    <i class="fas fa-bars"></i>
+                </button>
+                <ul class="nav-menu" id="navMenu">
+                    <li><a href="index.html#home" class="nav-link">Home</a></li>
+                    <li><a href="home-buyers-journey.html" class="nav-link active">Home Buyers Journey</a></li>
+                    <li><a href="index.html#real-stories" class="nav-link">Real Stories</a></li>
+                    <li><a href="index.html#features" class="nav-link">Features</a></li>
+                    <li><a href="index.html#benefits" class="nav-link">Benefits</a></li>
+                    <li><a href="calculator.html" class="nav-link">Calculator</a></li>
+                    <li><a href="index.html#guide" class="nav-link">Viewing Guide</a></li>
+                    <li><a href="faq.html" class="nav-link">FAQ</a></li>
+                    <li><a href="blog.html" class="nav-link">Blog</a></li>
+                    <li><a href="https://play.google.com/store/apps/details?id=com.joelapexs.propertyinspector" target="_blank" class="nav-link btn-primary">Download App</a></li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+    
+    <!-- Add spacing for fixed navbar -->
+    <div style="height: 80px;"></div>
     <div class="container">
         <!-- Header -->
         <div class="header">
             <div class="logo-section">
-                <!-- UPDATE THIS PATH TO YOUR LOGO LOCATION -->
-                <img src="Images/logo.jpg" alt="Property Inspector Logo" class="logo-img">
+                <img src="images/logo.jpg" alt="Property Inspector Logo" class="logo-img">
                 <div class="brand-name">Property Inspector</div>
             </div>
             
@@ -484,10 +516,12 @@
         
         <!-- Footer -->
         <div class="footer">
-            <p>© 2025 Property Inspector | <a href="https://propertyinspector.site">propertyinspector.site</a> | <a href="mailto:jaspropertyinspectors@gmail.com">jaspropertyinspectors@gmail.com</a></p>
-            <p style="margin-top: 10px; font-style: italic;">"Know Before You Buy - Your Professional Property Assessment Partner"</p>
+            <p>© 2025 Property Inspector | <a href="https://propertyinspector.site">propertyinspector.site</a> | <a href="/cdn-cgi/l/email-protection#412b203231332e3124333538282f32312422352e333201262c20282d6f222e2c"><span class="__cf_email__" data-cfemail="0963687a797b66796c7b7d7060677a796c6a7d667b7a496e64686065276a6664">[email&#160;protected]</span></a></p>
+            <p style="margi            <p style="margin-top: 10px; font-size: 0.85rem; opacity: 0.7;">Made with ❤️ for South African homebuyers</p>
         </div>
-        
     </div>
+    
+    <!-- Link to main JavaScript for navigation functionality -->
+    <script src="website-main.js"></script>
 </body>
 </html>
