@@ -115,11 +115,12 @@
             background: rgba(255, 255, 255, 0.03);
             border: 1px solid rgba(255, 255, 255, 0.1);
             border-radius: 20px;
-            padding: 30px;
+            padding: 35px;
             margin-bottom: 25px;
             transition: all 0.3s ease;
             position: relative;
             overflow: hidden;
+            text-align: center;
         }
         
         .step::before {
@@ -133,48 +134,33 @@
         }
         
         .step:hover {
-            transform: translateX(5px);
+            transform: translateY(-3px);
             background: rgba(255, 255, 255, 0.05);
             box-shadow: 0 10px 30px rgba(6, 214, 160, 0.2);
         }
         
-        .step-header {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 15px;
-            margin-bottom: 25px;
-            text-align: center;
-        }
-        
         .step-number {
-            width: 60px;
-            height: 60px;
+            width: 45px;
+            height: 45px;
             background: linear-gradient(135deg, #06D6A0, #28A745);
             border-radius: 50%;
-            display: flex;
+            display: inline-flex;
             align-items: center;
             justify-content: center;
-            font-size: 1.8rem;
+            font-size: 1.3rem;
             font-weight: 800;
-            flex-shrink: 0;
+            margin: 0 auto 20px;
             box-shadow: 0 5px 15px rgba(6, 214, 160, 0.4);
         }
         
         .step-title {
-            font-size: 1.5rem;
+            font-size: 1.4rem;
             font-weight: 700;
             color: #06D6A0;
-            margin: 0;
-        }
-        
-        .step-icon {
-            font-size: 2rem;
-            margin-top: -10px;
+            margin: 0 0 25px 0;
         }
         
         .step-content {
-            padding: 0;
             color: rgba(255, 255, 255, 0.85);
             font-size: 1.05rem;
             line-height: 1.8;
@@ -312,19 +298,24 @@
                 font-size: 1rem;
             }
             
-            .step-header {
-                gap: 10px;
-                margin-bottom: 20px;
+            .step {
+                padding: 25px 20px;
             }
             
             .step-number {
-                width: 50px;
-                height: 50px;
-                font-size: 1.5rem;
+                width: 40px;
+                height: 40px;
+                font-size: 1.1rem;
+                margin-bottom: 15px;
             }
             
             .step-title {
                 font-size: 1.2rem;
+                margin-bottom: 20px;
+            }
+            
+            .step-content {
+                font-size: 1rem;
             }
         }
     </style>
@@ -383,11 +374,8 @@
             
             <!-- Step 1 -->
             <div class="step">
-                <div class="step-header">
-                    <div class="step-number">1</div>
-                    <h2 class="step-title">Know Your Budget</h2>
-                    <span class="step-icon">💰</span>
-                </div>
+                <div class="step-number">1</div>
+                <h2 class="step-title">Know Your Budget 💰</h2>
                 <div class="step-content">
                     <p><strong>Get Pre-Approved for a Home Loan.</strong> Visit your bank to obtain a pre-approval certificate. They'll assess your income, expenses, and credit profile to determine your maximum loan amount. This crucial step gives you a realistic budget and strengthens your negotiating position when making offers. Pre-approval typically takes 1-3 days and shows sellers you're a serious buyer.</p>
                 </div>
@@ -395,11 +383,8 @@
             
             <!-- Step 2 -->
             <div class="step">
-                <div class="step-header">
-                    <div class="step-number">2</div>
-                    <h2 class="step-title">Calculate Your True Costs</h2>
-                    <span class="step-icon">📊</span>
-                </div>
+                <div class="step-number">2</div>
+                <h2 class="step-title">Calculate Your True Costs 📊</h2>
                 <div class="step-content">
                     <p><strong>Understand the Full Financial Picture.</strong> Your home loan is just one part of the equation. Use the Property Inspector Calculator to determine your once-off costs including transfer duties (government tax), attorney fees, and bond registration costs. These typically range from R30,000 to R80,000+ depending on property price. Factor in monthly costs like rates, levies, insurance, and maintenance too.</p>
                     <a href="https://propertyinspector.site/calculator.html" target="_blank" class="step-link">
@@ -410,11 +395,8 @@
             
             <!-- Step 3 -->
             <div class="step">
-                <div class="step-header">
-                    <div class="step-number">3</div>
-                    <h2 class="step-title">Search Smart</h2>
-                    <span class="step-icon">🔍</span>
-                </div>
+                <div class="step-number">3</div>
+                <h2 class="step-title">Search Smart 🔍</h2>
                 <div class="step-content">
                     <p><strong>Find Properties Within Your Budget.</strong> Browse Property24, Private Property, and other listing sites for homes aligned with your approved loan amount. Create a shortlist of 5-10 properties that meet your must-have criteria: location, bedrooms, size, and features. Remember to account for your deposit (typically 10-20% of purchase price) when setting your search parameters.</p>
                 </div>
@@ -422,11 +404,8 @@
             
             <!-- Step 4 -->
             <div class="step">
-                <div class="step-header">
-                    <div class="step-number">4</div>
-                    <h2 class="step-title">Research the Property</h2>
-                    <span class="step-icon">📈</span>
-                </div>
+                <div class="step-number">4</div>
+                <h2 class="step-title">Research the Property 📈</h2>
                 <div class="step-content">
                     <p><strong>Know What You're Really Buying.</strong> Before viewing, research each property's true market value, crime statistics, nearby amenities, and area trends. This intel helps you spot overpriced listings and red flags. Access free insights from Standard Bank's Home Services Property Guide or invest in detailed Lightstone reports (R200-R500). Understanding if a R1.5M asking price is justified for a R1M property helps you negotiate wisely and assess if improvements warrant the premium.</p>
                     <a href="https://www.standardbank.co.za/southafrica/personal/products-and-services/borrow-for-your-needs/home-loans/home-services-property-guide" target="_blank" class="step-link">
@@ -437,11 +416,8 @@
             
             <!-- Step 5 -->
             <div class="step">
-                <div class="step-header">
-                    <div class="step-number">5</div>
-                    <h2 class="step-title">Prepare Like a Pro</h2>
-                    <span class="step-icon">✅</span>
-                </div>
+                <div class="step-number">5</div>
+                <h2 class="step-title">Prepare Like a Pro ✅</h2>
                 <div class="step-content">
                     <p><strong>Set Yourself Up for Success.</strong> Download the Property Inspector app and add your shortlisted properties. Set viewing appointments and review the app's comprehensive checklist covering structural, electrical, plumbing, and cosmetic aspects. Visit PropertyInspector.site for expert guidance on what issues to prioritize and common warning signs. Preparation ensures you ask the right questions and spot problems estate agents might overlook.</p>
                     <a href="https://propertyinspector.site/" target="_blank" class="step-link">
@@ -452,11 +428,8 @@
             
             <!-- Step 6 -->
             <div class="step">
-                <div class="step-header">
-                    <div class="step-number">6</div>
-                    <h2 class="step-title">View with Confidence</h2>
-                    <span class="step-icon">🏠</span>
-                </div>
+                <div class="step-number">6</div>
+                <h2 class="step-title">View with Confidence 🏠</h2>
                 <div class="step-content">
                     <p><strong>Conduct a Thorough Assessment.</strong> During viewings, use the Property Inspector app as your guide. It walks you through every room and outdoor space, prompting you to check critical elements like foundation cracks, roof condition, plumbing function, electrical safety, and damp issues. Take photos of concerns, add detailed notes, and document everything. <strong>Not sure if something is serious?</strong> The app's photo feature is your secret weapon - simply snap pictures of questionable issues (wall cracks, roof damage, plumbing concerns) and show them to professionals for free opinions. Many builders, plumbers, or electricians can identify major problems just by looking at a photo, giving you expert insights at zero cost before committing to a purchase. The app also suggests essential questions: What are the monthly costs? What's included in the sale? Recent improvements? Any upcoming special levies? This systematic approach ensures you don't miss costly problems hidden behind fresh paint.</p>
                 </div>
@@ -464,11 +437,8 @@
             
             <!-- Step 7 -->
             <div class="step">
-                <div class="step-header">
-                    <div class="step-number">7</div>
-                    <h2 class="step-title">Compare and Decide</h2>
-                    <span class="step-icon">⚖️</span>
-                </div>
+                <div class="step-number">7</div>
+                <h2 class="step-title">Compare and Decide ⚖️</h2>
                 <div class="step-content">
                     <p><strong>Make an Informed Choice.</strong> Review assessment reports for all viewed properties side-by-side. Compare rating scores across categories, monthly cost estimates, required repairs, and how each property meets your expectations. The data-driven approach removes emotion from decision-making and highlights the best value option. Consider both immediate livability and long-term maintenance costs when making your final choice.</p>
                 </div>
@@ -476,11 +446,8 @@
             
             <!-- Step 8 -->
             <div class="step">
-                <div class="step-header">
-                    <div class="step-number">8</div>
-                    <h2 class="step-title">Negotiate Strategically</h2>
-                    <span class="step-icon">🤝</span>
-                </div>
+                <div class="step-number">8</div>
+                <h2 class="step-title">Negotiate Strategically 🤝</h2>
                 <div class="step-content">
                     <p><strong>Use Evidence to Your Advantage.</strong> Armed with your detailed assessment report, make an informed offer. If you identified R100,000 worth of necessary repairs (roof, plumbing, electrical), use this evidence to negotiate a lower purchase price or request seller repairs before transfer. Present specific findings rather than vague concerns. Your thorough documentation demonstrates you're a serious buyer who's done their homework, giving you stronger negotiating leverage.</p>
                 </div>
@@ -488,11 +455,8 @@
             
             <!-- Step 9 -->
             <div class="step">
-                <div class="step-header">
-                    <div class="step-number">9</div>
-                    <h2 class="step-title">Secure Your Financing</h2>
-                    <span class="step-icon">🏦</span>
-                </div>
+                <div class="step-number">9</div>
+                <h2 class="step-title">Secure Your Financing 🏦</h2>
                 <div class="step-content">
                     <p><strong>Finalize Your Home Loan.</strong> Once your Offer to Purchase is accepted by the seller, formally apply for your home loan. Submit all required documentation promptly: ID, proof of income, bank statements (usually 3 months), and credit consent. The bank will conduct a property valuation to confirm the purchase price is reasonable. Loan approval typically takes 1-4 weeks. Stay responsive to your bond originator's requests to avoid delays in the transfer process.</p>
                 </div>
@@ -500,11 +464,8 @@
             
             <!-- Step 10 -->
             <div class="step">
-                <div class="step-header">
-                    <div class="step-number">10</div>
-                    <h2 class="step-title">Move In and Maintain</h2>
-                    <span class="step-icon">🔑</span>
-                </div>
+                <div class="step-number">10</div>
+                <h2 class="step-title">Move In and Maintain 🔑</h2>
                 <div class="step-content">
                     <p><strong>Start Your Homeownership Journey Right.</strong> After bond registration and transfer (typically 8-12 weeks), collect your keys and move in. Conduct a final walk-through using the Property Inspector app to create a baseline condition report. Consider hiring a professional inspector (R2,500-R5,000) for a comprehensive assessment, including systems you couldn't fully test during viewings. This detailed report becomes your maintenance roadmap, prioritizing tasks and budgeting repairs over the next 1-3 years. Proactive maintenance prevents small issues from becoming expensive emergencies.</p>
                 </div>
