@@ -1,370 +1,564 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Home Buyers Guide SA - Privacy Policy</title>
-    <meta name="theme-color" content="#0d1520">
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Home Buyers Guide SA - Privacy Policy</title>
+<meta name="description" content="Privacy Policy for Home Buyers Guide SA - how we handle your property assessment data, photos, and device information. All data stays on your device.">
+<meta name="theme-color" content="#0d1520">
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+  * { margin:0; padding:0; box-sizing:border-box; }
 
-        body {
-            font-family: 'Poppins', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: #0d1520;
-            background: linear-gradient(180deg, #0d1520 0%, #0a1118 100%);
-            color: #e8f1f8;
-            line-height: 1.6;
-            min-height: 100vh;
-        }
+  :root {
+    /* dark theme (default) - pulled directly from the app's premium-styles.css / theme.css dark mode */
+    --bg:           #0d1520;
+    --bg-2:         #0a1118;
+    --surface:      #132030;
+    --surface-2:    #162436;
+    --text-1:       #e8f1f8;
+    --text-2:       #8bbad4;
+    --text-3:       #5a85a0;
+    --border:       #1e3448;
+    --accent:       #06D6A0;
+    --accent-dim:   rgba(6,214,160,0.12);
+    --warn:         #f87171;
+    --warn-dim:     rgba(248,113,113,0.08);
+    --topbar-bg:    rgba(13,21,32,0.82);
+    --shadow:       0 4px 20px rgba(0,0,0,0.4);
+  }
 
-        .container {
-            max-width: 800px;
-            margin: 0 auto;
-            padding: 20px;
-        }
+  body.light-mode {
+    /* light theme - pulled directly from the app's theme.css :root (light mode) */
+    --bg:           #eef1f5;
+    --bg-2:         #e4e9f0;
+    --surface:      #ffffff;
+    --surface-2:    #f8fafc;
+    --text-1:       #111827;
+    --text-2:       #4b5563;
+    --text-3:       #9ca3af;
+    --border:       #e3e8ee;
+    --accent:       #1d9e75;
+    --accent-dim:   #e1f5ee;
+    --warn:         #b91c1c;
+    --warn-dim:     #fef2f2;
+    --topbar-bg:    rgba(255,255,255,0.85);
+    --shadow:       0 2px 14px rgba(20,30,50,0.08);
+  }
 
-        .header {
-            text-align: center;
-            padding: 0;
-            margin-bottom: 30px;
-            border-radius: 15px;
-            overflow: hidden;
-            box-shadow: 0 4px 20px rgba(0,0,0,0.4);
-            border: 1px solid #1e3448;
-        }
+  html { scroll-behavior: smooth; }
 
-        .banner img {
-            width: 100%;
-            height: auto;
-            display: block;
-        }
+  body {
+    font-family: 'Poppins', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: var(--bg);
+    color: var(--text-1);
+    line-height: 1.65;
+    min-height: 100vh;
+    transition: background 0.25s ease, color 0.25s ease;
+  }
 
-        .content {
-            background: #132030;
-            border-radius: 15px;
-            padding: 30px;
-            margin-bottom: 30px;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.3);
-            border: 1px solid #1e3448;
-        }
+  a { color: var(--accent); }
 
-        h1 {
-            color: #e8f1f8;
-            font-weight: 800;
-        }
+  /* ---------- sticky top bar ---------- */
+  .topbar {
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    padding: 12px 24px;
+    background: var(--topbar-bg);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border-bottom: 1px solid var(--border);
+  }
+  .topbar-brand { display:flex; align-items:center; gap:10px; }
+  .topbar-brand img { width: 34px; height: 34px; border-radius: 9px; display:block; }
+  .topbar-brand span { font-weight: 700; font-size: 15px; letter-spacing: 0.2px; }
+  .topbar-brand .accent { color: var(--accent); }
 
-        h2 {
-            color: #06D6A0;
-            font-size: 1.5rem;
-            font-weight: 700;
-            margin-bottom: 15px;
-            padding-bottom: 8px;
-            border-bottom: 2px solid #06D6A0;
-        }
+  .theme-toggle {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 999px;
+    padding: 6px 14px 6px 6px;
+    cursor: pointer;
+    color: var(--text-2);
+    font-family: inherit;
+    font-size: 12px;
+    font-weight: 600;
+  }
+  .theme-toggle .knob {
+    width: 22px; height: 22px;
+    border-radius: 50%;
+    background: var(--accent);
+    display: flex; align-items:center; justify-content:center;
+    color: #08221c;
+    font-size: 12px;
+    flex-shrink: 0;
+  }
 
-        h3 {
-            color: #e8f1f8;
-            font-size: 1.15rem;
-            font-weight: 600;
-            margin: 20px 0 10px 0;
-        }
+  /* ---------- hero banner: full-bleed ---------- */
+  .hero {
+    width: 100%;
+    /* intentionally fixed-dark (not theme variables) so the banner's white text
+       always has correct contrast, regardless of light/dark toggle */
+    background:
+      radial-gradient(ellipse 80% 100% at 50% 0%, rgba(6,214,160,0.16), transparent 70%),
+      #0a1118;
+    padding: 40px 20px 36px;
+    text-align: center;
+    border-bottom: 1px solid var(--border);
+  }
+  .hero h1 { color: #e8f1f8; }
+  .hero img {
+    width: 100%;
+    max-width: 560px;
+    height: auto;
+    display: block;
+    margin: 0 auto 18px;
+  }
+  .hero h1 {
+    font-size: clamp(1.8rem, 4vw, 2.6rem);
+    font-weight: 800;
+    margin-bottom: 6px;
+  }
+  .hero p.tagline {
+    color: #06D6A0;
+    font-size: 1.05rem;
+    font-weight: 600;
+  }
 
-        p {
-            margin-bottom: 15px;
-            color: #8bbad4;
-        }
+  /* ---------- page layout: sidebar + content, uses full width ---------- */
+  .page {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 36px 24px 60px;
+    display: grid;
+    grid-template-columns: 250px minmax(0, 1fr);
+    gap: 40px;
+    align-items: start;
+  }
 
-        ul {
-            margin: 15px 0;
-            padding-left: 20px;
-        }
+  .toc {
+    position: sticky;
+    top: 76px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 18px;
+  }
+  .toc h4 {
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--text-3);
+    margin-bottom: 10px;
+    font-weight: 700;
+  }
+  .toc ul { list-style:none; padding:0; }
+  .toc li { margin-bottom: 2px; }
+  .toc a {
+    display: block;
+    padding: 7px 10px;
+    border-radius: 8px;
+    color: var(--text-2);
+    text-decoration: none;
+    font-size: 13px;
+    font-weight: 500;
+    border-left: 2px solid transparent;
+    transition: background 0.15s, color 0.15s;
+  }
+  .toc a:hover { background: var(--surface-2); color: var(--text-1); }
+  .toc a.active {
+    color: var(--accent);
+    background: var(--accent-dim);
+    border-left: 2px solid var(--accent);
+    font-weight: 600;
+  }
 
-        li {
-            margin-bottom: 8px;
-            color: #8bbad4;
-        }
+  /* mobile TOC: horizontal scroll strip */
+  .toc-mobile {
+    display: none;
+    overflow-x: auto;
+    gap: 8px;
+    padding: 4px 24px 14px;
+    -webkit-overflow-scrolling: touch;
+  }
+  .toc-mobile a {
+    flex: 0 0 auto;
+    white-space: nowrap;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    color: var(--text-2);
+    padding: 7px 14px;
+    border-radius: 999px;
+    font-size: 12.5px;
+    font-weight: 600;
+    text-decoration: none;
+  }
+  .toc-mobile a.active { color: var(--accent); border-color: var(--accent); background: var(--accent-dim); }
 
-        strong {
-            color: #e8f1f8;
-        }
+  main { max-width: 760px; }
 
-        .highlight {
-            background: rgba(6, 214, 160, 0.1);
-            padding: 15px;
-            border-radius: 8px;
-            border-left: 4px solid #06D6A0;
-            margin: 20px 0;
-        }
+  .content {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 30px;
+    margin-bottom: 24px;
+    box-shadow: var(--shadow);
+    scroll-margin-top: 76px;
+  }
 
-        .highlight strong {
-            color: #06D6A0;
-        }
+  h2 {
+    color: var(--accent);
+    font-size: 1.4rem;
+    font-weight: 700;
+    margin-bottom: 14px;
+    padding-bottom: 8px;
+    border-bottom: 2px solid var(--accent);
+  }
+  h3 {
+    color: var(--text-1);
+    font-size: 1.1rem;
+    font-weight: 600;
+    margin: 18px 0 8px;
+  }
+  p { margin-bottom: 14px; color: var(--text-2); }
+  ul { margin: 14px 0; padding-left: 20px; }
+  li { margin-bottom: 7px; color: var(--text-2); }
+  strong { color: var(--text-1); }
 
-        .warning {
-            background: rgba(248, 113, 113, 0.08);
-            padding: 15px;
-            border-radius: 8px;
-            border-left: 4px solid #f87171;
-            margin: 20px 0;
-        }
+  .highlight {
+    background: var(--accent-dim);
+    padding: 15px;
+    border-radius: 8px;
+    border-left: 4px solid var(--accent);
+    margin: 18px 0;
+  }
+  .highlight strong { color: var(--accent); }
 
-        .warning strong {
-            color: #f87171;
-        }
+  .warning {
+    background: var(--warn-dim);
+    padding: 15px;
+    border-radius: 8px;
+    border-left: 4px solid var(--warn);
+    margin: 18px 0;
+  }
+  .warning strong { color: var(--warn); }
 
-        .contact-info {
-            background: rgba(6, 214, 160, 0.12);
-            border: 1px solid #06D6A0;
-            padding: 20px;
-            border-radius: 10px;
-            text-align: center;
-        }
+  .contact-info {
+    background: var(--accent-dim);
+    border: 1px solid var(--accent);
+    padding: 22px;
+    border-radius: 12px;
+    text-align: center;
+  }
+  .contact-info h2 { border-bottom: none; margin-bottom: 8px; }
+  .contact-info p { color: var(--text-1); }
 
-        .contact-info h2 {
-            border-bottom: none;
-            margin-bottom: 10px;
-        }
+  footer {
+    text-align: center;
+    padding: 34px 24px;
+    border-top: 1px solid var(--border);
+  }
+  footer img { width: 56px; height: 56px; border-radius: 14px; margin-bottom: 12px; }
+  footer .brand { color: var(--text-1); font-weight: 700; margin-bottom: 4px; }
+  footer .meta { color: var(--text-3); font-size: 0.85rem; }
 
-        .contact-info p {
-            color: #e8f1f8;
-        }
-
-        .footer {
-            text-align: center;
-            padding: 30px 0;
-            border-top: 1px solid #1e3448;
-            margin-top: 40px;
-        }
-
-        .footer img {
-            width: 72px;
-            height: 72px;
-            margin-bottom: 15px;
-            border-radius: 16px;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.3);
-        }
-
-        .last-updated {
-            color: #5a85a0;
-            font-size: 0.9rem;
-        }
-
-        .last-updated p:first-child {
-            color: #8bbad4;
-            font-weight: 600;
-        }
-
-        a {
-            color: #06D6A0;
-        }
-
-        .icon {
-            color: #06D6A0;
-            margin-right: 8px;
-        }
-    </style>
+  @media (max-width: 960px) {
+    .page { grid-template-columns: 1fr; padding-top: 8px; }
+    .toc { display: none; }
+    .toc-mobile { display: flex; }
+  }
+</style>
 </head>
 <body>
-    <div class="container">
-        <div class="header">
-            <div class="banner">
-                <img src="images/app_banner.png" alt="Home Buyers Guide SA">
-            </div>
-        </div>
 
-        <div class="content">
-            <div style="text-align: center; margin-bottom: 30px;">
-                <h1 style="font-size: 2.3rem; margin-bottom: 8px;">Privacy Policy</h1>
-                <p style="color: #06D6A0; font-size: 1.1rem; font-weight: 600; margin-bottom: 0;">Your privacy is our priority</p>
-            </div>
-
-            <h2><span class="icon"></span>Overview</h2>
-            <p>Home Buyers Guide SA is committed to protecting your privacy. This app helps property buyers, sellers, and estate agents assess properties through detailed inspections, photo documentation, and scoring systems. All data is stored locally on your device.</p>
-
-            <div class="highlight">
-                <strong>Key Privacy Principle:</strong> Your property data never leaves your device unless you explicitly choose to export or share it.
-            </div>
-        </div>
-
-        <div class="content">
-            <h2><span class="icon"></span>Information We Collect</h2>
-
-            <h3>Property Information</h3>
-            <ul>
-                <li>Property addresses and details (bedrooms, bathrooms, etc.)</li>
-                <li>Property photos taken during assessments</li>
-                <li>Assessment scores and ratings</li>
-                <li>Inspector notes and comments</li>
-                <li>Financial calculations and cost estimates</li>
-                <li>Assessment dates and reminders</li>
-            </ul>
-
-            <h3>App Usage Data</h3>
-            <ul>
-                <li>App preferences and settings</li>
-                <li>Assessment progress and completion status</li>
-                <li>Custom room configurations</li>
-            </ul>
-
-            <h3>Device Information</h3>
-            <ul>
-                <li>Camera access for photo capture</li>
-                <li>Storage access for saving data locally</li>
-                <li>Notification permissions for assessment reminders</li>
-            </ul>
-        </div>
-
-        <div class="content">
-            <h2><span class="icon"></span>How We Store Your Data</h2>
-
-            <h3>Local Storage Only</h3>
-            <p>All your data is stored exclusively on your device using:</p>
-            <ul>
-                <li><strong>Local Browser Storage:</strong> Property details and settings</li>
-                <li><strong>IndexedDB:</strong> Photos and detailed assessment data</li>
-                <li><strong>Device File System:</strong> Exported reports and backups</li>
-            </ul>
-
-            <div class="highlight">
-                <strong>No Cloud Storage:</strong> We do not store any of your property data on external servers or cloud services.
-            </div>
-        </div>
-
-        <div class="content">
-            <h2><span class="icon"></span>Data Security</h2>
-
-            <h3>Protection Measures</h3>
-            <ul>
-                <li>All data remains on your personal device</li>
-                <li>No data transmission to external servers</li>
-                <li>Standard device-level security protections apply</li>
-                <li>You control all data export and sharing</li>
-            </ul>
-
-            <h3>Your Responsibilities</h3>
-            <ul>
-                <li>Secure your device with appropriate locks/passwords</li>
-                <li>Regular device backups if you want to preserve data</li>
-                <li>Be cautious when sharing exported reports</li>
-            </ul>
-        </div>
-
-        <div class="content">
-            <h2><span class="icon"></span>Data Sharing and Export</h2>
-
-            <h3>When Data Leaves Your Device</h3>
-            <p>Your data only leaves your device when you explicitly choose to:</p>
-            <ul>
-                <li>Export PDF assessment reports</li>
-                <li>Share assessment results via email/messaging</li>
-                <li>Export data backups</li>
-                <li>Use device sharing features (AirDrop, etc.)</li>
-            </ul>
-
-            <div class="warning">
-                <strong>Important:</strong> When you share or export data, it becomes subject to the privacy policies of the receiving platforms or recipients.
-            </div>
-        </div>
-
-        <div class="content">
-            <h2><span class="icon"></span>Permissions Explained</h2>
-
-            <h3>Camera Permission</h3>
-            <p>Required to capture photos during property assessments. Photos are stored locally and linked to specific assessment items.</p>
-
-            <h3>Storage Permission</h3>
-            <p>Needed to save photos, assessment data, and exported reports on your device.</p>
-
-            <h3>Notifications Permission</h3>
-            <p>Optional permission for assessment reminders and scheduled property viewings.</p>
-        </div>
-
-        <div class="content">
-            <h2><span class="icon"></span>Children's Privacy</h2>
-            <p>Home Buyers Guide SA is designed for adult use in property assessment and purchasing decisions. We do not knowingly collect information from children under 13. The app requires decision-making capabilities appropriate for adult users.</p>
-        </div>
-
-        <div class="content">
-            <h2><span class="icon"></span>Data Control</h2>
-
-            <h3>Your Rights</h3>
-            <ul>
-                <li><strong>Access:</strong> View all stored data within the app</li>
-                <li><strong>Export:</strong> Generate backups of your property data</li>
-                <li><strong>Delete:</strong> Remove specific properties or reset all data</li>
-                <li><strong>Modify:</strong> Edit any assessment data or property details</li>
-            </ul>
-
-            <h3>Data Deletion</h3>
-            <p>You can delete data by:</p>
-            <ul>
-                <li>Removing individual properties</li>
-                <li>Using the "Reset All Data" option in settings</li>
-                <li>Uninstalling the app (removes all local data)</li>
-            </ul>
-        </div>
-
-        <div class="content">
-            <h2><span class="icon"></span>Third-Party Services</h2>
-
-            <h3>Google AdMob</h3>
-            <p>We use Google AdMob to display advertisements within the app. AdMob may collect device information and usage data for ad personalization and analytics.</p>
-            <ul>
-                <li>Device identifiers (Advertising ID)</li>
-                <li>App usage and interaction data</li>
-                <li>Location data (if enabled)</li>
-            </ul>
-            <p><strong>Google Privacy Policy:</strong> <a href="https://policies.google.com/privacy" target="_blank">https://policies.google.com/privacy</a></p>
-
-            <h3>Firebase & Google Analytics</h3>
-            <p>We use Firebase and Google Analytics to understand app usage, improve performance, and track engagement metrics.</p>
-            <ul>
-                <li>App usage statistics and crash reports</li>
-                <li>Device performance data</li>
-                <li>Feature usage analytics</li>
-                <li>Download and engagement metrics</li>
-            </ul>
-            <p><strong>Firebase Privacy:</strong> <a href="https://firebase.google.com/support/privacy" target="_blank">https://firebase.google.com/support/privacy</a></p>
-
-            <h3>Removing Advertisements</h3>
-            <p>Advertisements are displayed to support the free version of the app. To remove ads:</p>
-            <ul>
-                <li><strong>Premium Subscription:</strong> Purchase a premium subscription to use the app ad-free</li>
-                <li><strong>Ad Settings:</strong> You can adjust personalized ad preferences in your device settings, but ads will still be shown</li>
-            </ul>
-
-            <div class="warning">
-                <strong>Note:</strong> Third-party services have their own privacy policies. We recommend reviewing them to understand how your data is handled.
-            </div>
-        </div>
-
-        <div class="content">
-            <h2><span class="icon"></span>Policy Updates</h2>
-            <p>We may update this privacy policy to reflect app improvements or legal requirements. Significant changes will be communicated through app updates. Continued use constitutes acceptance of updated terms.</p>
-        </div>
-
-        <div class="content">
-            <div class="contact-info">
-                <h2><span class="icon"></span>Contact Information</h2>
-                <p>For privacy questions or concerns, contact us:</p>
-                <p><strong>Email:</strong> jaspropertyinspectors@gmail.com</p>
-                <p><strong>Developer:</strong> Joel Apex Solutions</p>
-            </div>
-        </div>
-
-        <div class="footer">
-            <img src="images/transparent_logo.png" alt="Home Buyers Guide SA Logo">
-            <div class="last-updated">
-                <p>Home Buyers Guide SA</p>
-                <p>Last Updated: June 2026 | Version 2.0</p>
-                <p>© 2026 Joel Apex Solutions</p>
-            </div>
-        </div>
+  <div class="topbar">
+    <div class="topbar-brand">
+      <img src="images/transparent_logo.png" alt="Home Buyers Guide SA">
+      <span>Home Buyers <span class="accent">Guide SA</span></span>
     </div>
+    <button class="theme-toggle" id="themeToggle" aria-label="Toggle light and dark mode">
+      <span class="knob" id="themeKnob">
+        <svg id="iconMoon" width="13" height="13" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79Z" fill="#08221c"/></svg>
+        <svg id="iconSun" width="14" height="14" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" style="display:none"><circle cx="12" cy="12" r="4.5" fill="#3a2a06"/><g stroke="#3a2a06" stroke-width="2" stroke-linecap="round"><line x1="12" y1="2" x2="12" y2="4.5"/><line x1="12" y1="19.5" x2="12" y2="22"/><line x1="2" y1="12" x2="4.5" y2="12"/><line x1="19.5" y1="12" x2="22" y2="12"/><line x1="4.93" y1="4.93" x2="6.7" y2="6.7"/><line x1="17.3" y1="17.3" x2="19.07" y2="19.07"/><line x1="4.93" y1="19.07" x2="6.7" y2="17.3"/><line x1="17.3" y1="6.7" x2="19.07" y2="4.93"/></g></svg>
+      </span>
+      <span id="themeLabel">Dark mode</span>
+    </button>
+  </div>
+
+  <div class="hero">
+    <img src="images/app_banner.png" alt="Home Buyers Guide SA">
+    <h1>Privacy Policy</h1>
+    <p class="tagline">Your privacy is our priority</p>
+  </div>
+
+  <nav class="toc-mobile" id="tocMobile">
+    <a href="#overview">Overview</a>
+    <a href="#info-collect">Information We Collect</a>
+    <a href="#data-storage">How We Store Data</a>
+    <a href="#data-security">Data Security</a>
+    <a href="#data-sharing">Sharing &amp; Export</a>
+    <a href="#permissions">Permissions</a>
+    <a href="#childrens-privacy">Children's Privacy</a>
+    <a href="#data-control">Data Control</a>
+    <a href="#third-party">Third-Party Services</a>
+    <a href="#policy-updates">Policy Updates</a>
+    <a href="#contact">Contact</a>
+  </nav>
+
+  <div class="page">
+    <nav class="toc" id="tocDesktop">
+      <h4>On this page</h4>
+      <ul>
+        <li><a href="#overview">Overview</a></li>
+        <li><a href="#info-collect">Information We Collect</a></li>
+        <li><a href="#data-storage">How We Store Data</a></li>
+        <li><a href="#data-security">Data Security</a></li>
+        <li><a href="#data-sharing">Sharing &amp; Export</a></li>
+        <li><a href="#permissions">Permissions</a></li>
+        <li><a href="#childrens-privacy">Children's Privacy</a></li>
+        <li><a href="#data-control">Data Control</a></li>
+        <li><a href="#third-party">Third-Party Services</a></li>
+        <li><a href="#policy-updates">Policy Updates</a></li>
+        <li><a href="#contact">Contact</a></li>
+      </ul>
+    </nav>
+
+    <main>
+      <div class="content" id="overview">
+        <h2>Overview</h2>
+        <p>Home Buyers Guide SA is committed to protecting your privacy. This app helps property buyers, sellers, and estate agents assess properties through detailed inspections, photo documentation, and scoring systems. All data is stored locally on your device.</p>
+        <div class="highlight">
+          <strong>Key Privacy Principle:</strong> Your property data never leaves your device unless you explicitly choose to export or share it.
+        </div>
+      </div>
+
+      <div class="content" id="info-collect">
+        <h2>Information We Collect</h2>
+        <h3>Property Information</h3>
+        <ul>
+          <li>Property addresses and details (bedrooms, bathrooms, etc.)</li>
+          <li>Property photos taken during assessments</li>
+          <li>Assessment scores and ratings</li>
+          <li>Inspector notes and comments</li>
+          <li>Financial calculations and cost estimates</li>
+          <li>Assessment dates and reminders</li>
+        </ul>
+        <h3>App Usage Data</h3>
+        <ul>
+          <li>App preferences and settings</li>
+          <li>Assessment progress and completion status</li>
+          <li>Custom room configurations</li>
+        </ul>
+        <h3>Device Information</h3>
+        <ul>
+          <li>Camera access for photo capture</li>
+          <li>Storage access for saving data locally</li>
+          <li>Notification permissions for assessment reminders</li>
+        </ul>
+      </div>
+
+      <div class="content" id="data-storage">
+        <h2>How We Store Your Data</h2>
+        <h3>Local Storage Only</h3>
+        <p>All your data is stored exclusively on your device using:</p>
+        <ul>
+          <li><strong>Local Browser Storage:</strong> Property details and settings</li>
+          <li><strong>IndexedDB:</strong> Photos and detailed assessment data</li>
+          <li><strong>Device File System:</strong> Exported reports and backups</li>
+        </ul>
+        <div class="highlight">
+          <strong>No Cloud Storage:</strong> We do not store any of your property data on external servers or cloud services.
+        </div>
+      </div>
+
+      <div class="content" id="data-security">
+        <h2>Data Security</h2>
+        <h3>Protection Measures</h3>
+        <ul>
+          <li>All data remains on your personal device</li>
+          <li>No data transmission to external servers</li>
+          <li>Standard device-level security protections apply</li>
+          <li>You control all data export and sharing</li>
+        </ul>
+        <h3>Your Responsibilities</h3>
+        <ul>
+          <li>Secure your device with appropriate locks/passwords</li>
+          <li>Regular device backups if you want to preserve data</li>
+          <li>Be cautious when sharing exported reports</li>
+        </ul>
+      </div>
+
+      <div class="content" id="data-sharing">
+        <h2>Data Sharing and Export</h2>
+        <h3>When Data Leaves Your Device</h3>
+        <p>Your data only leaves your device when you explicitly choose to:</p>
+        <ul>
+          <li>Export PDF assessment reports</li>
+          <li>Share assessment results via email/messaging</li>
+          <li>Export data backups</li>
+          <li>Use device sharing features (AirDrop, etc.)</li>
+        </ul>
+        <div class="warning">
+          <strong>Important:</strong> When you share or export data, it becomes subject to the privacy policies of the receiving platforms or recipients.
+        </div>
+      </div>
+
+      <div class="content" id="permissions">
+        <h2>Permissions Explained</h2>
+        <h3>Camera Permission</h3>
+        <p>Required to capture photos during property assessments. Photos are stored locally and linked to specific assessment items.</p>
+        <h3>Storage Permission</h3>
+        <p>Needed to save photos, assessment data, and exported reports on your device.</p>
+        <h3>Notifications Permission</h3>
+        <p>Optional permission for assessment reminders and scheduled property viewings.</p>
+      </div>
+
+      <div class="content" id="childrens-privacy">
+        <h2>Children's Privacy</h2>
+        <p>Home Buyers Guide SA is designed for adult use in property assessment and purchasing decisions. We do not knowingly collect information from children under 13. The app requires decision-making capabilities appropriate for adult users.</p>
+      </div>
+
+      <div class="content" id="data-control">
+        <h2>Data Control</h2>
+        <h3>Your Rights</h3>
+        <ul>
+          <li><strong>Access:</strong> View all stored data within the app</li>
+          <li><strong>Export:</strong> Generate backups of your property data</li>
+          <li><strong>Delete:</strong> Remove specific properties or reset all data</li>
+          <li><strong>Modify:</strong> Edit any assessment data or property details</li>
+        </ul>
+        <h3>Data Deletion</h3>
+        <p>You can delete data by:</p>
+        <ul>
+          <li>Removing individual properties</li>
+          <li>Using the "Reset All Data" option in settings</li>
+          <li>Uninstalling the app (removes all local data)</li>
+        </ul>
+      </div>
+
+      <div class="content" id="third-party">
+        <h2>Third-Party Services</h2>
+        <h3>Google AdMob</h3>
+        <p>We use Google AdMob to display advertisements within the app. AdMob may collect device information and usage data for ad personalization and analytics.</p>
+        <ul>
+          <li>Device identifiers (Advertising ID)</li>
+          <li>App usage and interaction data</li>
+          <li>Location data (if enabled)</li>
+        </ul>
+        <p><strong>Google Privacy Policy:</strong> <a href="https://policies.google.com/privacy" target="_blank">https://policies.google.com/privacy</a></p>
+        <h3>Firebase &amp; Google Analytics</h3>
+        <p>We use Firebase and Google Analytics to understand app usage, improve performance, and track engagement metrics.</p>
+        <ul>
+          <li>App usage statistics and crash reports</li>
+          <li>Device performance data</li>
+          <li>Feature usage analytics</li>
+          <li>Download and engagement metrics</li>
+        </ul>
+        <p><strong>Firebase Privacy:</strong> <a href="https://firebase.google.com/support/privacy" target="_blank">https://firebase.google.com/support/privacy</a></p>
+        <h3>Removing Advertisements</h3>
+        <p>Advertisements are displayed to support the free version of the app. To remove ads:</p>
+        <ul>
+          <li><strong>Premium Subscription:</strong> Purchase a premium subscription to use the app ad-free</li>
+          <li><strong>Ad Settings:</strong> You can adjust personalized ad preferences in your device settings, but ads will still be shown</li>
+        </ul>
+        <div class="warning">
+          <strong>Note:</strong> Third-party services have their own privacy policies. We recommend reviewing them to understand how your data is handled.
+        </div>
+      </div>
+
+      <div class="content" id="policy-updates">
+        <h2>Policy Updates</h2>
+        <p>We may update this privacy policy to reflect app improvements or legal requirements. Significant changes will be communicated through app updates. Continued use constitutes acceptance of updated terms.</p>
+      </div>
+
+      <div class="content" id="contact">
+        <div class="contact-info">
+          <h2>Contact Information</h2>
+          <p>For privacy questions or concerns, contact us:</p>
+          <p><strong>Email:</strong> jaspropertyinspectors@gmail.com</p>
+          <p><strong>Developer:</strong> Joel Apex Solutions</p>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <footer>
+    <img src="images/transparent_logo.png" alt="Home Buyers Guide SA Logo">
+    <p class="brand">Home Buyers Guide SA</p>
+    <p class="meta">Last Updated: June 2026 | Version 2.0</p>
+    <p class="meta">© 2026 Joel Apex Solutions</p>
+  </footer>
+
+<script>
+(function() {
+  var STORAGE_KEY = 'hbg-privacy-theme';
+  var body = document.body;
+  var toggle = document.getElementById('themeToggle');
+  var knob = document.getElementById('themeKnob');
+  var label = document.getElementById('themeLabel');
+
+  var iconMoon = document.getElementById('iconMoon');
+  var iconSun = document.getElementById('iconSun');
+
+  function applyTheme(theme) {
+    if (theme === 'light') {
+      body.classList.add('light-mode');
+      iconMoon.style.display = 'none';
+      iconSun.style.display = 'block';
+      label.textContent = 'Light mode';
+    } else {
+      body.classList.remove('light-mode');
+      iconMoon.style.display = 'block';
+      iconSun.style.display = 'none';
+      label.textContent = 'Dark mode';
+    }
+  }
+
+  var saved = null;
+  try { saved = localStorage.getItem(STORAGE_KEY); } catch (e) {}
+  applyTheme(saved === 'light' ? 'light' : 'dark');
+
+  toggle.addEventListener('click', function() {
+    var isLight = body.classList.contains('light-mode');
+    var next = isLight ? 'dark' : 'light';
+    applyTheme(next);
+    try { localStorage.setItem(STORAGE_KEY, next); } catch (e) {}
+  });
+
+  // scroll-spy for TOC active state
+  var sections = document.querySelectorAll('.content[id]');
+  var desktopLinks = document.querySelectorAll('#tocDesktop a');
+  var mobileLinks = document.querySelectorAll('#tocMobile a');
+
+  function setActive(id) {
+    desktopLinks.forEach(function(a) {
+      a.classList.toggle('active', a.getAttribute('href') === '#' + id);
+    });
+    mobileLinks.forEach(function(a) {
+      a.classList.toggle('active', a.getAttribute('href') === '#' + id);
+    });
+  }
+
+  if ('IntersectionObserver' in window) {
+    var observer = new IntersectionObserver(function(entries) {
+      entries.forEach(function(entry) {
+        if (entry.isIntersecting) setActive(entry.target.id);
+      });
+    }, { rootMargin: '-100px 0px -70% 0px', threshold: 0 });
+    sections.forEach(function(s) { observer.observe(s); });
+  }
+})();
+</script>
+
 </body>
 </html>
