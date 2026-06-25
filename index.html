@@ -67,6 +67,152 @@
         "downloadUrl": "https://play.google.com/store/apps/details?id=com.joelapexs.propertyinspector"
     }
     </script>
+
+    <!-- Homepage-specific CSS overrides -->
+    <style>
+        /* Full-width layout — override the 1400px container cap */
+        .container {
+            max-width: 1920px;
+            padding: 0 48px;
+        }
+
+        /* Fix nav logo: prevent text wrapping on "Home Buyers Guide SA" */
+        .nav-logo {
+            white-space: nowrap;
+            flex-shrink: 0;
+            gap: 10px;
+        }
+        .nav-logo img {
+            height: 36px;
+            width: 36px;
+            border-radius: 8px;
+            flex-shrink: 0;
+            object-fit: cover;
+        }
+        .nav-logo span {
+            font-size: 1.05rem;
+            font-weight: 700;
+            white-space: nowrap;
+        }
+
+        /* Compact nav links so all fit on one line */
+        .nav-menu { gap: 2px; }
+        .nav-link {
+            padding: 7px 9px;
+            font-size: 0.87rem;
+        }
+        .btn-primary {
+            padding: 10px 16px;
+            font-size: 0.87rem;
+        }
+
+        /* Hero feature panel — replaces the phone mockup */
+        .app-feature-panel {
+            background: rgba(255, 255, 255, 0.04);
+            border: 1px solid rgba(6, 214, 160, 0.25);
+            border-radius: 24px;
+            padding: 36px;
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.4);
+        }
+        .app-panel-header {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+            margin-bottom: 4px;
+        }
+        .app-panel-header img {
+            width: 56px;
+            height: 56px;
+            border-radius: 14px;
+        }
+        .app-panel-header-text h3 {
+            font-size: 1.15rem;
+            font-weight: 700;
+            color: #e8f1f8;
+            margin: 0 0 2px;
+        }
+        .app-panel-header-text p {
+            font-size: 0.82rem;
+            color: #06D6A0;
+            margin: 0;
+            font-weight: 600;
+        }
+        .app-panel-feature {
+            display: flex;
+            align-items: flex-start;
+            gap: 14px;
+            padding: 14px;
+            background: rgba(255, 255, 255, 0.04);
+            border-radius: 12px;
+            border-left: 3px solid #06D6A0;
+            transition: background 0.2s;
+        }
+        .app-panel-feature:hover { background: rgba(6, 214, 160, 0.06); }
+        .app-panel-feature-icon {
+            width: 38px;
+            height: 38px;
+            background: linear-gradient(135deg, #06D6A0, #2E86AB);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+        .app-panel-feature-icon i {
+            font-size: 1rem;
+            color: white;
+        }
+        .app-panel-feature strong {
+            display: block;
+            color: #e8f1f8;
+            font-size: 0.9rem;
+            margin-bottom: 2px;
+        }
+        .app-panel-feature span {
+            color: rgba(255, 255, 255, 0.6);
+            font-size: 0.8rem;
+            line-height: 1.4;
+        }
+        .app-panel-score {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background: linear-gradient(135deg, rgba(6,214,160,0.12), rgba(46,134,171,0.12));
+            border: 1px solid rgba(6, 214, 160, 0.3);
+            border-radius: 12px;
+            padding: 14px 18px;
+            margin-top: 4px;
+        }
+        .app-panel-score-label { color: rgba(255,255,255,0.7); font-size: 0.85rem; }
+        .app-panel-score-value {
+            font-size: 1.8rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, #06D6A0, #2E86AB);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        /* Wider responsive breakpoints */
+        @media (max-width: 1600px) { .container { padding: 0 40px; } }
+        @media (max-width: 1400px) { .container { padding: 0 32px; } }
+        @media (max-width: 1200px) {
+            .container { padding: 0 24px; }
+            .nav-logo span { font-size: 0.95rem; }
+            .nav-link { padding: 6px 7px; font-size: 0.82rem; }
+        }
+        @media (max-width: 1024px) {
+            .nav-menu { display: none; }
+            .nav-menu.active { display: flex; }
+            .nav-toggle { display: block; }
+        }
+    </style>
+
 </head>
 <body>
     <!-- Navigation -->
@@ -144,8 +290,46 @@
                     </div>
                 </div>
                 <div class="hero-image">
-                    <div class="phone-mockup">
-                        <img src="images/screenshots/home-screen.jpg" alt="Home buying checklist app showing property assessment categories">
+                    <div class="app-feature-panel">
+                        <div class="app-panel-header">
+                            <img src="images/transparent_logo.png" alt="Home Buyers Guide SA">
+                            <div class="app-panel-header-text">
+                                <h3>Home Buyers Guide SA</h3>
+                                <p>&#9733; Know Before You Buy</p>
+                            </div>
+                        </div>
+                        <div class="app-panel-feature">
+                            <div class="app-panel-feature-icon"><i class="fas fa-clipboard-check"></i></div>
+                            <div>
+                                <strong>Room-by-Room Assessment</strong>
+                                <span>80+ checklist items across 4 categories — structural, electrical, plumbing, and more</span>
+                            </div>
+                        </div>
+                        <div class="app-panel-feature">
+                            <div class="app-panel-feature-icon"><i class="fas fa-camera"></i></div>
+                            <div>
+                                <strong>Photo Documentation</strong>
+                                <span>Capture and annotate photos of red flags directly in the checklist</span>
+                            </div>
+                        </div>
+                        <div class="app-panel-feature">
+                            <div class="app-panel-feature-icon"><i class="fas fa-file-pdf"></i></div>
+                            <div>
+                                <strong>Instant PDF Reports</strong>
+                                <span>Professional reports with scores, photos &amp; negotiation points</span>
+                            </div>
+                        </div>
+                        <div class="app-panel-feature">
+                            <div class="app-panel-feature-icon"><i class="fas fa-calculator"></i></div>
+                            <div>
+                                <strong>Bond &amp; Transfer Calculator</strong>
+                                <span>Full cost breakdown — transfer duty, attorney fees &amp; monthly costs</span>
+                            </div>
+                        </div>
+                        <div class="app-panel-score">
+                            <span class="app-panel-score-label">Property scored out of</span>
+                            <span class="app-panel-score-value">100</span>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -766,8 +950,11 @@
                     <p class="download-note">Available for Android devices running Android 5.0+</p>
                 </div>
                 <div class="download-image">
-                    <div class="phone-showcase">
-                        <img src="images/screenshots/home-screen.jpg" alt="House viewing checklist app on smartphone">
+                    <div style="display:flex;flex-direction:column;align-items:center;justify-content:center;gap:24px;height:100%;padding:20px 0;">
+                        <img src="images/transparent_logo.png" alt="Home Buyers Guide SA"
+                             style="width:160px;height:160px;border-radius:36px;box-shadow:0 20px 60px rgba(0,0,0,0.5);">
+                        <img src="images/app_banner.png" alt="Home Buyers Guide SA"
+                             style="width:100%;max-width:420px;border-radius:12px;box-shadow:0 8px 30px rgba(0,0,0,0.4);">
                     </div>
                 </div>
             </div>
