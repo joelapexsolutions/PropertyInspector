@@ -1,4 +1,4 @@
-# robots.txt for Property Inspector Website
+# robots.txt for Home Buyers Guide SA Website
 
 User-agent: *
 Allow: /
