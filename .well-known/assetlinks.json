@@ -1,0 +1,12 @@
+[
+  {
+    "relation": ["delegate_permission/common.handle_all_urls"],
+    "target": {
+      "namespace": "android_app",
+      "package_name": "com.joelapexs.propertyinspector",
+      "sha256_cert_fingerprints": [
+        "97:D6:D9:E4:25:20:38:57:50:C6:EF:2F:0E:F2:D4:7D:92:D5:97:27:B1:10:0D:2B:3C:F7:80:65:08:06:FF:60"
+      ]
+    }
+  }
+]
