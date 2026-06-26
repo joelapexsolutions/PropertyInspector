@@ -4,17 +4,14 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Your Complete Home Buying Journey - Home Buyers Guide SA</title>
-    <meta name="description" content="A step-by-step guide to buying property in South Africa with confidence. Know your budget, assess properties, negotiate smart, and avoid costly surprises.">
+    <meta name="description" content="A 10-step guide to buying property in South Africa with confidence. Know your budget, assess properties, negotiate smart, and avoid costly surprises.">
     <link rel="icon" type="image/png" href="images/transparent_logo.png">
 
-    <!-- Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-
-    <!-- Main site styles (CSS variables, nav, footer) -->
     <link rel="stylesheet" href="website-styles.css">
 
-    <!-- Anti-FOUC: apply saved/system theme before paint -->
+    <!-- Anti-FOUC -->
     <script>
         (function(){
             var t=localStorage.getItem('hbg-theme');
@@ -35,102 +32,102 @@
     </script>
 
     <style>
-        /* ── Journey Page Hero ─────────────────────────────────── */
+        /* ── Journey hero ──────────────────────────────────────── */
         .journey-hero {
             background: var(--navy);
-            padding: 120px 0 60px;
+            padding: 120px 0 64px;
             text-align: center;
         }
         [data-theme="dark"] .journey-hero { background: var(--bg-alt); }
-
-        .journey-badge {
-            display: inline-flex; align-items: center; gap: 7px;
-            background: rgba(0,196,140,0.15); color: #06D6A0;
-            border: 1px solid rgba(0,196,140,0.3);
-            border-radius: 20px; padding: 5px 16px;
-            font-size: 0.82rem; font-weight: 600; margin-bottom: 20px;
-        }
         .journey-hero h1 {
-            font-size: clamp(1.85rem, 3.5vw, 2.6rem);
+            font-size: clamp(1.9rem, 3.5vw, 2.7rem);
             font-weight: 800; color: #FFFFFF;
-            margin-bottom: 16px; line-height: 1.22;
+            margin-bottom: 16px; line-height: 1.2;
         }
         [data-theme="dark"] .journey-hero h1 { color: var(--text-heading); }
-        .journey-hero .subtitle {
-            font-size: 1rem; color: rgba(255,255,255,0.75);
-            max-width: 660px; margin: 0 auto; line-height: 1.72;
+        .journey-hero .hero-subtitle {
+            font-size: 1rem; color: rgba(255,255,255,0.72);
+            max-width: 640px; margin: 0 auto; line-height: 1.72;
         }
-        [data-theme="dark"] .journey-hero .subtitle { color: var(--text-muted); }
+        [data-theme="dark"] .journey-hero .hero-subtitle { color: var(--text-muted); }
 
-        /* ── Content area ──────────────────────────────────────── */
-        .journey-content { padding: 60px 0 80px; }
-        .journey-wrap { max-width: 860px; margin: 0 auto; }
-
+        /* ── Intro ─────────────────────────────────────────────── */
+        .journey-intro-section { background: var(--bg-page); padding: 52px 0 0; }
         .journey-intro {
             background: var(--bg-alt);
             border-left: 4px solid var(--teal);
-            padding: 20px 24px; border-radius: 10px;
-            margin-bottom: 44px;
+            padding: 20px 24px; border-radius: var(--radius);
             font-size: 0.94rem; color: var(--text-body); line-height: 1.72;
+            max-width: 820px; margin: 0 auto;
         }
         .journey-intro strong { color: var(--teal); }
 
-        /* ── Steps ─────────────────────────────────────────────── */
-        .steps-container { display: flex; flex-direction: column; gap: 14px; margin-bottom: 44px; }
-
-        .step {
+        /* ── Infographic section ────────────────────────────────── */
+        .infographic-section { background: var(--bg-page); padding: 60px 0; }
+        .infographic-wrap {
             background: var(--bg-card);
             border: 1px solid var(--border);
-            border-radius: 12px;
-            padding: 26px 28px 26px 32px;
-            position: relative; overflow: hidden;
-            transition: transform 0.2s ease, box-shadow 0.2s ease;
+            border-radius: var(--radius-lg);
+            overflow: hidden;
+            box-shadow: var(--shadow-md);
         }
-        .step::before {
-            content: ''; position: absolute;
-            top: 0; left: 0; width: 4px; height: 100%;
-            background: var(--teal);
-            border-radius: 12px 0 0 12px;
+        .infographic-wrap img {
+            width: 100%; display: block;
         }
-        .step:hover { transform: translateY(-2px); box-shadow: var(--shadow-hv); }
-
-        .step-header { display: flex; align-items: center; gap: 13px; margin-bottom: 13px; }
-        .step-number {
-            width: 30px; height: 30px; flex-shrink: 0;
+        .infographic-footer {
+            display: flex; align-items: center; justify-content: space-between;
+            flex-wrap: wrap; gap: 14px;
+            padding: 18px 24px;
+            border-top: 1px solid var(--border);
+        }
+        .infographic-footer p {
+            font-size: 0.88rem; color: var(--text-sub); margin: 0;
+        }
+        .btn-download-infographic {
+            display: inline-flex; align-items: center; gap: 8px;
             background: var(--teal); color: #FFFFFF;
-            border-radius: 50%;
+            padding: 10px 20px; border-radius: var(--radius);
+            font-size: 0.88rem; font-weight: 600;
+            text-decoration: none; transition: var(--transition);
+        }
+        .btn-download-infographic:hover {
+            background: var(--teal-dark); transform: translateY(-1px);
+        }
+        [data-theme="dark"] .btn-download-infographic { color: #071525; }
+
+        /* ── Step cards grid ────────────────────────────────────── */
+        .journey-steps-section { background: var(--bg-alt); padding: 60px 0; }
+        .journey-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 18px;
+        }
+        /* Reuses .feature-card from website-styles.css — only additions below */
+        .jcard-num {
+            width: 36px; height: 36px;
+            background: var(--teal); color: #FFFFFF;
+            border-radius: var(--radius-sm);
             display: flex; align-items: center; justify-content: center;
-            font-size: 0.85rem; font-weight: 800;
+            font-size: 0.95rem; font-weight: 800;
+            margin-bottom: 13px; flex-shrink: 0;
         }
-        [data-theme="dark"] .step-number { color: #071525; }
-
-        .step-title {
-            font-size: 1.02rem; font-weight: 700;
-            color: var(--text-heading); margin: 0;
-        }
-        .step-content {
-            font-size: 0.92rem; color: var(--text-body);
-            line-height: 1.72;
-        }
-        .step-content p { margin-bottom: 10px; }
-        .step-content p:last-child { margin-bottom: 0; }
-        .step-content strong { color: var(--text-heading); font-weight: 600; }
-
-        .step-link {
-            display: inline-flex; align-items: center; gap: 7px;
-            color: var(--teal); font-size: 0.86rem; font-weight: 600;
-            text-decoration: none; margin-top: 12px;
+        [data-theme="dark"] .jcard-num { color: #071525; }
+        .jcard-link {
+            display: inline-flex; align-items: center; gap: 6px;
+            color: var(--teal); font-size: 0.83rem; font-weight: 600;
+            text-decoration: none; margin-top: 10px;
             transition: gap 0.2s ease;
         }
-        .step-link:hover { gap: 11px; }
-        .step-link i { font-size: 0.78rem; }
+        .jcard-link:hover { gap: 10px; }
+        .jcard-link i { font-size: 0.75rem; }
 
-        /* ── Highlight / warning box ───────────────────────────── */
+        /* ── Why this matters ───────────────────────────────────── */
+        .journey-why { background: var(--bg-page); padding: 60px 0 0; }
         .journey-highlight {
             background: rgba(245,158,11,0.08);
             border: 1px solid rgba(245,158,11,0.28);
-            border-radius: 12px; padding: 24px 26px;
-            margin-bottom: 44px;
+            border-radius: var(--radius); padding: 26px 28px;
+            max-width: 820px; margin: 0 auto;
         }
         [data-theme="dark"] .journey-highlight {
             background: rgba(245,158,11,0.06);
@@ -141,46 +138,24 @@
             color: var(--amber); margin-bottom: 10px;
             display: flex; align-items: center; gap: 9px;
         }
-        .journey-highlight p { font-size: 0.92rem; color: var(--text-body); line-height: 1.72; }
+        .journey-highlight p {
+            font-size: 0.92rem; color: var(--text-body); line-height: 1.72;
+        }
 
-        /* ── CTA block ─────────────────────────────────────────── */
-        .journey-cta {
-            background: var(--navy);
-            border-radius: 14px; padding: 44px 40px;
-            text-align: center;
-        }
-        [data-theme="dark"] .journey-cta {
-            background: var(--bg-deep);
-            border: 1px solid var(--teal-border);
-        }
-        .journey-cta h3 {
-            font-size: 1.55rem; font-weight: 800;
-            color: #FFFFFF; margin-bottom: 10px;
-        }
-        [data-theme="dark"] .journey-cta h3 { color: var(--text-heading); }
-        .journey-cta > p {
-            font-size: 0.95rem; color: rgba(255,255,255,0.75);
-            margin-bottom: 24px;
-        }
-        [data-theme="dark"] .journey-cta > p { color: var(--text-muted); }
-        .journey-cta .play-badge-large { height: 52px; border-radius: 8px; }
-        .cta-free-note {
-            margin-top: 14px; font-size: 0.8rem;
-            color: rgba(255,255,255,0.55);
-        }
-        [data-theme="dark"] .cta-free-note { color: rgba(200,222,240,0.45); }
+        /* ── CTA section ────────────────────────────────────────── */
+        .journey-cta-section { background: var(--bg-page); padding: 60px 0 80px; }
 
-        /* ── Responsive ────────────────────────────────────────── */
+        /* ── Responsive ─────────────────────────────────────────── */
         @media(max-width: 768px) {
-            .journey-hero { padding: 96px 0 44px; }
-            .step { padding: 20px 18px 20px 22px; }
-            .journey-cta { padding: 32px 20px; }
+            .journey-hero { padding: 96px 0 48px; }
+            .journey-grid { grid-template-columns: 1fr; }
+            .infographic-footer { flex-direction: column; align-items: flex-start; }
         }
     </style>
 </head>
 <body>
 
-    <!-- Navigation (matches index.html exactly) -->
+    <!-- Navigation -->
     <nav class="navbar" id="navbar">
         <div class="container">
             <div class="nav-content">
@@ -214,161 +189,164 @@
         </div>
     </nav>
 
-    <!-- Page Hero -->
+    <!-- Hero -->
     <section class="journey-hero">
         <div class="container">
-            <div class="journey-badge">
-                <i class="fas fa-route"></i> Step-by-Step Guide
+            <div class="hero-badge">
+                <i class="fas fa-route"></i> 10 Steps to Buying with Confidence
             </div>
             <h1>Your Complete Home Buying Journey</h1>
-            <p class="subtitle">A 10-step roadmap to buying your dream property with confidence — avoiding costly surprises and making informed decisions every step of the way.</p>
+            <p class="hero-subtitle">Most buyers miss critical steps that cost R50,000–R200,000 after moving in. Follow this roadmap to inspect smart, negotiate hard, and buy with total confidence.</p>
         </div>
     </section>
 
-    <!-- Content -->
-    <section class="journey-content">
+    <!-- Intro stat -->
+    <section class="journey-intro-section">
         <div class="container">
-            <div class="journey-wrap">
-
-                <!-- Intro -->
-                <div class="journey-intro">
-                    <strong>Did you know?</strong> 70% of South African homeowners face unexpected repair costs within their first year of ownership, often exceeding R50,000. These surprises stem from skipping crucial steps in the buying process. This guide ensures you make informed decisions, understand the true costs, and avoid financial stress after moving in.
-                </div>
-
-                <!-- Steps -->
-                <div class="steps-container">
-
-                    <div class="step">
-                        <div class="step-header">
-                            <div class="step-number">1</div>
-                            <h2 class="step-title">Know Your Budget</h2>
-                        </div>
-                        <div class="step-content">
-                            <p><strong>Get Pre-Approved for a Home Loan.</strong> Visit your bank to obtain a pre-approval certificate. They'll assess your income, expenses, and credit profile to determine your maximum loan amount. This crucial step gives you a realistic budget and strengthens your negotiating position when making offers. Pre-approval typically takes 1–3 days and shows sellers you're a serious buyer.</p>
-                        </div>
-                    </div>
-
-                    <div class="step">
-                        <div class="step-header">
-                            <div class="step-number">2</div>
-                            <h2 class="step-title">Calculate Your True Costs</h2>
-                        </div>
-                        <div class="step-content">
-                            <p><strong>Understand the Full Financial Picture.</strong> Your home loan is just one part of the equation. Use the Home Buyers Guide SA Calculator to determine your once-off costs — transfer duties, attorney fees, and bond registration. These typically range from R30,000 to R80,000+ depending on property price. Factor in monthly costs like rates, levies, insurance, and maintenance too.</p>
-                            <a href="calculator.html" class="step-link">
-                                <i class="fas fa-calculator"></i> Use Free Cost Calculator
-                            </a>
-                        </div>
-                    </div>
-
-                    <div class="step">
-                        <div class="step-header">
-                            <div class="step-number">3</div>
-                            <h2 class="step-title">Search Smart</h2>
-                        </div>
-                        <div class="step-content">
-                            <p><strong>Find Properties Within Your Budget.</strong> Browse Property24, Private Property, and other listing sites for homes aligned with your approved loan amount. Create a shortlist of 5–10 properties that meet your must-have criteria: location, bedrooms, size, and features. Remember to account for your deposit (typically 10–20% of purchase price) when setting your search parameters.</p>
-                        </div>
-                    </div>
-
-                    <div class="step">
-                        <div class="step-header">
-                            <div class="step-number">4</div>
-                            <h2 class="step-title">Research the Property</h2>
-                        </div>
-                        <div class="step-content">
-                            <p><strong>Know What You're Really Buying.</strong> Before viewing, research each property's true market value, crime statistics, nearby amenities, and area trends. This intel helps you spot overpriced listings and red flags. Access free insights from Standard Bank's Home Services Property Guide or invest in detailed Lightstone reports (R200–R500). Understanding whether a R1.5M asking price is justified for a R1M property helps you negotiate wisely.</p>
-                            <a href="https://www.standardbank.co.za/southafrica/personal/products-and-services/borrow-for-your-needs/home-loans/home-services-property-guide" target="_blank" class="step-link">
-                                <i class="fas fa-external-link-alt"></i> Standard Bank Property Guide
-                            </a>
-                        </div>
-                    </div>
-
-                    <div class="step">
-                        <div class="step-header">
-                            <div class="step-number">5</div>
-                            <h2 class="step-title">Prepare Like a Pro</h2>
-                        </div>
-                        <div class="step-content">
-                            <p><strong>Set Yourself Up for Success.</strong> Download the Home Buyers Guide SA app and add your shortlisted properties. Set viewing appointments and review the app's comprehensive checklist covering structural, electrical, plumbing, and cosmetic aspects. Preparation ensures you ask the right questions and spot problems estate agents might overlook.</p>
-                        </div>
-                    </div>
-
-                    <div class="step">
-                        <div class="step-header">
-                            <div class="step-number">6</div>
-                            <h2 class="step-title">View with Confidence</h2>
-                        </div>
-                        <div class="step-content">
-                            <p><strong>Conduct a Thorough Assessment.</strong> During viewings, use the Home Buyers Guide SA app as your guide. It walks you through every room and outdoor space, prompting you to check critical elements: foundation cracks, roof condition, plumbing function, electrical safety, and damp issues. Take photos of concerns and document everything.</p>
-                            <p><strong>Not sure if something is serious?</strong> Simply snap pictures of questionable issues — wall cracks, roof damage, plumbing concerns — and show them to professionals for free opinions. Many builders, plumbers, or electricians can identify major problems just from a photo, giving you expert insights at zero cost before committing to a purchase.</p>
-                        </div>
-                    </div>
-
-                    <div class="step">
-                        <div class="step-header">
-                            <div class="step-number">7</div>
-                            <h2 class="step-title">Compare and Decide</h2>
-                        </div>
-                        <div class="step-content">
-                            <p><strong>Make an Informed Choice.</strong> Review assessment reports for all viewed properties side-by-side. Compare rating scores across categories, monthly cost estimates, required repairs, and how each property meets your expectations. The data-driven approach removes emotion from decision-making and highlights the best value option.</p>
-                        </div>
-                    </div>
-
-                    <div class="step">
-                        <div class="step-header">
-                            <div class="step-number">8</div>
-                            <h2 class="step-title">Negotiate Strategically</h2>
-                        </div>
-                        <div class="step-content">
-                            <p><strong>Use Evidence to Your Advantage.</strong> Armed with your detailed assessment report, make an informed offer. If you identified R100,000 worth of necessary repairs — roof, plumbing, electrical — use this evidence to negotiate a lower purchase price or request seller repairs before transfer. Your thorough documentation demonstrates you're a serious buyer who's done their homework.</p>
-                        </div>
-                    </div>
-
-                    <div class="step">
-                        <div class="step-header">
-                            <div class="step-number">9</div>
-                            <h2 class="step-title">Secure Your Financing</h2>
-                        </div>
-                        <div class="step-content">
-                            <p><strong>Finalize Your Home Loan.</strong> Once your Offer to Purchase is accepted, formally apply for your home loan. Submit all required documentation promptly: ID, proof of income, bank statements (3 months), and credit consent. The bank will conduct a property valuation to confirm the purchase price is reasonable. Loan approval typically takes 1–4 weeks.</p>
-                        </div>
-                    </div>
-
-                    <div class="step">
-                        <div class="step-header">
-                            <div class="step-number">10</div>
-                            <h2 class="step-title">Move In and Maintain</h2>
-                        </div>
-                        <div class="step-content">
-                            <p><strong>Start Your Homeownership Journey Right.</strong> After bond registration and transfer (typically 8–12 weeks), collect your keys and move in. Conduct a final walk-through using the Home Buyers Guide SA app to create a baseline condition report. Consider hiring a professional inspector (R2,500–R5,000) for a comprehensive assessment. This report becomes your maintenance roadmap, prioritising tasks and budgeting repairs over the next 1–3 years.</p>
-                        </div>
-                    </div>
-
-                </div><!-- end steps-container -->
-
-                <!-- Why This Matters -->
-                <div class="journey-highlight">
-                    <h3><i class="fas fa-exclamation-triangle"></i> Why This Process Matters</h3>
-                    <p>Following these 10 steps transforms your home buying experience from stressful and uncertain to confident and informed. You'll avoid the shock of discovering R50,000+ in unexpected repairs after moving in, negotiate better prices based on actual property conditions, and maintain the joy of homeownership instead of experiencing buyer's remorse. Knowledge is your best investment protection.</p>
-                </div>
-
-                <!-- CTA -->
-                <div class="journey-cta">
-                    <h3>Ready to Start Your Journey?</h3>
-                    <p>Download Home Buyers Guide SA and get expert guidance through every property viewing</p>
-                    <a href="https://play.google.com/store/apps/details?id=com.joelapexs.propertyinspector"
-                       target="_blank" class="btn-download-image" aria-label="Get it on Google Play">
-                        <img src="images/google-play-badge.png" alt="Get it on Google Play" class="play-badge-large">
-                    </a>
-                    <p class="cta-free-note">&#10003; Free to download &nbsp;&middot;&nbsp; First 2 properties free &nbsp;&middot;&nbsp; No account needed</p>
-                </div>
-
-            </div><!-- end journey-wrap -->
+            <div class="journey-intro">
+                <strong>Did you know?</strong> 70% of South African homeowners face unexpected repair costs within their first year of ownership, often exceeding R50,000. These surprises stem from skipping crucial steps in the buying process. This guide — and the Home Buyers Guide SA app — ensures you know exactly what to look for before you sign.
+            </div>
         </div>
     </section>
 
-    <!-- Footer (matches index.html exactly) -->
+    <!-- Infographic -->
+    <section class="infographic-section">
+        <div class="container">
+            <div class="section-header centered" style="margin-bottom:32px;">
+                <h2>The 10-Step Journey at a Glance</h2>
+                <p>A visual overview of every stage — from pre-approval to moving in</p>
+            </div>
+            <div class="infographic-wrap">
+                <img src="images/home_buying_steps_infograph.png"
+                     alt="Home Buying 10-Step Journey Infographic - Home Buyers Guide SA"
+                     loading="lazy">
+                <div class="infographic-footer">
+                    <p><i class="fas fa-info-circle" style="color:var(--teal);margin-right:6px;"></i>Save or share this guide with anyone buying property in South Africa</p>
+                    <a href="images/home_buying_steps_infograph.png"
+                       download="Home-Buyers-Journey-Guide-SA.png"
+                       class="btn-download-infographic">
+                        <i class="fas fa-download"></i> Download Infographic
+                    </a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Step Cards -->
+    <section class="journey-steps-section">
+        <div class="container">
+            <div class="section-header centered">
+                <h2>Step-by-Step Breakdown</h2>
+                <p>Everything you need to know at each stage of the process</p>
+            </div>
+
+            <div class="journey-grid">
+
+                <!-- 1 -->
+                <div class="feature-card">
+                    <div class="jcard-num">1</div>
+                    <h3>Know Your Budget</h3>
+                    <p>Get pre-approved for a home loan so you know your maximum limit before you start viewing. Pre-approval takes 1–3 days and shows sellers you're a serious buyer.</p>
+                </div>
+
+                <!-- 2 -->
+                <div class="feature-card">
+                    <div class="jcard-num">2</div>
+                    <h3>Calculate Your True Costs</h3>
+                    <p>Your loan is only part of it. Transfer duties, attorney fees, and bond registration typically add R30,000–R80,000+. Use our free calculator to see the full picture.</p>
+                    <a href="calculator.html" class="jcard-link">
+                        <i class="fas fa-calculator"></i> Free Cost Calculator
+                    </a>
+                </div>
+
+                <!-- 3 -->
+                <div class="feature-card">
+                    <div class="jcard-num">3</div>
+                    <h3>Search Smart</h3>
+                    <p>Browse Property24 and Private Property within your budget. Shortlist 5–10 properties that meet your must-haves: location, size, bedrooms, and key features.</p>
+                </div>
+
+                <!-- 4 -->
+                <div class="feature-card">
+                    <div class="jcard-num">4</div>
+                    <h3>Research the Property</h3>
+                    <p>Before viewing, check market value, crime stats, amenities, and area trends. Standard Bank's free Property Guide and Lightstone reports help you spot overpriced listings.</p>
+                </div>
+
+                <!-- 5 -->
+                <div class="feature-card">
+                    <div class="jcard-num">5</div>
+                    <h3>Prepare Like a Pro</h3>
+                    <p>Download the Home Buyers Guide SA app, add your shortlisted properties, and review the room-by-room checklist before every viewing. Preparation prevents costly oversights.</p>
+                </div>
+
+                <!-- 6 -->
+                <div class="feature-card">
+                    <div class="jcard-num">6</div>
+                    <h3>View with Confidence</h3>
+                    <p>Use the app to assess every room and outdoor space. Snap photos of concerns and get free opinions from professionals before committing. Spot it. Snap it. Know it.</p>
+                </div>
+
+                <!-- 7 -->
+                <div class="feature-card">
+                    <div class="jcard-num">7</div>
+                    <h3>Compare and Decide</h3>
+                    <p>Review your assessment reports side-by-side. Compare scores, repair costs, and monthly expenses across properties to remove emotion and make a data-driven decision.</p>
+                </div>
+
+                <!-- 8 -->
+                <div class="feature-card">
+                    <div class="jcard-num">8</div>
+                    <h3>Negotiate Strategically</h3>
+                    <p>Use your documented repair estimates to negotiate a lower price or request seller repairs before transfer. Evidence-backed negotiation gives you real leverage.</p>
+                </div>
+
+                <!-- 9 -->
+                <div class="feature-card">
+                    <div class="jcard-num">9</div>
+                    <h3>Secure Your Financing</h3>
+                    <p>Formally apply for your home loan once your offer is accepted. Submit all documents promptly — ID, bank statements, proof of income. Expect approval within 1–4 weeks.</p>
+                </div>
+
+                <!-- 10 -->
+                <div class="feature-card">
+                    <div class="jcard-num">10</div>
+                    <h3>Move In and Maintain</h3>
+                    <p>After transfer (8–12 weeks), do a final walk-through with the app to create a baseline report. Build a maintenance plan for your first 1–3 years so nothing catches you off guard.</p>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <!-- Why it matters -->
+    <section class="journey-why">
+        <div class="container">
+            <div class="journey-highlight">
+                <h3><i class="fas fa-exclamation-triangle"></i> Why This Process Matters</h3>
+                <p>Following these 10 steps transforms your home buying experience from stressful and uncertain to confident and informed. You'll avoid the shock of discovering R50,000+ in unexpected repairs after moving in, negotiate better prices based on actual property conditions, and maintain the joy of homeownership instead of experiencing buyer's remorse. Knowledge is your best investment protection.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA -->
+    <section class="journey-cta-section">
+        <div class="container">
+            <div class="cta-box">
+                <h3><i class="fas fa-mobile-alt"></i> Get the App for Every Viewing</h3>
+                <p>Home Buyers Guide SA walks you through every step on-site — room by room, question by question — so you never miss a red flag.</p>
+                <a href="https://play.google.com/store/apps/details?id=com.joelapexs.propertyinspector"
+                   target="_blank" class="btn-download-image" aria-label="Get it on Google Play">
+                    <img src="images/google-play-badge.png" alt="Get it on Google Play" class="play-badge-large" style="height:52px;">
+                </a>
+                <p style="margin-top:12px;font-size:0.8rem;color:rgba(255,255,255,0.55);">
+                    &#10003; Free to download &nbsp;&middot;&nbsp; First 2 properties free &nbsp;&middot;&nbsp; No account needed
+                </p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
     <footer class="footer">
         <div class="container">
             <div class="footer-strip">
