@@ -1,196 +1,157 @@
 /**
- * Property Inspector Website - Enhanced JavaScript
+ * Home Buyers Guide SA Website - Enhanced JavaScript v3.0
  */
 
-// Initialize website when DOM is loaded
 document.addEventListener('DOMContentLoaded', function() {
-    console.log('🏠 Property Inspector Website Loading...');
-    
+    console.log('HBG SA Website Loading...');
+
+    initializeThemeToggle();
     initializeNavigation();
     initializeTabs();
     initializeScrollEffects();
-    initializeStandaloneCostCalculator();
     initializeLazyLoading();
     initializeAnalytics();
     initializeStoriesToggle();
-    
-    console.log('✅ Property Inspector Website Loaded Successfully');
+
+    console.log('HBG SA Website Loaded Successfully');
 });
 
-/**
- * Navigation Functions
- */
+/* ─── THEME TOGGLE ──────────────────────────────────────── */
+function initializeThemeToggle() {
+    var toggle = document.getElementById('themeToggle');
+    if (!toggle) return;
+
+    // Apply current theme icon on load
+    updateThemeIcon(toggle, document.documentElement.getAttribute('data-theme') || 'light');
+
+    toggle.addEventListener('click', function() {
+        var current = document.documentElement.getAttribute('data-theme') || 'light';
+        var next = current === 'dark' ? 'light' : 'dark';
+
+        // Brief transition class for smooth color change
+        document.documentElement.classList.add('theme-switching');
+        document.documentElement.setAttribute('data-theme', next);
+        localStorage.setItem('hbg-theme', next);
+        updateThemeIcon(toggle, next);
+
+        setTimeout(function() {
+            document.documentElement.classList.remove('theme-switching');
+        }, 350);
+    });
+}
+
+function updateThemeIcon(toggle, theme) {
+    var icon = toggle.querySelector('i');
+    if (!icon) return;
+    if (theme === 'dark') {
+        icon.className = 'fas fa-sun';
+        toggle.setAttribute('aria-label', 'Switch to light mode');
+    } else {
+        icon.className = 'fas fa-moon';
+        toggle.setAttribute('aria-label', 'Switch to dark mode');
+    }
+}
+
+/* ─── NAVIGATION ────────────────────────────────────────── */
 function initializeNavigation() {
-    const navToggle = document.getElementById('navToggle');
-    const navMenu = document.getElementById('navMenu');
-    const navLinks = document.querySelectorAll('.nav-link');
-    
-    // Mobile menu toggle
-    if (navToggle) {
+    var navToggle = document.getElementById('navToggle');
+    var navMenu = document.getElementById('navMenu');
+    var navLinks = document.querySelectorAll('.nav-link');
+
+    if (navToggle && navMenu) {
         navToggle.addEventListener('click', function() {
             navMenu.classList.toggle('active');
-            
-            // Change icon
-            const icon = navToggle.querySelector('i');
+            var icon = navToggle.querySelector('i');
             if (navMenu.classList.contains('active')) {
-                icon.classList.remove('fa-bars');
-                icon.classList.add('fa-times');
+                icon.className = 'fas fa-times';
             } else {
-                icon.classList.remove('fa-times');
-                icon.classList.add('fa-bars');
+                icon.className = 'fas fa-bars';
             }
         });
     }
-    
-    // Smooth scrolling for navigation links
-    navLinks.forEach(link => {
+
+    navLinks.forEach(function(link) {
         link.addEventListener('click', function(e) {
-            const href = this.getAttribute('href');
-            
-            // Only handle internal links
+            var href = this.getAttribute('href');
             if (href && href.startsWith('#')) {
                 e.preventDefault();
-                
-                const targetId = href.substring(1);
-                const targetElement = document.getElementById(targetId);
-                
-                if (targetElement) {
-                    // Close mobile menu if open
-                    if (navMenu.classList.contains('active')) {
+                var target = document.getElementById(href.substring(1));
+                if (target) {
+                    if (navMenu && navMenu.classList.contains('active')) {
                         navMenu.classList.remove('active');
-                        const icon = navToggle.querySelector('i');
-                        icon.classList.remove('fa-times');
-                        icon.classList.add('fa-bars');
+                        var icon = navToggle.querySelector('i');
+                        if (icon) icon.className = 'fas fa-bars';
                     }
-                    
-                    // Smooth scroll to target
-                    const navHeight = document.querySelector('.navbar').offsetHeight;
-                    const targetPosition = targetElement.offsetTop - navHeight;
-                    
-                    window.scrollTo({
-                        top: targetPosition,
-                        behavior: 'smooth'
-                    });
+                    var navHeight = document.querySelector('.navbar').offsetHeight;
+                    window.scrollTo({ top: target.offsetTop - navHeight - 16, behavior: 'smooth' });
                 }
             }
         });
     });
 
-    // Highlight active section in navigation
     window.addEventListener('scroll', highlightActiveNavLink);
 }
 
-/**
- * Highlight active navigation link based on scroll position
- */
 function highlightActiveNavLink() {
-    const sections = document.querySelectorAll('section[id]');
-    const navLinks = document.querySelectorAll('.nav-link[href^="#"]');
-    
-    let current = '';
-    const scrollPosition = window.scrollY + 100;
-    
-    sections.forEach(section => {
-        const sectionTop = section.offsetTop;
-        const sectionHeight = section.offsetHeight;
-        
-        if (scrollPosition >= sectionTop && scrollPosition < sectionTop + sectionHeight) {
+    var sections = document.querySelectorAll('section[id]');
+    var navLinks = document.querySelectorAll('.nav-link[href^="#"]');
+    var current = '';
+    var scrollPos = window.scrollY + 100;
+
+    sections.forEach(function(section) {
+        if (scrollPos >= section.offsetTop && scrollPos < section.offsetTop + section.offsetHeight) {
             current = section.getAttribute('id');
         }
     });
-    
-    navLinks.forEach(link => {
+
+    navLinks.forEach(function(link) {
         link.classList.remove('active');
-        if (link.getAttribute('href') === `#${current}`) {
+        if (link.getAttribute('href') === '#' + current) {
             link.classList.add('active');
         }
     });
 }
 
-/**
- * Scroll Effects
- */
-function initializeScrollEffects() {
-    const navbar = document.getElementById('navbar');
-    
-    window.addEventListener('scroll', function() {
-        if (window.scrollY > 50) {
-            navbar.classList.add('scrolled');
-        } else {
-            navbar.classList.remove('scrolled');
-        }
-    });
-    
-    // Add scroll reveal animations
-    observeElements();
-}
-
-/**
- * Intersection Observer for scroll animations
- */
-function observeElements() {
-    const observerOptions = {
-        threshold: 0.1,
-        rootMargin: '0px 0px -50px 0px'
-    };
-    
-    const observer = new IntersectionObserver(function(entries) {
-        entries.forEach(entry => {
-            if (entry.isIntersecting) {
-                entry.target.style.opacity = '1';
-                entry.target.style.transform = 'translateY(0)';
-                entry.target.classList.add('animated');
-            }
-        });
-    }, observerOptions);
-    
-    // Observe cards and sections
-    const cards = document.querySelectorAll('.feature-card, .problem-card, .guide-card, .sample-card, .story-card, .step, .explainer-card');
-    cards.forEach((card, index) => {
-        card.style.opacity = '0';
-        card.style.transform = 'translateY(30px)';
-        card.style.transition = `all 0.6s ease ${index * 0.1}s`;
-        observer.observe(card);
-    });
-}
-
-/**
- * Benefits Tab System
- */
+/* ─── TABS ──────────────────────────────────────────────── */
 function initializeTabs() {
-    const tabButtons = document.querySelectorAll('.tab-btn');
-    const tabPanes = document.querySelectorAll('.tab-pane');
-    
-    tabButtons.forEach(button => {
+    var tabButtons = document.querySelectorAll('.tab-btn');
+    var tabPanes = document.querySelectorAll('.tab-pane');
+
+    tabButtons.forEach(function(button) {
         button.addEventListener('click', function() {
-            const targetTab = this.dataset.tab;
-            
-            // Remove active class from all buttons and panes
-            tabButtons.forEach(btn => btn.classList.remove('active'));
-            tabPanes.forEach(pane => pane.classList.remove('active'));
-            
-            // Add active class to clicked button and corresponding pane
+            var targetTab = this.dataset.tab;
+            tabButtons.forEach(function(btn) { btn.classList.remove('active'); });
+            tabPanes.forEach(function(pane) { pane.classList.remove('active'); });
             this.classList.add('active');
-            const targetPane = document.getElementById(targetTab);
-            if (targetPane) {
-                targetPane.classList.add('active');
-            }
-            
-            // Track tab click
+            var targetPane = document.getElementById(targetTab);
+            if (targetPane) targetPane.classList.add('active');
             trackEvent('Engagement', 'Tab Click', targetTab);
         });
     });
 }
 
-/**
- * Lazy Loading for Images
- */
+/* ─── SCROLL EFFECTS ────────────────────────────────────── */
+function initializeScrollEffects() {
+    var navbar = document.getElementById('navbar');
+
+    window.addEventListener('scroll', function() {
+        if (navbar) {
+            if (window.scrollY > 50) {
+                navbar.classList.add('scrolled');
+            } else {
+                navbar.classList.remove('scrolled');
+            }
+        }
+    });
+}
+
+/* ─── LAZY LOADING ──────────────────────────────────────── */
 function initializeLazyLoading() {
     if ('IntersectionObserver' in window) {
-        const imageObserver = new IntersectionObserver((entries, observer) => {
-            entries.forEach(entry => {
+        var imageObserver = new IntersectionObserver(function(entries, observer) {
+            entries.forEach(function(entry) {
                 if (entry.isIntersecting) {
-                    const img = entry.target;
+                    var img = entry.target;
                     if (img.dataset.src) {
                         img.src = img.dataset.src;
                         img.removeAttribute('data-src');
@@ -199,270 +160,50 @@ function initializeLazyLoading() {
                 }
             });
         });
-        
-        document.querySelectorAll('img[data-src]').forEach(img => {
+        document.querySelectorAll('img[data-src]').forEach(function(img) {
             imageObserver.observe(img);
         });
     }
 }
 
-/**
- * Initialize Analytics Tracking
- */
+/* ─── ANALYTICS ─────────────────────────────────────────── */
 function initializeAnalytics() {
-    // Track download button clicks
-    const downloadButtons = document.querySelectorAll('a[href*="play.google.com"]');
-    downloadButtons.forEach(button => {
-        button.addEventListener('click', function() {
-            trackEvent('Download', 'Click', 'Google Play Store');
-        });
+    document.querySelectorAll('a[href*="play.google.com"]').forEach(function(btn) {
+        btn.addEventListener('click', function() { trackEvent('Download', 'Click', 'Google Play Store'); });
     });
-    
-    // Track sample PDF downloads
-    const sampleLinks = document.querySelectorAll('a[download]');
-    sampleLinks.forEach(link => {
+    document.querySelectorAll('a[download]').forEach(function(link) {
         link.addEventListener('click', function() {
-            const fileName = this.getAttribute('download') || 'sample-report';
-            trackEvent('Sample', 'Download', fileName);
-        });
-    });
-    
-    // Track calculator usage
-    const calculatorInputs = document.querySelectorAll('.calc-input, .calc-select, .calc-slider');
-    calculatorInputs.forEach(input => {
-        input.addEventListener('change', function() {
-            trackEvent('Calculator', 'Input Changed', this.id || 'unknown');
-        });
-    });
-    
-    // Track external link clicks
-    const externalLinks = document.querySelectorAll('a[href^="http"]:not([href*="' + window.location.hostname + '"])');
-    externalLinks.forEach(link => {
-        link.addEventListener('click', function() {
-            trackEvent('External Link', 'Click', this.href);
+            trackEvent('Sample', 'Download', this.getAttribute('download') || 'sample-report');
         });
     });
 }
 
-/**
- * Google Analytics Event Tracking
- */
 function trackEvent(category, action, label) {
     if (typeof gtag !== 'undefined') {
-        gtag('event', action, {
-            'event_category': category,
-            'event_label': label
-        });
+        gtag('event', action, { 'event_category': category, 'event_label': label });
     }
 }
 
-/**
- * Keyboard navigation improvements
- */
-document.addEventListener('keydown', function(e) {
-    // ESC key closes mobile menu
-    if (e.key === 'Escape') {
-        const navMenu = document.getElementById('navMenu');
-        const navToggle = document.getElementById('navToggle');
-        
-        if (navMenu && navMenu.classList.contains('active')) {
-            navMenu.classList.remove('active');
-            const icon = navToggle.querySelector('i');
-            icon.classList.remove('fa-times');
-            icon.classList.add('fa-bars');
-        }
-    }
-});
-
-/**
- * Performance monitoring
- */
-window.addEventListener('load', function() {
-    // Log performance metrics
-    if (window.performance && window.performance.timing) {
-        const loadTime = window.performance.timing.loadEventEnd - window.performance.timing.navigationStart;
-        console.log(`⚡ Page loaded in ${loadTime}ms`);
-        
-        // Track performance in Google Analytics
-        if (typeof gtag !== 'undefined') {
-            gtag('event', 'timing_complete', {
-                'name': 'load',
-                'value': loadTime,
-                'event_category': 'Performance'
-            });
-        }
-    }
-});
-
-/**
- * Error handling
- */
-window.addEventListener('error', function(e) {
-    console.error('Website error:', e.error);
-    
-    // Track errors in Google Analytics
-    if (typeof gtag !== 'undefined') {
-        gtag('event', 'exception', {
-            'description': e.error?.message || 'Unknown error',
-            'fatal': false
-        });
-    }
-});
-
-/**
- * Smooth scroll to top function
- */
-function scrollToTop() {
-    window.scrollTo({
-        top: 0,
-        behavior: 'smooth'
-    });
-}
-
-/**
- * Share functionality
- */
-async function shareWebsite() {
-    const shareData = {
-        title: 'Property Inspector - Know Before You Buy',
-        text: 'Professional property assessment app for South Africa. Avoid costly mistakes!',
-        url: window.location.href
-    };
-    
-    try {
-        if (navigator.share) {
-            await navigator.share(shareData);
-            trackEvent('Share', 'Native', 'Website');
-        } else {
-            // Fallback - copy to clipboard
-            await navigator.clipboard.writeText(window.location.href);
-            showNotification('Link copied to clipboard!');
-            trackEvent('Share', 'Copy', 'Website');
-        }
-    } catch (err) {
-        console.error('Error sharing:', err);
-    }
-}
-
-/**
- * Show notification
- */
-function showNotification(message, type = 'success') {
-    const notification = document.createElement('div');
-    notification.className = `notification notification-${type}`;
-    notification.textContent = message;
-    notification.style.cssText = `
-        position: fixed;
-        bottom: 30px;
-        right: 30px;
-        background: ${type === 'success' ? '#06D6A0' : '#EF476F'};
-        color: white;
-        padding: 15px 25px;
-        border-radius: 10px;
-        box-shadow: 0 5px 20px rgba(0,0,0,0.3);
-        z-index: 10000;
-        animation: slideInUp 0.3s ease-out;
-    `;
-    
-    document.body.appendChild(notification);
-    
-    setTimeout(() => {
-        notification.style.animation = 'slideOutDown 0.3s ease-out';
-        setTimeout(() => notification.remove(), 300);
-    }, 3000);
-}
-
-/**
- * Mobile-specific optimizations
- */
-function initializeMobileOptimizations() {
-    // Detect touch device
-    const isTouchDevice = 'ontouchstart' in window || navigator.maxTouchPoints > 0;
-    
-    if (isTouchDevice) {
-        document.body.classList.add('touch-device');
-    }
-}
-
-initializeMobileOptimizations();
-
-/**
- * Handle form submissions (if contact form added)
- */
-function handleFormSubmit(event) {
-    event.preventDefault();
-    const form = event.target;
-    const formData = new FormData(form);
-    
-    // Track form submission
-    trackEvent('Contact', 'Submit', 'Contact Form');
-    
-    // Here you would send data to your backend
-    showNotification('Thank you! We will get back to you soon.');
-    form.reset();
-}
-
-/**
- * Initialize standalone calculator on calculator page
- */
-function initializeStandaloneCostCalculator() {
-    // This function is called, and calculator.js handles the actual implementation
-    console.log('📊 Calculator initialized');
-}
-
-/**
- * Add CSS animation keyframes dynamically
- */
-const style = document.createElement('style');
-style.textContent = `
-    @keyframes slideInUp {
-        from {
-            transform: translateY(100%);
-            opacity: 0;
-        }
-        to {
-            transform: translateY(0);
-            opacity: 1;
-        }
-    }
-    
-    @keyframes slideOutDown {
-        from {
-            transform: translateY(0);
-            opacity: 1;
-        }
-        to {
-            transform: translateY(100%);
-            opacity: 0;
-        }
-    }
-`;
-document.head.appendChild(style);
-
-/**
- * Initialize collapsible stories on mobile
- */
+/* ─── STORIES TOGGLE (mobile) ───────────────────────────── */
 function initializeStoriesToggle() {
-    const toggle = document.getElementById('storiesToggle');
-    const grid = document.getElementById('storiesGrid');
-    
+    var toggle = document.getElementById('storiesToggle');
+    var grid = document.getElementById('storiesGrid');
     if (!toggle || !grid) return;
-    
-    // Show toggle button on mobile only
+
     function checkMobile() {
         if (window.innerWidth <= 768) {
             toggle.style.display = 'inline-flex';
-            grid.classList.add('collapsed');
+            if (!grid.classList.contains('expanded')) {
+                grid.classList.add('collapsed');
+            }
         } else {
             toggle.style.display = 'none';
             grid.classList.remove('collapsed', 'expanded');
         }
     }
-    
-    // Toggle stories visibility
+
     toggle.addEventListener('click', function() {
-        const isExpanded = grid.classList.contains('expanded');
-        
+        var isExpanded = grid.classList.contains('expanded');
         if (isExpanded) {
             grid.classList.remove('expanded');
             grid.classList.add('collapsed');
@@ -475,10 +216,98 @@ function initializeStoriesToggle() {
             toggle.classList.add('expanded');
         }
     });
-    
-    // Check on load and resize
+
     checkMobile();
     window.addEventListener('resize', checkMobile);
 }
 
-console.log('🚀 Property Inspector Website Scripts Initialized');
+/* ─── KEYBOARD NAV ──────────────────────────────────────── */
+document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape') {
+        var navMenu = document.getElementById('navMenu');
+        var navToggle = document.getElementById('navToggle');
+        if (navMenu && navMenu.classList.contains('active')) {
+            navMenu.classList.remove('active');
+            var icon = navToggle ? navToggle.querySelector('i') : null;
+            if (icon) icon.className = 'fas fa-bars';
+        }
+    }
+});
+
+/* ─── PERFORMANCE ───────────────────────────────────────── */
+window.addEventListener('load', function() {
+    if (window.performance && window.performance.timing) {
+        var loadTime = window.performance.timing.loadEventEnd - window.performance.timing.navigationStart;
+        console.log('Page loaded in ' + loadTime + 'ms');
+        if (typeof gtag !== 'undefined') {
+            gtag('event', 'timing_complete', { 'name': 'load', 'value': loadTime, 'event_category': 'Performance' });
+        }
+    }
+});
+
+/* ─── ERROR HANDLING ────────────────────────────────────── */
+window.addEventListener('error', function(e) {
+    console.error('Website error:', e.error);
+    if (typeof gtag !== 'undefined') {
+        gtag('event', 'exception', { 'description': (e.error && e.error.message) || 'Unknown error', 'fatal': false });
+    }
+});
+
+/* ─── SCROLL TO TOP ─────────────────────────────────────── */
+function scrollToTop() {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+/* ─── SHARE ─────────────────────────────────────────────── */
+async function shareWebsite() {
+    var shareData = {
+        title: 'Home Buyers Guide SA - Know Before You Buy',
+        text: 'Professional property assessment app for South Africa. Avoid costly mistakes!',
+        url: window.location.href
+    };
+    try {
+        if (navigator.share) {
+            await navigator.share(shareData);
+            trackEvent('Share', 'Native', 'Website');
+        } else {
+            await navigator.clipboard.writeText(window.location.href);
+            showNotification('Link copied to clipboard!');
+            trackEvent('Share', 'Copy', 'Website');
+        }
+    } catch (err) {
+        console.error('Error sharing:', err);
+    }
+}
+
+/* ─── NOTIFICATION ──────────────────────────────────────── */
+function showNotification(message, type) {
+    type = type || 'success';
+    var notification = document.createElement('div');
+    notification.style.cssText = [
+        'position:fixed;bottom:28px;right:28px;',
+        'background:' + (type === 'success' ? '#00C48C' : '#DC2626') + ';',
+        'color:white;padding:14px 22px;border-radius:10px;',
+        'box-shadow:0 5px 20px rgba(0,0,0,0.2);z-index:10000;',
+        'font-family:Poppins,sans-serif;font-size:0.9rem;font-weight:500;',
+        'animation:slideInUp 0.3s ease-out;'
+    ].join('');
+    notification.textContent = message;
+    document.body.appendChild(notification);
+    setTimeout(function() {
+        notification.style.animation = 'slideOutDown 0.3s ease-out';
+        setTimeout(function() { if (notification.parentNode) notification.remove(); }, 300);
+    }, 3000);
+}
+
+/* ─── ANIMATION KEYFRAMES (injected) ────────────────────── */
+var style = document.createElement('style');
+style.textContent = [
+    '@keyframes slideInUp{from{transform:translateY(100%);opacity:0}to{transform:translateY(0);opacity:1}}',
+    '@keyframes slideOutDown{from{transform:translateY(0);opacity:1}to{transform:translateY(100%);opacity:0}}'
+].join('');
+document.head.appendChild(style);
+
+/* ─── MOBILE TOUCH DETECTION ────────────────────────────── */
+if ('ontouchstart' in window || navigator.maxTouchPoints > 0) {
+    document.body.classList.add('touch-device');
+}
