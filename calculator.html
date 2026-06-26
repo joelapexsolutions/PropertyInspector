@@ -1,94 +1,84 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-theme="light">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    
-    <!-- SEO Meta Tags -->
-    <title>Property Cost Calculator | Calculate Transfer Duties & Bond Costs South Africa</title>
-    <meta name="description" content="Free SA property cost calculator. Calculate accurate monthly bond repayments, transfer duties, attorney fees, and total ownership costs. Get instant results for any property price in South Africa.">
-    <meta name="keywords" content="property cost calculator South Africa, bond calculator, transfer duty calculator, property transfer fees, monthly bond repayment, SA home loan calculator">
-    
-    <!-- Canonical URL -->
+
+    <!-- Primary SEO -->
+    <title>Bond &amp; Transfer Cost Calculator South Africa | Home Buyers Guide SA</title>
+    <meta name="description" content="Free South African property cost calculator. Instantly calculate transfer duties, bond registration fees, attorney costs, and monthly bond repayments for any property price. Updated 2025 SARS rates.">
+    <meta name="keywords" content="property cost calculator South Africa, bond calculator SA, transfer duty calculator, transfer attorney fees, bond registration costs, monthly bond repayment calculator, home loan calculator South Africa">
     <link rel="canonical" href="https://propertyinspector.site/calculator.html">
-    
-    <!-- Fonts -->
+
+    <!-- Open Graph -->
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="Free SA Property Cost Calculator | Bond &amp; Transfer Duty">
+    <meta property="og:description" content="Calculate transfer duties, attorney fees, bond registration costs, and monthly repayments for any South African property price. Instant, accurate, free.">
+    <meta property="og:url" content="https://propertyinspector.site/calculator.html">
+    <meta property="og:image" content="https://propertyinspector.site/images/app_banner.png">
+    <meta property="og:site_name" content="Home Buyers Guide SA">
+
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Free SA Property Cost Calculator | Bond &amp; Transfer Duty">
+    <meta name="twitter:description" content="Instant transfer duty, attorney fee, and monthly bond calculations for South African properties.">
+    <meta name="twitter:image" content="https://propertyinspector.site/images/app_banner.png">
+
+    <!-- Fonts & Icons -->
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-    
+
     <!-- Styles -->
     <link rel="stylesheet" href="website-styles.css">
     <link rel="stylesheet" href="calculator.css">
-    
-    <!-- Favicon -->
+
     <link rel="icon" type="image/png" href="images/transparent_logo.png">
-    
+
+    <!-- Anti-FOUC -->
+    <script>
+        (function(){
+            var t=localStorage.getItem('hbg-theme');
+            if(t){document.documentElement.setAttribute('data-theme',t);}
+            else if(window.matchMedia&&window.matchMedia('(prefers-color-scheme:dark)').matches){
+                document.documentElement.setAttribute('data-theme','dark');
+            }
+        })();
+    </script>
+
     <!-- Google Analytics -->
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-2MN5R2QXNC"></script>
     <script>
-        window.dataLayer = window.dataLayer || [];
+        window.dataLayer=window.dataLayer||[];
         function gtag(){dataLayer.push(arguments);}
-        gtag('js', new Date());
-        gtag('config', 'G-2MN5R2QXNC');
+        gtag('js',new Date());
+        gtag('config','G-2MN5R2QXNC');
     </script>
-    
-    <!-- Structured Data for Calculator -->
+
+    <!-- Structured Data -->
     <script type="application/ld+json">
     {
         "@context": "https://schema.org",
         "@type": "WebApplication",
-        "name": "Property Cost Calculator South Africa",
-        "description": "Calculate property costs including transfer duties, bond costs, and monthly repayments for South African properties",
+        "name": "SA Bond & Transfer Cost Calculator",
+        "url": "https://propertyinspector.site/calculator.html",
+        "description": "Free calculator for South African property costs including transfer duties, bond registration fees, attorney fees, and monthly bond repayments. Reflects current 2025 SARS transfer duty rates.",
         "applicationCategory": "FinanceApplication",
         "offers": {
             "@type": "Offer",
             "price": "0",
             "priceCurrency": "ZAR"
         },
-        "operatingSystem": "Any"
+        "operatingSystem": "Any",
+        "provider": {
+            "@type": "Organization",
+            "name": "Home Buyers Guide SA",
+            "url": "https://propertyinspector.site"
+        }
     }
     </script>
-    <style>
-        /* Fix nav logo text wrapping */
-        .nav-logo { white-space: nowrap; flex-shrink: 0; gap: 10px; }
-        .nav-logo img { height: 36px; width: 36px; border-radius: 8px; flex-shrink: 0; object-fit: cover; }
-        .nav-logo span { font-size: 1.05rem; font-weight: 700; white-space: nowrap; }
-        /* Compact nav links */
-        .nav-menu { gap: 2px; }
-        .nav-link { padding: 7px 9px; font-size: 0.87rem; }
-        .btn-primary { padding: 10px 16px; font-size: 0.87rem; }
-        @media (max-width: 1200px) { .nav-logo span { font-size: 0.95rem; } .nav-link { padding: 6px 7px; font-size: 0.82rem; } }
-        @media (max-width: 1024px) { .nav-menu { display: none; } .nav-menu.active { display: flex; } .nav-toggle { display: block; } }
-
-        .cta-badges {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            gap: 20px;
-            flex-wrap: wrap;
-            margin-top: 10px;
-        }
-
-        .cta-badges a img {
-            height: 58px;
-            border-radius: 8px;
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
-        }
-
-        .cta-badges a img:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.4);
-        }
-
-        .cta-free-note {
-            margin-top: 18px;
-            font-size: 0.9rem;
-            color: rgba(255, 255, 255, 0.85);
-        }
-    </style>
 </head>
 <body>
+
     <!-- Navigation -->
     <nav class="navbar" id="navbar">
         <div class="container">
@@ -97,19 +87,28 @@
                     <img src="images/transparent_logo.png" alt="Home Buyers Guide SA">
                     <span>Home Buyers Guide SA</span>
                 </a>
+
                 <button class="nav-toggle" id="navToggle" aria-label="Toggle navigation">
                     <i class="fas fa-bars"></i>
                 </button>
+
                 <ul class="nav-menu" id="navMenu">
-                    <li><a href="index.html" class="nav-link">Home</a></li>
-                    <li><a href="index.html#real-stories" class="nav-link">Real Stories</a></li>
                     <li><a href="index.html#features" class="nav-link">Features</a></li>
-                    <li><a href="index.html#benefits" class="nav-link">Benefits</a></li>
+                    <li><a href="home-buyers-journey.html" class="nav-link">Journey</a></li>
                     <li><a href="calculator.html" class="nav-link active">Calculator</a></li>
-                    <li><a href="index.html#guide" class="nav-link">Guide</a></li>
-                    <li><a href="index.html#samples" class="nav-link">Samples</a></li>
-                    <li><a href="https://play.google.com/store/apps/details?id=com.joelapexs.propertyinspector" target="_blank" class="nav-link btn-primary">Download App</a></li>
+                    <li><a href="blog.html" class="nav-link">Blog</a></li>
+                    <li><a href="faq.html" class="nav-link">FAQ</a></li>
                 </ul>
+
+                <div class="nav-right">
+                    <button class="theme-toggle" id="themeToggle" aria-label="Switch to dark mode">
+                        <i class="fas fa-moon"></i>
+                    </button>
+                    <a href="https://play.google.com/store/apps/details?id=com.joelapexs.propertyinspector"
+                       target="_blank" class="btn-nav-download">
+                        <i class="fas fa-download"></i> Download App
+                    </a>
+                </div>
             </div>
         </div>
     </nav>
@@ -119,12 +118,11 @@
         <div class="container">
             <div class="calculator-hero-content">
                 <h1>Property Cost Calculator</h1>
-                <p class="hero-subtitle">Calculate accurate monthly costs, transfer duties, and once-off fees for any South African property. Know exactly what you'll pay before making an offer.</p>
-                
+                <p class="hero-subtitle">Calculate accurate transfer duties, attorney fees, bond registration costs, and monthly repayments for any South African property. Know exactly what you&rsquo;ll pay before making an offer.</p>
                 <div class="calculator-benefits">
                     <div class="calc-benefit-item">
                         <i class="fas fa-calculator"></i>
-                        <span>Accurate SA Calculations</span>
+                        <span>2025 SARS Rates</span>
                     </div>
                     <div class="calc-benefit-item">
                         <i class="fas fa-file-invoice-dollar"></i>
@@ -132,120 +130,110 @@
                     </div>
                     <div class="calc-benefit-item">
                         <i class="fas fa-chart-pie"></i>
-                        <span>Complete Cost Breakdown</span>
+                        <span>Full Cost Breakdown</span>
                     </div>
                 </div>
             </div>
         </div>
     </section>
 
-    <!-- Calculator Section -->
+    <!-- Calculator -->
     <section class="calculator-main-section">
         <div class="container">
             <div class="calculator-wrapper-page">
                 <div id="propertyCalculator"></div>
             </div>
-            
-            <!-- Explanation Cards -->
+
+            <!-- What the costs mean -->
             <div class="calc-explainers">
                 <h2 class="explainer-heading">Understanding Your Property Costs</h2>
                 <div class="explainer-grid">
                     <article class="explainer-card">
-                        <div class="explainer-icon">
-                            <i class="fas fa-landmark"></i>
-                        </div>
+                        <div class="explainer-icon"><i class="fas fa-landmark"></i></div>
                         <h3>Transfer Duty</h3>
-                        <p>Government tax on property ownership transfer. Progressive rates apply based on purchase price. First-time buyers benefit from a threshold exemption.</p>
+                        <p>Government tax on property ownership transfer. Progressive rates apply based on purchase price — properties below R1.1M are currently exempt.</p>
                         <ul class="explainer-list">
                             <li>Rates are progressive and increase with property value</li>
-                            <li>Calculated automatically in the calculator above</li>
-                            <li>Exemptions available for properties below certain thresholds</li>
-                            <li>Rates updated annually by National Treasury</li>
+                            <li>Calculated automatically above using 2025 SARS brackets</li>
+                            <li>Exempt for properties below the current threshold</li>
+                            <li>Brackets reviewed annually by National Treasury</li>
                         </ul>
                     </article>
-                    
+
                     <article class="explainer-card">
-                        <div class="explainer-icon">
-                            <i class="fas fa-file-contract"></i>
-                        </div>
+                        <div class="explainer-icon"><i class="fas fa-file-contract"></i></div>
                         <h3>Transfer Attorney Fees</h3>
-                        <p>Legal fees for transferring property ownership to your name. Includes conveyancing, deeds office registration, and documentation:</p>
+                        <p>Legal fees for transferring ownership to your name. Covers conveyancing, deeds office registration, and all documentation:</p>
                         <ul class="explainer-list">
-                            <li>Attorney professional fees (scale-based on property value)</li>
+                            <li>Professional fees (scale-based on property value)</li>
                             <li>VAT at current rate</li>
                             <li>Deeds office registration fees</li>
-                            <li>Document preparation, title searches, and admin</li>
+                            <li>Title searches, document preparation and admin</li>
                             <li>Fees increase progressively with property price</li>
-                            <li>Calculated automatically in calculator above</li>
                         </ul>
                     </article>
-                    
+
                     <article class="explainer-card">
-                        <div class="explainer-icon">
-                            <i class="fas fa-university"></i>
-                        </div>
+                        <div class="explainer-icon"><i class="fas fa-university"></i></div>
                         <h3>Bond Registration Costs</h3>
-                        <p>Costs to register your home loan with the Deeds Office (only if financing with bond):</p>
+                        <p>Costs to register your home loan with the Deeds Office (only when financing with a bond):</p>
                         <ul class="explainer-list">
                             <li>Bond attorney fees (separate from transfer attorney)</li>
                             <li>Deeds office registration fees</li>
-                            <li>Bank initiation fees (typically R5,000-R7,000)</li>
-                            <li>Document preparation</li>
-                            <li>Total typically R25,000 - R45,000</li>
+                            <li>Bank initiation fee (typically R5,000&ndash;R7,000)</li>
+                            <li>Document preparation and admin</li>
+                            <li>Total typically R25,000&ndash;R45,000</li>
                         </ul>
                     </article>
-                    
+
                     <article class="explainer-card">
-                        <div class="explainer-icon">
-                            <i class="fas fa-percentage"></i>
-                        </div>
+                        <div class="explainer-icon"><i class="fas fa-percentage"></i></div>
                         <h3>Monthly Bond Repayment</h3>
                         <p>Your home loan repayment depends on three factors:</p>
                         <ul class="explainer-list">
-                            <li><strong>Loan amount:</strong> Purchase price minus deposit</li>
-                            <li><strong>Interest rate:</strong> Current prime lending rate (varies - adjust slider in calculator)</li>
-                            <li><strong>Loan term:</strong> Typically 20-30 years</li>
-                            <li>Includes principal and interest</li>
-                            <li>Longer terms = lower monthly payment, but more total interest paid</li>
+                            <li><strong>Loan amount</strong> &mdash; purchase price minus deposit</li>
+                            <li><strong>Interest rate</strong> &mdash; linked to the prime lending rate (adjust the slider)</li>
+                            <li><strong>Loan term</strong> &mdash; typically 20&ndash;30 years</li>
+                            <li>Longer terms mean a lower monthly payment but more total interest paid</li>
                         </ul>
                     </article>
                 </div>
             </div>
-            
-            <!-- Tips Section -->
+
+            <!-- Smart tips -->
             <div class="calculator-tips">
                 <h2><i class="fas fa-lightbulb"></i> Smart Buying Tips</h2>
                 <div class="tips-grid">
                     <div class="tip-card">
-                        <h4><i class="fas fa-piggy-bank"></i> Budget for 10-20% Deposit</h4>
-                        <p>While 100% bonds exist, a 10-20% deposit typically secures better interest rates and approval odds. Larger deposits reduce your monthly repayments and total interest paid over the loan term.</p>
+                        <h4><i class="fas fa-piggy-bank"></i> Budget for a 10&ndash;20% Deposit</h4>
+                        <p>A larger deposit secures better interest rates and reduces your monthly repayment. While 100% bonds exist, a deposit significantly lowers the total interest paid over the loan term.</p>
                     </div>
                     <div class="tip-card">
-                        <h4><i class="fas fa-coins"></i> Don't Forget Once-Off Costs</h4>
-                        <p>Budget for transfer duties, attorney fees, and bond registration costs. Many buyers overlook these significant once-off expenses and face cash flow problems at transfer. Use the calculator above for accurate estimates.</p>
+                        <h4><i class="fas fa-coins"></i> Don&rsquo;t Forget Once-Off Costs</h4>
+                        <p>Transfer duties, attorney fees, and bond registration are significant once-off expenses many buyers overlook. Use this calculator to budget for them before making an offer.</p>
                     </div>
                     <div class="tip-card">
-                        <h4><i class="fas fa-chart-line"></i> Monthly Costs Beyond Bond</h4>
-                        <p>Remember to budget for rates, water, electricity, levies (for complexes or estates), insurance, and maintenance. These ongoing costs significantly impact affordability and vary by property type and location.</p>
+                        <h4><i class="fas fa-chart-line"></i> Monthly Costs Beyond Your Bond</h4>
+                        <p>Budget for rates, water, electricity, levies (for complexes), insurance, and maintenance. These ongoing costs significantly impact affordability and vary by property and location.</p>
                     </div>
                     <div class="tip-card">
-                        <h4><i class="fas fa-hand-holding-usd"></i> Rule of Thumb: 30% Income</h4>
-                        <p>Total housing costs shouldn't exceed 30% of gross monthly income. Banks typically lend 3-4x annual salary. Calculate affordability before property hunting.</p>
+                        <h4><i class="fas fa-hand-holding-usd"></i> The 30% Rule of Thumb</h4>
+                        <p>Total housing costs (bond + rates + levies + insurance) shouldn&rsquo;t exceed 30% of gross monthly income. Banks typically lend 3&ndash;4&times; annual salary. Calculate affordability before you search.</p>
                     </div>
                 </div>
             </div>
-            
+
             <!-- CTA -->
             <div class="calculator-cta">
-                <h3>Ready to Start Your Property Journey?</h3>
-                <p>Download Home Buyers Guide SA to assess properties professionally and avoid costly surprises</p>
-                <div class="cta-badges">
-                    <a href="https://play.google.com/store/apps/details?id=com.joelapexs.propertyinspector" target="_blank">
-                        <img src="https://play.google.com/intl/en_us/badges/static/images/badges/en_badge_web_generic.png"
-                             alt="Get it on Google Play" />
-                    </a>
-                </div>
-                <p class="cta-free-note">✓ Free to download &nbsp;·&nbsp; First 2 properties free &nbsp;·&nbsp; No account needed</p>
+                <h3>Inspect Before You Offer</h3>
+                <p>Knowing the costs is step one. Download Home Buyers Guide SA to assess properties room-by-room and avoid costly post-purchase surprises.</p>
+                <a href="https://play.google.com/store/apps/details?id=com.joelapexs.propertyinspector"
+                   target="_blank" class="btn-download-image" aria-label="Get it on Google Play">
+                    <img src="images/google-play-badge.png" alt="Get it on Google Play" class="play-badge-large" style="height:52px;">
+                </a>
+                <p style="margin-top:12px;font-size:0.8rem;color:rgba(255,255,255,0.55);">
+                    &#10003; Free to download &nbsp;&middot;&nbsp; First 2 properties free &nbsp;&middot;&nbsp; No account needed
+                </p>
             </div>
         </div>
     </section>
@@ -253,48 +241,21 @@
     <!-- Footer -->
     <footer class="footer">
         <div class="container">
-            <div class="footer-content">
-                <div class="footer-brand">
-                    <div class="footer-logo">
-                        <img src="images/transparent_logo.png" alt="Home Buyers Guide SA">
-                        <span>Home Buyers Guide SA</span>
-                    </div>
-                    <p>Professional property assessment for informed decisions. Know before you buy.</p>
+            <div class="footer-strip">
+                <div class="footer-logo">
+                    <img src="images/transparent_logo.png" alt="Home Buyers Guide SA">
+                    <span>Home Buyers Guide SA</span>
                 </div>
-                <div class="footer-links">
-                    <div class="footer-column">
-                        <h4>Product</h4>
-                        <ul>
-                            <li><a href="index.html#features">Features</a></li>
-                            <li><a href="calculator.html">Calculator</a></li>
-                            <li><a href="index.html#samples">Sample Reports</a></li>
-                            <li><a href="index.html#download">Download App</a></li>
-                        </ul>
-                    </div>
-                    <div class="footer-column">
-                        <h4>Resources</h4>
-                        <ul>
-                            <li><a href="index.html#guide">Viewing Guide</a></li>
-                            <li><a href="index.html#real-stories">Real Stories</a></li>
-                            <li><a href="index.html#benefits">Benefits</a></li>
-                            <li><a href="privacy.html">Privacy Policy</a></li>
-                        </ul>
-                    </div>
-                    <div class="footer-column">
-                        <h4>Contact</h4>
-                        <ul>
-                            <li><a href="mailto:joelapexs@gmail.com">joelapexs@gmail.com</a></li>
-                        </ul>
-                    </div>
-                </div>
-            </div>
-            <div class="footer-bottom">
-                <p>&copy; 2026 Joel Apex Solutions - Home Buyers Guide SA. All rights reserved.</p>
+                <nav class="footer-nav" aria-label="Footer navigation">
+                    <a href="privacy.html">Privacy Policy</a>
+                    <a href="mailto:joelapexs@gmail.com">Contact</a>
+                    <a href="https://play.google.com/store/apps/details?id=com.joelapexs.propertyinspector" target="_blank">Google Play</a>
+                </nav>
+                <p class="footer-copy">&copy; 2026 Joel Apex Solutions. All rights reserved.</p>
             </div>
         </div>
     </footer>
 
-    <!-- Scripts -->
     <script src="calculator.js"></script>
     <script src="website-main.js"></script>
 </body>
