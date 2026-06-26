@@ -34,22 +34,26 @@
     <style>
         /* ── Journey hero ──────────────────────────────────────── */
         .journey-hero {
-            background: var(--navy);
+            background: linear-gradient(135deg, #2E86AB 0%, #06D6A0 100%);
             padding: 120px 0 64px;
             text-align: center;
         }
-        [data-theme="dark"] .journey-hero { background: var(--bg-alt); }
+        [data-theme="dark"] .journey-hero { background: linear-gradient(135deg, #1B5272 0%, #048C6A 100%); }
         .journey-hero h1 {
             font-size: clamp(1.9rem, 3.5vw, 2.7rem);
             font-weight: 800; color: #FFFFFF;
             margin-bottom: 16px; line-height: 1.2;
         }
-        [data-theme="dark"] .journey-hero h1 { color: var(--text-heading); }
         .journey-hero .hero-subtitle {
-            font-size: 1rem; color: rgba(255,255,255,0.72);
+            font-size: 1rem; color: rgba(255,255,255,0.82);
             max-width: 640px; margin: 0 auto; line-height: 1.72;
         }
-        [data-theme="dark"] .journey-hero .hero-subtitle { color: var(--text-muted); }
+        /* Badge override — white on gradient background */
+        .journey-hero .hero-badge {
+            background: rgba(255,255,255,0.18);
+            color: #FFFFFF;
+            border-color: rgba(255,255,255,0.32);
+        }
 
         /* ── Intro ─────────────────────────────────────────────── */
         .journey-intro-section { background: var(--bg-page); padding: 52px 0 0; }
