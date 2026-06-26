@@ -184,41 +184,30 @@ function trackEvent(category, action, label) {
     }
 }
 
-/* ─── STORIES TOGGLE (mobile) ───────────────────────────── */
+/* ─── STORIES TOGGLE ─────────────────────────────────────── */
 function initializeStoriesToggle() {
     var toggle = document.getElementById('storiesToggle');
     var grid = document.getElementById('storiesGrid');
     if (!toggle || !grid) return;
 
-    function checkMobile() {
-        if (window.innerWidth <= 768) {
-            toggle.style.display = 'inline-flex';
-            if (!grid.classList.contains('expanded')) {
-                grid.classList.add('collapsed');
-            }
-        } else {
-            toggle.style.display = 'none';
-            grid.classList.remove('collapsed', 'expanded');
-        }
-    }
+    // Always start collapsed (shows first 3 cards only)
+    grid.classList.add('collapsed');
+    toggle.style.display = 'inline-flex';
 
     toggle.addEventListener('click', function() {
         var isExpanded = grid.classList.contains('expanded');
         if (isExpanded) {
             grid.classList.remove('expanded');
             grid.classList.add('collapsed');
-            toggle.querySelector('.toggle-text').textContent = 'Show All Stories';
+            toggle.querySelector('.toggle-text').textContent = 'See 3 More Stories';
             toggle.classList.remove('expanded');
         } else {
             grid.classList.remove('collapsed');
             grid.classList.add('expanded');
-            toggle.querySelector('.toggle-text').textContent = 'Hide Stories';
+            toggle.querySelector('.toggle-text').textContent = 'Show Less';
             toggle.classList.add('expanded');
         }
     });
-
-    checkMobile();
-    window.addEventListener('resize', checkMobile);
 }
 
 /* ─── KEYBOARD NAV ──────────────────────────────────────── */
