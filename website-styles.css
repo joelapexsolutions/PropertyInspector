@@ -646,16 +646,14 @@ section{padding:70px 0;position:relative;}
 [data-theme="dark"] .footer-copy{color:rgba(200,222,240,0.3);}
 
 /* ─── 19. CALCULATOR PAGE ────────────────────────────────── */
-.calculator-hero{background:var(--navy);padding:130px 0 70px;text-align:center;}
-[data-theme="dark"] .calculator-hero{background:var(--bg-alt);}
+.calculator-hero{background:linear-gradient(135deg,#2E86AB 0%,#06D6A0 100%);padding:130px 0 70px;text-align:center;}
+[data-theme="dark"] .calculator-hero{background:linear-gradient(135deg,#1B5272 0%,#048C6A 100%);}
 .calculator-hero-content{max-width:740px;margin:0 auto;}
 .calculator-hero-content h1{font-size:2.4rem;color:#FFFFFF;margin-bottom:16px;font-weight:800;}
-[data-theme="dark"] .calculator-hero-content h1{color:var(--text-heading);}
 .calculator-hero-content .hero-subtitle{max-width:600px;margin:0 auto;}
 .calculator-benefits{display:flex;justify-content:center;gap:32px;margin-top:32px;flex-wrap:wrap;}
-.calc-benefit-item{display:flex;align-items:center;gap:9px;color:rgba(255,255,255,0.9);font-weight:500;}
-[data-theme="dark"] .calc-benefit-item{color:var(--text-sub);}
-.calc-benefit-item i{font-size:1.25rem;color:var(--teal);}
+.calc-benefit-item{display:flex;align-items:center;gap:9px;color:rgba(255,255,255,0.9);font-weight:500;font-size:0.94rem;}
+.calc-benefit-item i{font-size:1.25rem;color:rgba(255,255,255,0.9);}
 .calculator-main-section{padding:70px 0;background:var(--bg-page);}
 .calculator-wrapper-page{max-width:900px;margin:0 auto 70px;}
 .calc-explainers{margin:70px 0;}
