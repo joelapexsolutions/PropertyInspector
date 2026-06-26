@@ -59,6 +59,33 @@
         .btn-primary { padding: 10px 16px; font-size: 0.87rem; }
         @media (max-width: 1200px) { .nav-logo span { font-size: 0.95rem; } .nav-link { padding: 6px 7px; font-size: 0.82rem; } }
         @media (max-width: 1024px) { .nav-menu { display: none; } .nav-menu.active { display: flex; } .nav-toggle { display: block; } }
+
+        .cta-badges {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 20px;
+            flex-wrap: wrap;
+            margin-top: 10px;
+        }
+
+        .cta-badges a img {
+            height: 58px;
+            border-radius: 8px;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+        }
+
+        .cta-badges a img:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.4);
+        }
+
+        .cta-free-note {
+            margin-top: 18px;
+            font-size: 0.9rem;
+            color: rgba(255, 255, 255, 0.85);
+        }
     </style>
 </head>
 <body>
@@ -212,10 +239,13 @@
             <div class="calculator-cta">
                 <h3>Ready to Start Your Property Journey?</h3>
                 <p>Download Home Buyers Guide SA to assess properties professionally and avoid costly surprises</p>
-                <a href="https://play.google.com/store/apps/details?id=com.joelapexs.propertyinspector" target="_blank" class="btn btn-large btn-primary">
-                    <i class="fas fa-download"></i>
-                    Download Free App
-                </a>
+                <div class="cta-badges">
+                    <a href="https://play.google.com/store/apps/details?id=com.joelapexs.propertyinspector" target="_blank">
+                        <img src="https://play.google.com/intl/en_us/badges/static/images/badges/en_badge_web_generic.png"
+                             alt="Get it on Google Play" />
+                    </a>
+                </div>
+                <p class="cta-free-note">✓ Free to download &nbsp;·&nbsp; First 2 properties free &nbsp;·&nbsp; No account needed</p>
             </div>
         </div>
     </section>
