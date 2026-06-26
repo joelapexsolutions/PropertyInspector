@@ -1,219 +1,120 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-theme="light">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    
-    <!-- SEO Meta Tags -->
-    <title>FAQ - Home Buying Checklist Questions | Home Buyers Guide SA South Africa</title>
-    <meta name="description" content="Frequently asked questions about home buying checklists, property viewings, and when you need professional property inspections in South Africa - for all property buyers.">
-    <meta name="keywords" content="home buying checklist FAQ, property inspection questions, when to hire inspector, house viewing questions, first time buyer FAQ south africa">
-    
-    <!-- Fonts -->
+    <title>FAQ | Home Buyers Guide SA — Property Buying Questions Answered</title>
+    <meta name="description" content="Frequently asked questions about buying property in South Africa — how the app works, what a property assessment covers, costs, and more.">
+    <meta property="og:title" content="FAQ | Home Buyers Guide SA">
+    <meta property="og:image" content="https://propertyinspector.site/images/app_banner.png">
+    <link rel="canonical" href="https://propertyinspector.site/faq.html">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-    
-    <!-- Styles -->
     <link rel="stylesheet" href="website-styles.css">
-    
-    <!-- Favicon -->
     <link rel="icon" type="image/png" href="images/transparent_logo.png">
-    
-    <!-- Google Analytics -->
+    <!-- Anti-FOUC -->
+    <script>
+        (function(){
+            var t=localStorage.getItem('hbg-theme');
+            if(t){document.documentElement.setAttribute('data-theme',t);}
+            else if(window.matchMedia&&window.matchMedia('(prefers-color-scheme:dark)').matches){
+                document.documentElement.setAttribute('data-theme','dark');
+            }
+        })();
+    </script>
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-2MN5R2QXNC"></script>
     <script>
-        window.dataLayer = window.dataLayer || [];
+        window.dataLayer=window.dataLayer||[];
         function gtag(){dataLayer.push(arguments);}
-        gtag('js', new Date());
-        gtag('config', 'G-2MN5R2QXNC');
+        gtag('js',new Date());
+        gtag('config','G-2MN5R2QXNC');
     </script>
-    
     <style>
         .faq-hero {
-            background: linear-gradient(135deg, #2E86AB, #06D6A0);
+            background: linear-gradient(135deg, #2E86AB 0%, #06D6A0 100%);
             padding: 140px 0 80px;
             text-align: center;
         }
-        
-        .faq-hero h1 {
-            font-size: 3rem;
-            margin-bottom: 20px;
-            color: #fff;
-        }
-        
-        .faq-hero p {
-            font-size: 1.2rem;
-            color: rgba(255,255,255,0.9);
-            max-width: 700px;
-            margin: 0 auto;
-        }
-        
-        .faq-section {
-            padding: 80px 0;
-        }
-        
-        .faq-container {
-            max-width: 900px;
-            margin: 0 auto;
-        }
-        
-        .faq-category {
-            margin-bottom: 50px;
-        }
-        
+        [data-theme="dark"] .faq-hero { background: linear-gradient(135deg, #1B5272 0%, #048C6A 100%); }
+        .faq-hero h1 { font-size: clamp(2rem,4vw,2.8rem); color: #fff; margin-bottom: 16px; font-weight: 800; }
+        .faq-hero p { font-size: 1.02rem; color: rgba(255,255,255,0.85); max-width: 620px; margin: 0 auto; line-height: 1.7; }
+
+        .faq-section { padding: 70px 0; background: var(--bg-page); }
+        .faq-container { max-width: 860px; margin: 0 auto; }
+        .faq-category { margin-bottom: 52px; }
         .faq-category h2 {
-            font-size: 2rem;
-            margin-bottom: 30px;
-            color: #fff;
-            padding-bottom: 15px;
-            border-bottom: 3px solid #06D6A0;
+            font-size: 1.25rem; font-weight: 700; color: var(--text-heading);
+            margin-bottom: 22px; display: flex; align-items: center; gap: 10px;
+            padding-bottom: 12px; border-bottom: 2px solid var(--teal-border);
         }
-        
+        .faq-category h2 i { color: var(--teal); font-size: 1.1rem; }
         .faq-item {
-            background: rgba(255,255,255,0.05);
-            border: 1px solid rgba(255,255,255,0.1);
-            border-radius: 15px;
-            margin-bottom: 20px;
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            margin-bottom: 10px;
             overflow: hidden;
-            transition: all 0.3s ease;
+            transition: var(--transition);
         }
-        
-        .faq-item:hover {
-            border-color: #06D6A0;
-            box-shadow: 0 5px 20px rgba(6,214,160,0.2);
-        }
-        
+        .faq-item:hover { border-color: var(--teal-border); }
         .faq-question {
-            padding: 25px 30px;
+            padding: 18px 22px;
             cursor: pointer;
             display: flex;
             justify-content: space-between;
             align-items: center;
+            gap: 16px;
+            font-weight: 600;
+            font-size: 0.95rem;
+            color: var(--text-heading);
+            transition: var(--transition);
             user-select: none;
         }
-        
-        .faq-question h3 {
-            font-size: 1.2rem;
-            color: #fff;
-            margin: 0;
-            flex: 1;
-        }
-        
-        .faq-question i {
-            font-size: 1.2rem;
-            color: #06D6A0;
-            transition: transform 0.3s ease;
-        }
-        
-        .faq-item.active .faq-question i {
-            transform: rotate(180deg);
-        }
-        
+        .faq-question:hover { color: var(--teal); }
+        .faq-question i { color: var(--teal); transition: transform 0.3s ease; flex-shrink: 0; }
+        .faq-item.active .faq-question i { transform: rotate(180deg); }
         .faq-answer {
             max-height: 0;
             overflow: hidden;
-            transition: max-height 0.4s ease;
+            transition: max-height 0.35s ease;
         }
-        
+        .faq-item.active .faq-answer { max-height: 1000px; }
         .faq-answer-content {
-            padding: 0 30px 25px 30px;
-            color: rgba(255,255,255,0.85);
-            line-height: 1.8;
-            font-size: 1.05rem;
+            padding: 0 22px 20px;
+            color: var(--text-body);
+            font-size: 0.92rem;
+            line-height: 1.72;
+            border-top: 1px solid var(--border);
+            padding-top: 16px;
         }
-        
-        .faq-answer-content p {
-            margin-bottom: 15px;
-        }
-        
-        .faq-answer-content ul {
-            margin: 15px 0;
-            padding-left: 25px;
-        }
-        
-        .faq-answer-content li {
-            margin-bottom: 10px;
-        }
-        
-        .faq-answer-content strong {
-            color: #fff;
-        }
-        
+        .faq-answer-content p { margin-bottom: 12px; }
+        .faq-answer-content p:last-child { margin-bottom: 0; }
+        .faq-answer-content ul, .faq-answer-content ol { padding-left: 22px; margin: 10px 0; }
+        .faq-answer-content li { margin-bottom: 7px; }
+        .faq-answer-content strong { color: var(--text-heading); font-weight: 600; }
+        .faq-answer-content a { color: var(--teal); text-decoration: none; font-weight: 500; }
+        .faq-answer-content a:hover { text-decoration: underline; }
+
         .faq-cta {
-            background: linear-gradient(135deg, #06D6A0, #2E86AB);
-            padding: 50px 40px;
-            border-radius: 20px;
+            background: linear-gradient(135deg, #2E86AB, #06D6A0);
+            border-radius: var(--radius-lg);
+            padding: 44px 40px;
             text-align: center;
-            margin-top: 60px;
+            margin-top: 52px;
         }
+        [data-theme="dark"] .faq-cta { background: linear-gradient(135deg, #1B5272, #048C6A); }
+        .faq-cta h3 { font-size: 1.5rem; font-weight: 800; color: #fff; margin-bottom: 10px; }
+        .faq-cta p { font-size: 0.97rem; color: rgba(255,255,255,0.88); margin-bottom: 22px; }
+        .faq-cta-note { margin-top: 12px; font-size: 0.8rem; color: rgba(255,255,255,0.6); }
 
-        .faq-cta h2 {
-            font-size: 2rem;
-            margin-bottom: 15px;
-            color: #fff;
-        }
-
-        .faq-cta p {
-            font-size: 1.15rem;
-            margin-bottom: 30px;
-            color: rgba(255,255,255,0.95);
-        }
-
-        .cta-badges {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            gap: 20px;
-            flex-wrap: wrap;
-        }
-
-        .cta-badges a img {
-            height: 58px;
-            border-radius: 8px;
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
-        }
-
-        .cta-badges a img:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.4);
-        }
-
-        .cta-free-note {
-            margin-top: 18px;
-            font-size: 0.9rem;
-            color: rgba(255, 255, 255, 0.85);
-        }
-        
         @media (max-width: 768px) {
-            .faq-hero h1 {
-                font-size: 2rem;
-            }
-            
-            .faq-question h3 {
-                font-size: 1.05rem;
-            }
-            
-            .faq-answer-content {
-                font-size: 1rem;
-            }
+            .faq-question { font-size: 0.9rem; padding: 16px 18px; }
+            .faq-cta { padding: 32px 20px; }
         }
-    </style>
-    <style>
-        /* Fix nav logo text wrapping */
-        .nav-logo { white-space: nowrap; flex-shrink: 0; gap: 10px; }
-        .nav-logo img { height: 36px; width: 36px; border-radius: 8px; flex-shrink: 0; object-fit: cover; }
-        .nav-logo span { font-size: 1.05rem; font-weight: 700; white-space: nowrap; }
-        /* Compact nav links */
-        .nav-menu { gap: 2px; }
-        .nav-link { padding: 7px 9px; font-size: 0.87rem; }
-        .btn-primary { padding: 10px 16px; font-size: 0.87rem; }
-        @media (max-width: 1200px) { .nav-logo span { font-size: 0.95rem; } .nav-link { padding: 6px 7px; font-size: 0.82rem; } }
-        @media (max-width: 1024px) { .nav-menu { display: none; } .nav-menu.active { display: flex; } .nav-toggle { display: block; } }
     </style>
 </head>
 <body>
-    <!-- Navigation -->
+
     <nav class="navbar" id="navbar">
         <div class="container">
             <div class="nav-content">
@@ -225,27 +126,31 @@
                     <i class="fas fa-bars"></i>
                 </button>
                 <ul class="nav-menu" id="navMenu">
-                    <li><a href="index.html" class="nav-link">Home</a></li>
                     <li><a href="index.html#features" class="nav-link">Features</a></li>
+                    <li><a href="home-buyers-journey.html" class="nav-link">Journey</a></li>
                     <li><a href="calculator.html" class="nav-link">Calculator</a></li>
-                    <li><a href="index.html#guide" class="nav-link">Viewing Guide</a></li>
-                    <li><a href="faq.html" class="nav-link active">FAQ</a></li>
                     <li><a href="blog.html" class="nav-link">Blog</a></li>
-                    <li><a href="https://play.google.com/store/apps/details?id=com.joelapexs.propertyinspector" target="_blank" class="nav-link btn-primary">Download App</a></li>
+                    <li><a href="faq.html" class="nav-link active">FAQ</a></li>
                 </ul>
+                <div class="nav-right">
+                    <button class="theme-toggle" id="themeToggle" aria-label="Switch to dark mode">
+                        <i class="fas fa-moon"></i>
+                    </button>
+                    <a href="https://play.google.com/store/apps/details?id=com.joelapexs.propertyinspector" target="_blank" class="btn-nav-download">
+                        <i class="fas fa-download"></i> Download App
+                    </a>
+                </div>
             </div>
         </div>
     </nav>
 
-    <!-- Hero Section -->
     <header class="faq-hero">
         <div class="container">
             <h1>Frequently Asked Questions</h1>
-            <p>Everything you need to know about home buying checklists, property viewings, and professional inspections in South Africa</p>
+            <p>Everything you need to know about Home Buyers Guide SA and buying property in South Africa.</p>
         </div>
     </header>
 
-    <!-- FAQ Section -->
     <section class="faq-section">
         <div class="container">
             <div class="faq-container">
@@ -686,65 +591,52 @@
         </div>
     </section>
 
-    <!-- Footer -->
-    <footer class="footer">
+    <section style="background:var(--bg-page);padding:0 0 70px;">
         <div class="container">
-            <div class="footer-content">
-                <div class="footer-brand">
-                    <div class="footer-logo">
-                        <img src="images/transparent_logo.png" alt="Home Buyers Guide SA">
-                        <span>Home Buyers Guide SA</span>
-                    </div>
-                    <p>The essential property assessment app for informed home buying decisions in South Africa.</p>
-                </div>
-                <div class="footer-links">
-                    <div class="footer-column">
-                        <h4>Product</h4>
-                        <ul>
-                            <li><a href="index.html#features">Features</a></li>
-                            <li><a href="calculator.html">Calculator</a></li>
-                            <li><a href="index.html#guide">Viewing Guide</a></li>
-                        </ul>
-                    </div>
-                    <div class="footer-column">
-                        <h4>Resources</h4>
-                        <ul>
-                            <li><a href="faq.html">FAQ</a></li>
-                            <li><a href="blog.html">Blog</a></li>
-                            <li><a href="privacy.html">Privacy Policy</a></li>
-                        </ul>
-                    </div>
-                    <div class="footer-column">
-                        <h4>Contact</h4>
-                        <ul>
-                            <li><a href="mailto:joelapexs@gmail.com">joelapexs@gmail.com</a></li>
-                        </ul>
-                    </div>
+            <div class="faq-container">
+                <div class="faq-cta">
+                    <h3>Ready to Start Viewing Properties?</h3>
+                    <p>Download Home Buyers Guide SA and go into every viewing with a professional checklist in your pocket.</p>
+                    <a href="https://play.google.com/store/apps/details?id=com.joelapexs.propertyinspector" target="_blank" class="btn-download-image" aria-label="Get it on Google Play">
+                        <img src="images/google-play-badge.png" alt="Get it on Google Play" class="play-badge-large" style="height:50px;">
+                    </a>
+                    <p class="faq-cta-note">&#10003; Free to download &nbsp;&middot;&nbsp; First 2 properties free &nbsp;&middot;&nbsp; No account needed</p>
                 </div>
             </div>
-            <div class="footer-bottom">
-                <p>&copy; 2026 Joel Apex Solutions - Home Buyers Guide SA. All rights reserved.</p>
+        </div>
+    </section>
+
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-strip">
+                <div class="footer-logo">
+                    <img src="images/transparent_logo.png" alt="Home Buyers Guide SA">
+                    <span>Home Buyers Guide SA</span>
+                </div>
+                <nav class="footer-nav" aria-label="Footer navigation">
+                    <a href="privacy.html">Privacy Policy</a>
+                    <a href="mailto:joelapexs@gmail.com">Contact</a>
+                    <a href="https://play.google.com/store/apps/details?id=com.joelapexs.propertyinspector" target="_blank">Google Play</a>
+                </nav>
+                <p class="footer-copy">&copy; 2026 Joel Apex Solutions. All rights reserved.</p>
             </div>
         </div>
     </footer>
-
-    <!-- Scripts -->
-    <script src="website-main.js"></script>
     <script>
         // FAQ Accordion
         document.querySelectorAll('.faq-item').forEach(item => {
             const question = item.querySelector('.faq-question');
             const answer = item.querySelector('.faq-answer');
-            
+
             question.addEventListener('click', () => {
                 const isActive = item.classList.contains('active');
-                
+
                 // Close all other items
                 document.querySelectorAll('.faq-item').forEach(otherItem => {
                     otherItem.classList.remove('active');
                     otherItem.querySelector('.faq-answer').style.maxHeight = null;
                 });
-                
+
                 // Toggle current item
                 if (!isActive) {
                     item.classList.add('active');
@@ -753,5 +645,6 @@
             });
         });
     </script>
+    <script src="website-main.js"></script>
 </body>
 </html>
