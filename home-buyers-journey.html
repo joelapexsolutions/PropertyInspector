@@ -216,42 +216,48 @@
         .cta-section {
             background: linear-gradient(135deg, #06D6A0, #2E86AB);
             border-radius: 20px;
-            padding: 40px;
+            padding: 50px 40px;
             text-align: center;
             margin-top: 50px;
         }
-        
+
         .cta-section h3 {
             font-size: 2rem;
             font-weight: 800;
             margin-bottom: 15px;
             color: #ffffff;
         }
-        
+
         .cta-section p {
             font-size: 1.15rem;
-            margin-bottom: 25px;
+            margin-bottom: 30px;
             color: rgba(255, 255, 255, 0.95);
         }
-        
-        .cta-button {
-            display: inline-flex;
+
+        .cta-badges {
+            display: flex;
+            justify-content: center;
             align-items: center;
-            gap: 12px;
-            background: #ffffff;
-            color: #2E86AB;
-            padding: 18px 40px;
-            border-radius: 15px;
-            text-decoration: none;
-            font-weight: 700;
-            font-size: 1.1rem;
-            transition: all 0.3s ease;
-            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+            gap: 20px;
+            flex-wrap: wrap;
         }
-        
-        .cta-button:hover {
+
+        .cta-badges a img {
+            height: 58px;
+            border-radius: 8px;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+        }
+
+        .cta-badges a img:hover {
             transform: translateY(-3px);
-            box-shadow: 0 12px 35px rgba(0, 0, 0, 0.4);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.4);
+        }
+
+        .cta-free-note {
+            margin-top: 18px;
+            font-size: 0.9rem;
+            color: rgba(255, 255, 255, 0.85);
         }
         
         .footer {
@@ -502,10 +508,14 @@
         <!-- CTA Section -->
         <div class="cta-section">
             <h3>Ready to Start Your Journey?</h3>
-            <p>Download Home Buyers Guide SA now and get expert guidance through every property viewing</p>
-            <a href="https://play.google.com/store/apps/details?id=com.joelapexs.propertyinspector" target="_blank" class="cta-button">
-                📱 Download Free App
-            </a>
+            <p>Download Home Buyers Guide SA and get expert guidance through every property viewing</p>
+            <div class="cta-badges">
+                <a href="https://play.google.com/store/apps/details?id=com.joelapexs.propertyinspector" target="_blank">
+                    <img src="https://play.google.com/intl/en_us/badges/static/images/badges/en_badge_web_generic.png"
+                         alt="Get it on Google Play" />
+                </a>
+            </div>
+            <p class="cta-free-note">✓ Free to download &nbsp;·&nbsp; First 2 properties free &nbsp;·&nbsp; No account needed</p>
         </div>
         
         <!-- Footer -->
