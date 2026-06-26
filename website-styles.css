@@ -631,15 +631,19 @@ section{padding:70px 0;position:relative;}
 .footer{background:var(--footer-bg);padding:0;}
 .footer-strip{
   display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;
-  gap:12px;padding:16px 0;border-top:1px solid var(--footer-div);
+  gap:12px;padding:14px 0;border-top:1px solid var(--footer-div);
 }
 .footer-logo{display:flex;align-items:center;gap:9px;}
-.footer-logo img{height:26px;width:26px;border-radius:6px;}
-.footer-logo span{font-size:0.88rem;font-weight:700;color:var(--footer-head);}
-.footer-nav{display:flex;align-items:center;gap:22px;}
-.footer-nav a{font-size:0.82rem;color:var(--footer-link);text-decoration:none;transition:var(--transition);}
-.footer-nav a:hover{color:var(--footer-link-hv);}
-.footer-copy{font-size:0.78rem;color:var(--footer-text);margin:0;}
+.footer-logo img{height:24px;width:24px;border-radius:6px;}
+.footer-logo span{font-size:0.82rem;font-weight:700;color:var(--footer-head);}
+.footer-nav{display:flex;align-items:center;gap:20px;}
+.footer-nav a{font-size:0.78rem;color:rgba(255,255,255,0.55);text-decoration:none;transition:var(--transition);}
+.footer-nav a:hover{color:#00C48C;}
+[data-theme="dark"] .footer-nav a{color:rgba(200,222,240,0.5);}
+[data-theme="dark"] .footer-nav a:hover{color:#06D6A0;}
+[data-theme="dark"] .footer{border-top:2px solid rgba(6,214,160,0.25);}
+.footer-copy{font-size:0.72rem;color:rgba(255,255,255,0.35);margin:0;}
+[data-theme="dark"] .footer-copy{color:rgba(200,222,240,0.3);}
 
 /* ─── 19. CALCULATOR PAGE ────────────────────────────────── */
 .calculator-hero{background:var(--navy);padding:130px 0 70px;text-align:center;}
@@ -724,7 +728,11 @@ section{padding:70px 0;position:relative;}
 .hero-text{animation:fadeInUp 0.7s ease-out both;}
 .hero-image{animation:fadeInRight 0.7s ease-out 0.15s both;}
 
-/* ─── 21. RESPONSIVE ─────────────────────────────────────── */
+/* ─── 21. STORIES COLLAPSE (global – all screen sizes) ───── */
+.stories-grid.collapsed .story-card:nth-child(n+4){display:none;}
+.stories-grid.expanded .story-card{display:block !important;}
+
+/* ─── 22. RESPONSIVE ─────────────────────────────────────── */
 @media(max-width:1200px){
   .container{padding:0 24px;}
   .hero-content{grid-template-columns:1fr 400px;gap:40px;}
@@ -764,8 +772,6 @@ section{padding:70px 0;position:relative;}
   .cta-box{padding:30px 20px;}
   .section-header{margin-bottom:34px;}
   .stories-toggle{display:inline-flex;}
-.stories-grid.collapsed .story-card:nth-child(n+4){display:none;}
-.stories-grid.expanded .story-card{display:block;}
   .calculator-cta{padding:36px 20px;}
   .calculator-tips{padding:36px 20px;}
   .footer-strip{flex-direction:column;align-items:flex-start;gap:10px;}
