@@ -4,10 +4,10 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>SA Property Pitfalls &amp; Insights | Home Buyers Guide SA</title>
-    <meta name="description" content="Real problems South African property buyers face today — hidden defects, insurance rejections, bank valuation gaps, and costly mistakes. Know the risks before you buy.">
-    <meta name="keywords" content="property buying guide, house viewing tips, home buying advice south africa, property inspection tips, first time buyer mistakes">
-    <meta property="og:title" content="Property Buying Guide & Tips | Home Buyers Guide SA">
-    <meta property="og:description" content="Expert advice for South African home buyers, sellers, and estate agents.">
+    <meta name="description" content="Real problems South African property buyers face today — hidden defects, insurance rejections, costly mistakes. Know the risks before you make an offer.">
+    <meta name="keywords" content="SA property pitfalls, home buying mistakes south africa, property insurance claims rejected, first time buyer mistakes, estate agent property defects">
+    <meta property="og:title" content="SA Property Pitfalls &amp; Insights | Home Buyers Guide SA">
+    <meta property="og:description" content="Real problems South African property buyers face today — hidden defects, insurance rejections, costly mistakes. Know the risks before you make an offer.">
     <meta property="og:image" content="https://propertyinspector.site/images/app_banner.png">
     <meta property="og:url" content="https://propertyinspector.site/blog.html">
     <link rel="canonical" href="https://propertyinspector.site/blog.html">
@@ -15,89 +15,94 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <link rel="stylesheet" href="website-styles.css">
     <link rel="icon" type="image/png" href="images/transparent_logo.png">
-    <!-- Anti-FOUC -->
     <script>
-        (function(){
-            var t=localStorage.getItem('hbg-theme');
-            if(t){document.documentElement.setAttribute('data-theme',t);}
-            else if(window.matchMedia&&window.matchMedia('(prefers-color-scheme:dark)').matches){
-                document.documentElement.setAttribute('data-theme','dark');
-            }
-        })();
+        (function(){var t=localStorage.getItem('hbg-theme');
+        if(t){document.documentElement.setAttribute('data-theme',t);}
+        else if(window.matchMedia&&window.matchMedia('(prefers-color-scheme:dark)').matches){
+        document.documentElement.setAttribute('data-theme','dark');}})();
     </script>
-    <!-- Google Analytics -->
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-2MN5R2QXNC"></script>
-    <script>
-        window.dataLayer=window.dataLayer||[];
-        function gtag(){dataLayer.push(arguments);}
-        gtag('js',new Date());
-        gtag('config','G-2MN5R2QXNC');
-    </script>
+    <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-2MN5R2QXNC');</script>
     <style>
         /* ── Blog hero ─────────────────────────────────────────── */
         .blog-hero {
             background: linear-gradient(135deg, #2E86AB 0%, #06D6A0 100%);
-            padding: 140px 0 80px;
-            text-align: center;
+            padding: 140px 0 80px; text-align: center;
         }
         [data-theme="dark"] .blog-hero { background: linear-gradient(135deg, #1B5272 0%, #048C6A 100%); }
-        .blog-hero h1 { font-size: clamp(2rem,4vw,3rem); margin-bottom: 18px; color: #fff; font-weight: 800; }
-        .blog-hero p { font-size: 1.05rem; color: rgba(255,255,255,0.85); max-width: 680px; margin: 0 auto; line-height: 1.7; }
+        .blog-hero h1 { font-size:clamp(2rem,4vw,2.8rem);font-weight:800;color:#fff;margin-bottom:16px; }
+        .blog-hero p { font-size:1.02rem;color:rgba(255,255,255,.85);max-width:640px;margin:0 auto;line-height:1.7; }
 
         /* ── Blog grid ─────────────────────────────────────────── */
-        .blog-grid { padding: 70px 0; background: var(--bg-page); }
+        .blog-grid { padding:70px 0;background:var(--bg-page); }
         .blog-posts {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
-            gap: 28px;
+            display:grid;
+            grid-template-columns:repeat(auto-fill,minmax(340px,1fr));
+            gap:26px;
         }
+
+        /* ── Blog card — photo style ────────────────────────────── */
         .blog-card {
-            background: var(--bg-card);
-            border: 1px solid var(--border);
-            border-radius: var(--radius-lg);
-            overflow: hidden;
-            transition: var(--transition);
-            text-decoration: none;
-            display: block;
+            background:var(--bg-card);
+            border:1px solid var(--border);
+            border-radius:var(--radius-lg);
+            overflow:hidden;
+            transition:var(--transition);
+            text-decoration:none;
+            display:block;
         }
         .blog-card:hover {
-            transform: translateY(-4px);
-            box-shadow: var(--shadow-hv);
-            border-color: var(--teal-border);
+            transform:translateY(-4px);
+            box-shadow:var(--shadow-hv);
+            border-color:var(--teal-border);
         }
-        .blog-card-image {
-            width: 100%;
-            height: 160px;
-            background: linear-gradient(135deg, #2E86AB, #06D6A0);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 3.2rem;
-            color: rgba(255,255,255,0.9);
-        }
-        .blog-card-content { padding: 24px; }
-        .blog-card-meta {
-            display: flex;
-            gap: 14px;
-            margin-bottom: 12px;
-            font-size: 0.82rem;
-            color: var(--text-sub);
-        }
-        .blog-card-meta span { display: flex; align-items: center; gap: 5px; }
-        .blog-card h2 { font-size: 1.08rem; color: var(--text-heading); margin-bottom: 10px; line-height: 1.4; font-weight: 700; }
-        .blog-card p { color: var(--text-sub); line-height: 1.65; margin-bottom: 16px; font-size: 0.9rem; }
-        .blog-card-link { color: var(--teal); font-weight: 600; display: inline-flex; align-items: center; gap: 7px; font-size: 0.88rem; }
-        .blog-card-link i { transition: transform 0.25s ease; }
-        .blog-card:hover .blog-card-link i { transform: translateX(4px); }
 
-        @media (max-width: 768px) {
-            .blog-posts { grid-template-columns: 1fr; }
+        /* Photo container with cinematic overlay */
+        .blog-card-image {
+            width:100%;
+            height:210px;
+            position:relative;
+            overflow:hidden;
+            background:linear-gradient(135deg,#2E86AB,#06D6A0); /* fallback */
         }
+        .blog-card-image img {
+            width:100%;height:100%;
+            object-fit:cover;display:block;
+            transition:transform 0.45s ease;
+        }
+        .blog-card:hover .blog-card-image img { transform:scale(1.05); }
+        .blog-card-image::after {
+            content:'';position:absolute;inset:0;
+            background:linear-gradient(rgba(0,0,0,.12),rgba(0,0,0,.52));
+            pointer-events:none;
+        }
+
+        /* Card content */
+        .blog-card-content { padding:22px 24px 24px; }
+        .blog-card-meta {
+            display:flex;gap:12px;margin-bottom:10px;
+            font-size:0.78rem;color:var(--text-sub);
+        }
+        .blog-card-meta span { display:flex;align-items:center;gap:4px; }
+        .blog-card h2 {
+            font-size:1.02rem;font-weight:700;
+            color:var(--text-heading);margin-bottom:9px;line-height:1.38;
+        }
+        .blog-card p {
+            color:var(--text-sub);line-height:1.62;margin-bottom:14px;font-size:0.87rem;
+        }
+        .blog-card-link {
+            color:var(--teal);font-weight:600;font-size:0.85rem;
+            display:inline-flex;align-items:center;gap:6px;
+        }
+        .blog-card-link i { transition:transform 0.25s ease; }
+        .blog-card:hover .blog-card-link i { transform:translateX(4px); }
+
+        @media(max-width:768px) { .blog-posts { grid-template-columns:1fr; } }
     </style>
 </head>
 <body>
 
-    <!-- Navigation -->
     <nav class="navbar" id="navbar">
         <div class="container">
             <div class="nav-content">
@@ -127,7 +132,6 @@
         </div>
     </nav>
 
-    <!-- Hero -->
     <header class="blog-hero">
         <div class="container">
             <h1>SA Property Pitfalls &amp; Insights</h1>
@@ -135,81 +139,83 @@
         </div>
     </header>
 
-    <!-- Blog Grid -->
     <section class="blog-grid">
         <div class="container">
             <div class="blog-posts">
-
                 <a href="blog-app-vs-inspector.html" class="blog-card">
-                    <div class="blog-card-image"><i class="fas fa-balance-scale"></i></div>
+                    <div class="blog-card-image">
+                        <img src="images/blog-app-vs-inspector.jpg" alt="South African couple using a property assessment app with a professional inspector" loading="lazy">
+                    </div>
                     <div class="blog-card-content">
                         <div class="blog-card-meta">
                             <span><i class="fas fa-clock"></i> 5 min read</span>
                             <span><i class="fas fa-tag"></i> Buying Guide</span>
                         </div>
-                        <h2>Property Assessment App vs Hiring a Professional Inspector: Which Do You Need?</h2>
-                        <p>Understand the difference between a house viewing checklist app and a professional property inspector, and when each is the right choice.</p>
-                        <span class="blog-card-link">Read More <i class="fas fa-arrow-right"></i></span>
+                        <h2>Property Assessment App vs Professional Inspector: What SA Buyers Actually Need</h2>
+                        <p>Most SA buyers don't realise these are two different tools for two different stages. Here's when to use each — and why the smart approach uses both.</p>
+                        <span class="blog-card-link">Read Article <i class="fas fa-arrow-right"></i></span>
                     </div>
                 </a>
-
                 <a href="blog-estate-agent-mistakes.html" class="blog-card">
-                    <div class="blog-card-image"><i class="fas fa-exclamation-triangle"></i></div>
+                    <div class="blog-card-image">
+                        <img src="images/blog-estate-agent.jpg" alt="Estate agent showing a house while property defects go unnoticed in the background" loading="lazy">
+                    </div>
                     <div class="blog-card-content">
                         <div class="blog-card-meta">
-                            <span><i class="fas fa-clock"></i> 7 min read</span>
+                            <span><i class="fas fa-clock"></i> 5 min read</span>
                             <span><i class="fas fa-tag"></i> For Agents</span>
                         </div>
-                        <h2>10 Critical Issues Estate Agents Often Miss During Property Showings</h2>
-                        <p>Even experienced estate agents can overlook important red flags. Learn the most commonly missed issues that derail deals or lead to unhappy clients.</p>
-                        <span class="blog-card-link">Read More <i class="fas fa-arrow-right"></i></span>
+                        <h2>10 Property Defects South African Estate Agents Overlook</h2>
+                        <p>Even experienced agents walk past a 15-year-old geyser and a wall built without sign-off. These are the 10 defects most commonly missed during SA house showings.</p>
+                        <span class="blog-card-link">Read Article <i class="fas fa-arrow-right"></i></span>
                     </div>
                 </a>
-
                 <a href="blog-insurance-claims-rejected.html" class="blog-card">
-                    <div class="blog-card-image"><i class="fas fa-shield-alt"></i></div>
+                    <div class="blog-card-image">
+                        <img src="images/blog-insurance-claims.jpg" alt="South African family dealing with flood damage while an insurance assessor inspects the property" loading="lazy">
+                    </div>
                     <div class="blog-card-content">
                         <div class="blog-card-meta">
                             <span><i class="fas fa-clock"></i> 6 min read</span>
                             <span><i class="fas fa-tag"></i> Insurance</span>
                         </div>
-                        <h2>Why Home Insurance Claims Get Rejected: Common Issues to Check Before Buying</h2>
-                        <p>Discover the most common reasons South African homeowners&rsquo; insurance claims are denied, and what to look for during viewings to avoid them.</p>
-                        <span class="blog-card-link">Read More <i class="fas fa-arrow-right"></i></span>
+                        <h2>Why SA Home Insurance Claims Get Rejected — And How to Spot the Warning Signs Before You Buy</h2>
+                        <p>Bond approved. Moved in. Claim rejected. Here's why SA insurers say no — and what to look for during viewings to make sure it doesn't happen to you.</p>
+                        <span class="blog-card-link">Read Article <i class="fas fa-arrow-right"></i></span>
                     </div>
                 </a>
-
                 <a href="blog-buyer-mistakes.html" class="blog-card">
-                    <div class="blog-card-image"><i class="fas fa-search"></i></div>
+                    <div class="blog-card-image">
+                        <img src="images/blog-buyer-mistakes.jpg" alt="First-time South African home buyers viewing a house with hidden defects around them" loading="lazy">
+                    </div>
                     <div class="blog-card-content">
                         <div class="blog-card-meta">
-                            <span><i class="fas fa-clock"></i> 8 min read</span>
+                            <span><i class="fas fa-clock"></i> 7 min read</span>
                             <span><i class="fas fa-tag"></i> Buyer Tips</span>
                         </div>
-                        <h2>The 12 Most Common (and Costly) Issues First-Time Buyers Miss</h2>
-                        <p>First-time home buyers in South Africa often miss critical issues that cost R50,000+ to fix. Learn exactly what to look for to avoid these expensive mistakes.</p>
-                        <span class="blog-card-link">Read More <i class="fas fa-arrow-right"></i></span>
+                        <h2>12 Things First-Time SA Home Buyers Miss — And What They Cost to Fix</h2>
+                        <p>Every one of these issues is visible during a thorough viewing. None of them are visible to buyers who don't know what they're looking for.</p>
+                        <span class="blog-card-link">Read Article <i class="fas fa-arrow-right"></i></span>
                     </div>
                 </a>
-
                 <a href="blog-bank-valuation-vs-inspection.html" class="blog-card">
-                    <div class="blog-card-image"><i class="fas fa-university"></i></div>
+                    <div class="blog-card-image">
+                        <img src="images/blog-bank-valuation.jpg" alt="Comparison of bank property valuation and professional building inspection in South Africa" loading="lazy">
+                    </div>
                     <div class="blog-card-content">
                         <div class="blog-card-meta">
-                            <span><i class="fas fa-clock"></i> 9 min read</span>
+                            <span><i class="fas fa-clock"></i> 6 min read</span>
                             <span><i class="fas fa-tag"></i> Buyer Guide</span>
                         </div>
-                        <h2>Bank Valuation vs Property Inspection: Understanding the Critical Difference</h2>
-                        <p>Bank approved your bond but insurance rejected your claim? Understand why these two assessments reveal completely different things.</p>
-                        <span class="blog-card-link">Read More <i class="fas fa-arrow-right"></i></span>
+                        <h2>Your Bond Was Approved — So Why Did the Insurance Reject Your Claim?</h2>
+                        <p>Banks and insurers check completely different things. Buyers who rely on bond approval as a condition report are making an expensive mistake.</p>
+                        <span class="blog-card-link">Read Article <i class="fas fa-arrow-right"></i></span>
                     </div>
                 </a>
-
             </div>
         </div>
     </section>
 
-    <!-- Footer -->
     <footer class="footer">
         <div class="container">
             <div class="footer-strip">
