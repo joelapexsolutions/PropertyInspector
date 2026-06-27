@@ -704,6 +704,39 @@ section{padding:70px 0;position:relative;}
 .calculator-cta h3{font-size:1.6rem;margin-bottom:14px;color:#FFFFFF;font-weight:700;}
 .calculator-cta p{font-size:0.97rem;margin-bottom:26px;color:rgba(255,255,255,0.85);}
 
+/* ─── 19. VIDEO SECTION ──────────────────────────────────── */
+.video-section { background: var(--bg-alt); padding: 70px 0; }
+
+/* Desktop video — 16:9 */
+.video-wrap {
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+    box-shadow: var(--shadow-md);
+}
+.video-wrap iframe { display: block; border: none; }
+
+.video-desktop {
+    display: block;
+    max-width: 860px;
+    margin: 0 auto;
+    aspect-ratio: 16 / 9;
+}
+.video-desktop iframe { width: 100%; height: 100%; }
+
+/* Mobile Short — 9:16, hidden on desktop */
+.video-mobile { display: none; }
+
+@media(max-width: 768px) {
+    .video-desktop { display: none; }
+    .video-mobile {
+        display: block;
+        max-width: 340px;
+        margin: 0 auto;
+        aspect-ratio: 9 / 16;
+    }
+    .video-mobile iframe { width: 100%; height: 100%; }
+}
+
 /* ─── 20. ANIMATIONS ─────────────────────────────────────── */
 @keyframes fadeInUp {
   from{opacity:0;transform:translateY(26px);}
