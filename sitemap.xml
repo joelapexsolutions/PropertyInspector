@@ -1,118 +1,103 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-    
+
     <!-- Main Homepage -->
     <url>
-        <loc>https://propertyinspector.site/index.html</loc>
-        <lastmod>2025-01-15</lastmod>
+        <loc>https://propertyinspector.site/</loc>
+        <lastmod>2026-06-30</lastmod>
         <changefreq>weekly</changefreq>
         <priority>1.0</priority>
     </url>
-    
+
     <!-- Home Buyers Journey Guide -->
     <url>
         <loc>https://propertyinspector.site/home-buyers-journey.html</loc>
-        <lastmod>2025-01-18</lastmod>
+        <lastmod>2026-06-30</lastmod>
         <changefreq>monthly</changefreq>
         <priority>0.9</priority>
     </url>
-    
-    <!-- FAQ Page -->
-    <url>
-        <loc>https://propertyinspector.site/faq.html</loc>
-        <lastmod>2025-01-15</lastmod>
-        <changefreq>monthly</changefreq>
-        <priority>0.9</priority>
-    </url>
-    
-    <!-- Blog Landing Page -->
-    <url>
-        <loc>https://propertyinspector.site/blog.html</loc>
-        <lastmod>2025-01-15</lastmod>
-        <changefreq>weekly</changefreq>
-        <priority>0.9</priority>
-    </url>
-    
-    <!-- Blog Articles -->
-    <url>
-        <loc>https://propertyinspector.site/blog-app-vs-inspector.html</loc>
-        <lastmod>2025-01-15</lastmod>
-        <changefreq>monthly</changefreq>
-        <priority>0.8</priority>
-    </url>
-    
-    <url>
-        <loc>https://propertyinspector.site/blog-estate-agent-mistakes.html</loc>
-        <lastmod>2025-01-15</lastmod>
-        <changefreq>monthly</changefreq>
-        <priority>0.8</priority>
-    </url>
-    
-    <url>
-        <loc>https://propertyinspector.site/blog-insurance-claims-rejected.html</loc>
-        <lastmod>2025-01-15</lastmod>
-        <changefreq>monthly</changefreq>
-        <priority>0.8</priority>
-    </url>
-    
-    <url>
-        <loc>https://propertyinspector.site/blog-buyer-mistakes.html</loc>
-        <lastmod>2025-01-15</lastmod>
-        <changefreq>monthly</changefreq>
-        <priority>0.8</priority>
-    </url>
-    
+
     <!-- Calculator Page -->
     <url>
         <loc>https://propertyinspector.site/calculator.html</loc>
-        <lastmod>2025-01-15</lastmod>
+        <lastmod>2026-06-30</lastmod>
+        <changefreq>monthly</changefreq>
+        <priority>0.9</priority>
+    </url>
+
+    <!-- Blog Landing Page -->
+    <url>
+        <loc>https://propertyinspector.site/blog.html</loc>
+        <lastmod>2026-06-30</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.9</priority>
+    </url>
+
+    <!-- FAQ Page -->
+    <url>
+        <loc>https://propertyinspector.site/faq.html</loc>
+        <lastmod>2026-06-30</lastmod>
         <changefreq>monthly</changefreq>
         <priority>0.8</priority>
     </url>
-    
+
+    <!-- Blog Articles -->
+    <url>
+        <loc>https://propertyinspector.site/blog-app-vs-inspector.html</loc>
+        <lastmod>2026-06-30</lastmod>
+        <changefreq>monthly</changefreq>
+        <priority>0.7</priority>
+    </url>
+
+    <url>
+        <loc>https://propertyinspector.site/blog-estate-agent-mistakes.html</loc>
+        <lastmod>2026-06-30</lastmod>
+        <changefreq>monthly</changefreq>
+        <priority>0.7</priority>
+    </url>
+
+    <url>
+        <loc>https://propertyinspector.site/blog-insurance-claims-rejected.html</loc>
+        <lastmod>2026-06-30</lastmod>
+        <changefreq>monthly</changefreq>
+        <priority>0.7</priority>
+    </url>
+
+    <url>
+        <loc>https://propertyinspector.site/blog-buyer-mistakes.html</loc>
+        <lastmod>2026-06-30</lastmod>
+        <changefreq>monthly</changefreq>
+        <priority>0.7</priority>
+    </url>
+
+    <url>
+        <loc>https://propertyinspector.site/blog-bank-valuation-vs-inspection.html</loc>
+        <lastmod>2026-06-30</lastmod>
+        <changefreq>monthly</changefreq>
+        <priority>0.7</priority>
+    </url>
+
+    <url>
+        <loc>https://propertyinspector.site/blog-voetstoots.html</loc>
+        <lastmod>2026-06-30</lastmod>
+        <changefreq>monthly</changefreq>
+        <priority>0.7</priority>
+    </url>
+
     <!-- Privacy Policy -->
     <url>
         <loc>https://propertyinspector.site/privacy.html</loc>
-        <lastmod>2025-01-15</lastmod>
+        <lastmod>2026-06-30</lastmod>
         <changefreq>yearly</changefreq>
-        <priority>0.5</priority>
+        <priority>0.4</priority>
     </url>
-    
+
     <!-- Sample Report -->
     <url>
         <loc>https://propertyinspector.site/samples/quick-assessment-sample.pdf</loc>
-        <lastmod>2025-01-15</lastmod>
+        <lastmod>2026-06-30</lastmod>
         <changefreq>yearly</changefreq>
-        <priority>0.6</priority>
-    </url>
-    
-    <!-- Important Sections (anchor links for context) -->
-    <url>
-        <loc>https://propertyinspector.site/index.html#real-stories</loc>
-        <lastmod>2025-01-15</lastmod>
-        <changefreq>monthly</changefreq>
-        <priority>0.7</priority>
-    </url>
-    
-    <url>
-        <loc>https://propertyinspector.site/index.html#features</loc>
-        <lastmod>2025-01-15</lastmod>
-        <changefreq>monthly</changefreq>
-        <priority>0.7</priority>
-    </url>
-    
-    <url>
-        <loc>https://propertyinspector.site/index.html#benefits</loc>
-        <lastmod>2025-01-15</lastmod>
-        <changefreq>monthly</changefreq>
-        <priority>0.7</priority>
-    </url>
-    
-    <url>
-        <loc>https://propertyinspector.site/index.html#guide</loc>
-        <lastmod>2025-01-15</lastmod>
-        <changefreq>monthly</changefreq>
-        <priority>0.7</priority>
+        <priority>0.5</priority>
     </url>
 
 </urlset>
