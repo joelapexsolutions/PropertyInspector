@@ -1,0 +1,27 @@
+# Home Buyers Guide SA
+
+> A house viewing checklist app for South African property buyers, sellers, and estate agents. Guides users room-by-room through a structured property assessment, scores the property, documents red flags with photos, and generates a shareable PDF report.
+
+Home Buyers Guide SA is a free Android app (with an optional premium tier) created by Joel Apex Solutions, based in Johannesburg, South Africa. It is not a substitute for a professional building inspection, but a structured tool buyers use during viewings to assess and compare properties before deciding which one to commission a professional inspection on.
+
+## Key pages
+
+- [Home](https://propertyinspector.site/): Overview of the app, features, and download link
+- [House Buying Journey](https://propertyinspector.site/home-buyers-journey.html): 10-step guide to buying property in South Africa
+- [Cost Calculator](https://propertyinspector.site/calculator.html): Free calculator for transfer duty, attorney fees, bond registration costs, and monthly bond repayments using current SARS and LSSA rates
+- [Blog — SA Property Pitfalls & Insights](https://propertyinspector.site/blog.html): Articles on common property buying mistakes, insurance claim rejections, the voetstoots clause, and related South African property topics
+- [FAQ](https://propertyinspector.site/faq.html): Frequently asked questions about the app and the South African home buying process
+
+## About the app
+
+- Platform: Android (Google Play Store)
+- Price: Free, with optional premium subscription. Free tier allows 3 properties to be assessed simultaneously; properties can be deleted and replaced.
+- Assessment structure: One complete assessment per property across four categories — Location & Neighbourhood, Exterior Assessment, Interior Assessment, and Other Features. There is no separate "quick" or "detailed" mode; every property uses the same complete assessment. Users can add custom items to a property for anything specific, such as a pool or solar system.
+- Output: A PDF report including a 5-point rating per item, photos, an overall property score, and identified red flags
+- Typical time to complete: 45–90 minutes depending on property size
+
+## Contact
+
+Joel Apex Solutions
+Email: joelapexs@gmail.com
+Based in Johannesburg, South Africa
