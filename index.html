@@ -55,6 +55,8 @@
 
     <!-- Fonts -->
 
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
 
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
@@ -126,6 +128,18 @@
         "description":"House viewing checklist app for South African property buyers, sellers, and estate agents.",
         "image":"https://propertyinspector.site/images/transparent_logo.png",
         "downloadUrl":"https://play.google.com/store/apps/details?id=com.joelapexs.propertyinspector"
+    }
+    </script>
+    <script type="application/ld+json">
+    {
+        "@context":"https://schema.org",
+        "@type":"Organization",
+        "name":"Joel Apex Solutions",
+        "alternateName":"Home Buyers Guide SA",
+        "url":"https://propertyinspector.site",
+        "logo":"https://propertyinspector.site/images/transparent_logo.png",
+        "email":"joelapexs@gmail.com",
+        "areaServed":"ZA"
     }
     </script>
 
@@ -380,7 +394,7 @@
 
                 <h2>Everything You Need to Know What to Look For</h2>
 
-                <p>Professional house viewing checklist, now in your pocket &mdash; <a href="faq.html" style="color:var(--teal);font-weight:500;">see FAQ</a></p>
+                <p>Professional house viewing checklist, now in your pocket &mdash; <a href="faq.html" class="link-inline-teal-medium">see FAQ</a></p>
 
             </div>
 
@@ -518,7 +532,7 @@
 
                 </div>
 
-                <div class="tabs-content" style="padding:0;">
+                <div class="tabs-content tabs-content--flush">
 
                     <div class="tab-pane active" id="buyers">
 
@@ -972,7 +986,7 @@
 
                         <h3>Make an Informed Decision</h3>
 
-                        <p>Compare properties side-by-side. Negotiate confidently with documented evidence. Know exactly what you&rsquo;re buying and what it will truly cost. <a href="home-buyers-journey.html" style="color:var(--teal);font-weight:600;">See the full 10-step journey &rarr;</a></p>
+                        <p>Compare properties side-by-side. Negotiate confidently with documented evidence. Know exactly what you&rsquo;re buying and what it will truly cost. <a href="home-buyers-journey.html" class="link-inline-teal-bold">See the full 10-step journey &rarr;</a></p>
 
                     </div>
 
@@ -1002,41 +1016,33 @@
 
 
 
-            <!-- Desktop: 16:9 YouTube video -->
+            <!-- Desktop: 16:9 YouTube video (lazy facade — loads on click) -->
 
-            <div class="video-wrap video-desktop">
+            <div class="video-wrap video-desktop yt-facade" data-yt-id="I1wNhRoinkA" data-yt-title="Home Buyers Guide SA — App Demo">
 
-                <iframe src="https://www.youtube.com/embed/I1wNhRoinkA"
+                <img src="https://img.youtube.com/vi/I1wNhRoinkA/hqdefault.jpg" alt="Home Buyers Guide SA App Demo video thumbnail" class="yt-facade-thumb" loading="lazy">
 
-                        title="Home Buyers Guide SA — App Demo"
+                <button type="button" class="yt-facade-play" aria-label="Play video: Home Buyers Guide SA App Demo">
 
-                        frameborder="0"
+                    <i class="fas fa-play"></i>
 
-                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-
-                        allowfullscreen loading="lazy">
-
-                </iframe>
+                </button>
 
             </div>
 
 
 
-            <!-- Mobile: 9:16 YouTube Short -->
+            <!-- Mobile: 9:16 YouTube Short (lazy facade — loads on click) -->
 
-            <div class="video-wrap video-mobile">
+            <div class="video-wrap video-mobile yt-facade" data-yt-id="1-U0-4BtE9s" data-yt-title="Home Buyers Guide SA — App Short">
 
-                <iframe src="https://www.youtube.com/embed/1-U0-4BtE9s"
+                <img src="https://img.youtube.com/vi/1-U0-4BtE9s/hqdefault.jpg" alt="Home Buyers Guide SA App Short video thumbnail" class="yt-facade-thumb" loading="lazy">
 
-                        title="Home Buyers Guide SA — App Short"
+                <button type="button" class="yt-facade-play" aria-label="Play video: Home Buyers Guide SA App Short">
 
-                        frameborder="0"
+                    <i class="fas fa-play"></i>
 
-                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-
-                        allowfullscreen loading="lazy">
-
-                </iframe>
+                </button>
 
             </div>
 
@@ -1106,19 +1112,15 @@
 
                     </a>
 
-                    <p class="download-note">Available for Android devices running Android 5.0+ &nbsp;&middot;&nbsp; <a href="blog.html" style="color:rgba(255,255,255,0.6);font-size:0.85rem;">Read SA Property Pitfalls &rarr;</a></p>
+                    <p class="download-note">Available for Android devices running Android 5.0+ &nbsp;&middot;&nbsp; <a href="blog.html" class="link-inline-muted-small">Read SA Property Pitfalls &rarr;</a></p>
 
                 </div>
 
                 <div class="download-image">
 
-                    <img src="images/transparent_logo.png" alt="Home Buyers Guide SA"
+                    <img src="images/transparent_logo.png" alt="Home Buyers Guide SA" class="download-image-logo">
 
-                         style="width:140px;height:140px;border-radius:32px;">
-
-                    <img src="images/app_banner.png" alt="Home Buyers Guide SA App"
-
-                         style="width:100%;max-width:380px;">
+                    <img src="images/app_banner.png" alt="Home Buyers Guide SA App" class="download-image-banner">
 
                 </div>
 
