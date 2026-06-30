@@ -3,16 +3,8 @@
 User-agent: *
 Allow: /
 
-# Allow crawling of important pages
-Allow: /mainindex.html
-Allow: /calculator.html
-Allow: /index.html
-Allow: /home-buyers-journey.html
-Allow: /images/
-Allow: /samples/
-
 # Sitemap location
 Sitemap: https://propertyinspector.site/sitemap.xml
 
-# Crawl delay (optional, helps with server load)
+# Crawl delay (helps with server load)
 Crawl-delay: 1
