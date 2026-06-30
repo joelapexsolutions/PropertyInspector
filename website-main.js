@@ -11,6 +11,7 @@ document.addEventListener('DOMContentLoaded', function() {
     initializeScrollEffects();
     initializeLazyLoading();
     initializeAnalytics();
+    initializeYouTubeFacades();
 
     console.log('HBG SA Website Loaded Successfully');
 });
@@ -181,6 +182,31 @@ function trackEvent(category, action, label) {
     if (typeof gtag !== 'undefined') {
         gtag('event', action, { 'event_category': category, 'event_label': label });
     }
+}
+
+/* ─── YOUTUBE LAZY FACADE ───────────────────────────────── */
+function initializeYouTubeFacades() {
+    document.querySelectorAll('.yt-facade').forEach(function(facade) {
+        facade.addEventListener('click', function loadVideo() {
+            var videoId = facade.getAttribute('data-yt-id');
+            var title = facade.getAttribute('data-yt-title') || 'YouTube video';
+            if (!videoId) return;
+
+            var iframe = document.createElement('iframe');
+            iframe.src = 'https://www.youtube.com/embed/' + videoId + '?autoplay=1';
+            iframe.title = title;
+            iframe.setAttribute('frameborder', '0');
+            iframe.setAttribute('allow', 'accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture');
+            iframe.setAttribute('allowfullscreen', '');
+
+            facade.innerHTML = '';
+            facade.appendChild(iframe);
+            facade.removeEventListener('click', loadVideo);
+            facade.classList.remove('yt-facade');
+
+            trackEvent('Video', 'Play', title);
+        });
+    });
 }
 
 /* ─── KEYBOARD NAV ──────────────────────────────────────── */
