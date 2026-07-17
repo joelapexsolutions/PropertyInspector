@@ -2,7 +2,7 @@
    Caches the full app shell so the app works offline after first load.
    To push an update to installed users: bump CACHE_VERSION, upload, done. */
 
-const CACHE_VERSION = 'hbg-sa-v1';
+const CACHE_VERSION = 'hbg-sa-v2';
 
 const APP_SHELL = [
   './',
@@ -20,6 +20,7 @@ const APP_SHELL = [
   './help-guide.css',
   './onboarding.css',
   './theme.css',
+  './web-app.css',
   // JS (exact filenames referenced by index.html)
   './onboarding.js',
   './app.js',
@@ -34,6 +35,7 @@ const APP_SHELL = [
   './premium-system.js',
   './property-data.js',
   './scoring.js',
+  './web-app.js',
   // Images
   './Images/app_banner.png',
   // External CDN libraries
