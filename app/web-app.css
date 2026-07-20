@@ -124,7 +124,7 @@ body.web-mode .hbg-ib-close {
 
     body.web-mode .container {
         max-width: 560px !important;
-        margin: 0 auto;
+        margin: 0 auto !important;
         min-height: 100vh;
         background: var(--bg-primary, #0d1520);
         border-left: 1px solid rgba(255, 255, 255, 0.06);
