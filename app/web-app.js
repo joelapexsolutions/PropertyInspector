@@ -28,7 +28,81 @@
     }
 
     // ----------------------------------------------------------------
-    // 2. INSTALL PROMPT
+    // 2. PHOTO PICKER — let iOS/Android show Camera AND Photo Library
+    //    photo-manager.js sets input.capture = 'camera', which forces
+    //    Safari straight into the camera with no gallery option. This
+    //    overrides capturePhoto() (web only) to drop that attribute,
+    //    which makes iOS/Android show their full picker action sheet
+    //    instead. Runs immediately — photo-manager.js loads earlier in
+    //    index.html, so window.photoManager already exists here.
+    // ----------------------------------------------------------------
+    if (window.photoManager && typeof window.photoManager.capturePhoto === 'function') {
+        window.photoManager.capturePhoto = async function (roomId, itemText) {
+            this.currentCapture = { roomId: roomId, itemText: itemText };
+
+            var input = document.createElement('input');
+            input.type = 'file';
+            input.accept = 'image/*';
+            // Deliberately no `capture` attribute here — this is what
+            // lets the browser offer Camera + Photo Library + Files,
+            // instead of jumping straight into the camera.
+            input.style.display = 'none';
+
+            var self = this;
+            input.onchange = async function (event) {
+                var file = event.target.files[0];
+                if (file && self.currentCapture) {
+                    await self.processPhoto(file, self.currentCapture.roomId, self.currentCapture.itemText);
+                    self.currentCapture = null;
+                }
+            };
+
+            document.body.appendChild(input);
+            input.click();
+            document.body.removeChild(input);
+        };
+    }
+
+    // ----------------------------------------------------------------
+    // 3. GUARANTEE SAVES — belt-and-braces persistence
+    //    The app already auto-saves every 30s and on most actions via
+    //    IndexedDB + localStorage, which work fine in Safari. The real
+    //    web risk is the tab being backgrounded/closed between saves,
+    //    or (rarely) the browser evicting storage under pressure.
+    // ----------------------------------------------------------------
+
+    // Ask the browser not to evict this site's storage under pressure.
+    // (Best-effort — not all browsers grant it, but it never hurts.)
+    if (navigator.storage && navigator.storage.persist) {
+        navigator.storage.persist().then(function (granted) {
+            console.log('🌐 web-app: persistent storage', granted ? 'granted' : 'not granted');
+        }).catch(function () {});
+    }
+
+    // Force-flush any unsaved state the instant the tab is backgrounded
+    // or closed — iOS Safari can suspend JS execution very quickly once
+    // a tab loses focus, so waiting for the next 30s auto-save isn't
+    // reliable. Looked up lazily so this works even though app.js
+    // (which defines these functions) loads after this file.
+    function flushSave() {
+        try {
+            if (typeof window.saveAppDataSafely === 'function') {
+                window.saveAppDataSafely();
+            } else if (typeof window.saveAppData === 'function') {
+                window.saveAppData();
+            }
+        } catch (e) {
+            console.warn('web-app: flush save failed', e);
+        }
+    }
+
+    document.addEventListener('visibilitychange', function () {
+        if (document.visibilityState === 'hidden') flushSave();
+    });
+    window.addEventListener('pagehide', flushSave);
+
+    // ----------------------------------------------------------------
+    // 4. INSTALL PROMPT
     // ----------------------------------------------------------------
     var deferredInstallPrompt = null;
 
@@ -113,7 +187,7 @@
     }
 
     // ----------------------------------------------------------------
-    // 3. BOOT (after DOM + premium system are ready)
+    // 5. BOOT (after DOM + premium system are ready)
     // ----------------------------------------------------------------
     function boot() {
         document.body.classList.add('web-mode');
