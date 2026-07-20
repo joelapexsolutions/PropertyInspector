@@ -143,6 +143,42 @@ body.web-mode .hbg-ib-close {
         border-right: 1px solid rgba(255, 255, 255, 0.06);
     }
 
+    /* Fixed top header bar — same treatment as bottom nav. Without this
+       it stays pinned to the real browser edges (left:0/right:0) while
+       .container is centred, so the logo ends up floating off to the
+       left, disconnected from the frame below it. */
+    body.web-mode .app-top-bar {
+        left: 50% !important;
+        right: auto !important;
+        transform: translateX(-50%);
+        width: 100% !important;
+        max-width: 560px !important;
+        border-left: 1px solid rgba(255, 255, 255, 0.06);
+        border-right: 1px solid rgba(255, 255, 255, 0.06);
+    }
+
+    /* Onboarding "Get Started" welcome card + assessment guidance card.
+       theme.css forces both to `max-width: 100% !important`, which is
+       correct on phones (full-width sheet) but stretches them almost
+       edge-to-edge on desktop. Needs !important + a more specific
+       selector to actually win — theme.css's !important otherwise
+       beats a plain override regardless of source order. */
+    body.web-mode .welcome-content,
+    body.web-mode .assessment-guide-content {
+        max-width: 480px !important;
+        width: 100% !important;
+        border-radius: 20px !important;
+    }
+
+    /* Floating assessment timer badge — anchored with `right: 20px` to
+       the real viewport edge by default, so on desktop it drifts into
+       the empty space beside the frame instead of sitting inside it.
+       Recalculates its offset from the frame's right edge instead
+       (frame half-width 280px + the original 20px inset). */
+    body.web-mode .time-tracker {
+        right: calc(50vw - 260px) !important;
+    }
+
     /* Install banner follows the frame too */
     body.web-mode .hbg-install-banner {
         left: 50%;
