@@ -1,8 +1,15 @@
 /* Home Buyers Guide SA — Service Worker
    Caches the full app shell so the app works offline after first load.
-   To push an update to installed users: bump CACHE_VERSION, upload, done. */
 
-const CACHE_VERSION = 'hbg-sa-v3';
+   UPDATE WORKFLOW — every time you change web-app.js or web-app.css:
+   1. Bump the ?v= number on their <link>/<script> tags in index.html
+   2. Bump CACHE_VERSION below
+   3. Also bump the matching ?v= entries in APP_SHELL below
+   That's it — the version-numbered URL guarantees every layer of
+   caching (this service worker, the browser's HTTP cache, GitHub
+   Pages' CDN) treats it as a brand new file and fetches it fresh. */
+
+const CACHE_VERSION = 'hbg-sa-v4';
 
 const APP_SHELL = [
   './',
@@ -20,7 +27,7 @@ const APP_SHELL = [
   './help-guide.css',
   './onboarding.css',
   './theme.css',
-  './web-app.css',
+  './web-app.css?v=4',
   // JS (exact filenames referenced by index.html)
   './onboarding.js',
   './app.js',
@@ -35,7 +42,7 @@ const APP_SHELL = [
   './premium-system.js',
   './property-data.js',
   './scoring.js',
-  './web-app.js',
+  './web-app.js?v=4',
   // Images
   './Images/app_banner.png',
   // External CDN libraries
@@ -60,13 +67,36 @@ self.addEventListener('activate', (event) => {
 });
 
 self.addEventListener('fetch', (event) => {
-  // Only handle GET requests
   if (event.request.method !== 'GET') return;
 
+  const isHTML = event.request.mode === 'navigate'
+    || (event.request.headers.get('accept') || '').includes('text/html');
+
+  // The HTML shell: ALWAYS try the network first. This is what makes
+  // "I uploaded new files" show up immediately instead of serving a
+  // stale cached page. Falls back to cache only when offline.
+  if (isHTML) {
+    event.respondWith(
+      fetch(event.request)
+        .then((response) => {
+          if (response && response.ok) {
+            const copy = response.clone();
+            caches.open(CACHE_VERSION).then((cache) => cache.put(event.request, copy));
+          }
+          return response;
+        })
+        .catch(() => caches.match(event.request))
+    );
+    return;
+  }
+
+  // Everything else (JS/CSS/images): cache-first with a background
+  // refresh, so repeat visits are instant but still self-heal.
+  // Version-numbered files (?v=4 etc.) are simply new cache keys —
+  // guaranteed fresh on first request after you bump the number.
   event.respondWith(
     caches.match(event.request).then((cached) => {
       if (cached) {
-        // Serve from cache, refresh in background (stale-while-revalidate)
         fetch(event.request).then((response) => {
           if (response && response.ok) {
             caches.open(CACHE_VERSION).then((cache) => cache.put(event.request, response));
