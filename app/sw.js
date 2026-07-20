@@ -2,7 +2,7 @@
    Caches the full app shell so the app works offline after first load.
    To push an update to installed users: bump CACHE_VERSION, upload, done. */
 
-const CACHE_VERSION = 'hbg-sa-v2';
+const CACHE_VERSION = 'hbg-sa-v3';
 
 const APP_SHELL = [
   './',
