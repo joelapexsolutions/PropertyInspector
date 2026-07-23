@@ -157,13 +157,18 @@ body.web-mode .hbg-ib-close {
         border-right: 1px solid rgba(255, 255, 255, 0.06);
     }
 
-    /* Onboarding "Get Started" welcome card + assessment guidance card.
-       theme.css forces both to `max-width: 100% !important`, which is
-       correct on phones (full-width sheet) but stretches them almost
-       edge-to-edge on desktop. Needs !important + a more specific
-       selector to actually win — theme.css's !important otherwise
-       beats a plain override regardless of source order. */
-    body.web-mode .welcome-content,
+    /* Onboarding "Get Started" welcome card. Its real class is
+       .hbgw-card (onboarding.js renders <div class="hbgw-card">) —
+       .welcome-content is old, unused CSS left over from an earlier
+       version and was never what's on screen, which is why capping
+       it had no visible effect. */
+    body.web-mode .hbgw-card {
+        max-width: 480px !important;
+    }
+
+    /* Assessment guidance card — same theme.css `max-width:100%
+       !important` full-bleed pattern as the onboarding card, but
+       this one's class name IS still current/live. */
     body.web-mode .assessment-guide-content {
         max-width: 480px !important;
         width: 100% !important;
