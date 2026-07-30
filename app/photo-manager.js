@@ -645,7 +645,9 @@ async deleteAssessmentPhoto(photoId, roomId, itemText) {
 							itemNotes: property.itemNotes || {},
 							questionResponses: property.questionResponses || {},
 							roomInstances: property.roomInstances || {},
-							progress: property.progress || 0
+							progress: property.progress || 0,
+							activatedCustomItems: property.activatedCustomItems || [],
+							customAssessments: property.customAssessments || {}
 						});
 						request.onsuccess = () => resolve();
 						request.onerror = () => reject(request.error);
