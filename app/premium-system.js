@@ -252,6 +252,7 @@ function createPremiumModal() {
             <li><i class="fas fa-check-circle"></i><span><strong>No Advertisements</strong> — clean, focused experience</span></li>
             <li><i class="fas fa-check-circle"></i><span><strong>Full PDF Reports</strong> — photo-backed, shareable documentation</span></li>
             <li><i class="fas fa-check-circle"></i><span><strong>Full Assessment Results</strong> — detailed assessment results</span></li>
+            <li><i class="fas fa-check-circle"></i><span><strong>Custom Assessment</strong> — add your own features, items &amp; questions</span></li>
         </ul>
 
         <!-- Pricing plans — vertical rows -->
@@ -455,6 +456,7 @@ function showPremiumWelcome() {
             <span><i class="fas fa-check"></i> Unlimited properties</span>
             <span><i class="fas fa-check"></i> Detailed assessment results</span>
             <span><i class="fas fa-check"></i> PDF reports</span>
+            <span><i class="fas fa-check"></i> Custom assessment features</span>
             <span><i class="fas fa-check"></i> No advertisements</span>
         </div>
     </div>
