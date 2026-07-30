@@ -488,6 +488,103 @@ const helpContent = {
                         <i class="fas fa-camera"></i>
                         <span><strong>Documentation Strategy:</strong> Take more photos than you think you need. They're invaluable for later review, professional consultations, and comparison discussions.</span>
                     </div>
+
+                    <h4><i class="fas fa-search"></i> Search &amp; Filter Items</h4>
+
+                    <p>A search bar sits at the top of every assessment screen. Use it to jump straight to any item without scrolling through all four categories.</p>
+
+                    <h5>How to Use Search</h5>
+                    <div class="process-flow">
+                        <div class="step-item">
+                            <div class="step-number">1</div>
+                            <div class="step-content">
+                                <strong>Type in the search bar</strong>
+                                <p>Start typing a room name or item name — e.g. "roof", "bathroom", "electrical"</p>
+                            </div>
+                        </div>
+                        <div class="step-item">
+                            <div class="step-number">2</div>
+                            <div class="step-content">
+                                <strong>Results filter instantly</strong>
+                                <p>Only matching categories and rooms remain visible — everything else is hidden to reduce clutter</p>
+                            </div>
+                        </div>
+                        <div class="step-item">
+                            <div class="step-number">3</div>
+                            <div class="step-content">
+                                <strong>Auto-expand on single match</strong>
+                                <p>If exactly one room matches, the app opens it automatically so you can rate it immediately</p>
+                            </div>
+                        </div>
+                        <div class="step-item">
+                            <div class="step-number">4</div>
+                            <div class="step-content">
+                                <strong>Clear to restore full view</strong>
+                                <p>Tap the × button in the search bar to clear your search and return to the full checklist</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="tip-box">
+                        <i class="fas fa-lightbulb"></i>
+                        <span><strong>Tip:</strong> Search also surfaces optional features not yet added to your assessment — if a result appears as a suggestion below the bar, tap it to add that feature to your checklist.</span>
+                    </div>
+
+                    <h4><i class="fas fa-microphone"></i> Voice Note Taking</h4>
+
+                    <p>Every note field in the assessment has a microphone button. Instead of typing your observations, you can speak them — the app transcribes your words and inserts the text directly into the note.</p>
+
+                    <h5>How to Record a Voice Note</h5>
+                    <div class="process-flow">
+                        <div class="step-item">
+                            <div class="step-number">1</div>
+                            <div class="step-content">
+                                <strong>Expand any assessment item</strong>
+                                <p>Tap a checklist item to open its detail panel, then find the Notes field</p>
+                            </div>
+                        </div>
+                        <div class="step-item">
+                            <div class="step-number">2</div>
+                            <div class="step-content">
+                                <strong>Tap the microphone icon</strong>
+                                <p>The mic icon sits next to the Notes text area. Tap it — a "Listening… speak now" indicator appears</p>
+                            </div>
+                        </div>
+                        <div class="step-item">
+                            <div class="step-number">3</div>
+                            <div class="step-content">
+                                <strong>Speak your observation</strong>
+                                <p>Describe what you see naturally — e.g. "Ceiling shows water stain approximately 30cm wide near the window"</p>
+                            </div>
+                        </div>
+                        <div class="step-item">
+                            <div class="step-number">4</div>
+                            <div class="step-content">
+                                <strong>Text appears automatically</strong>
+                                <p>Your words are transcribed and inserted into the note field. Stop early at any time by tapping the Stop button</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <h5>Where Voice Notes Work</h5>
+                    <ul>
+                        <li><strong>Item Notes:</strong> Every assessment checklist item's notes field</li>
+                        <li><strong>Important Questions:</strong> The response fields for seller questions also have a microphone button</li>
+                        <li><strong>Custom Features:</strong> If you've added custom assessment items, their note fields support voice input too</li>
+                    </ul>
+
+                    <h5>Helpful Details</h5>
+                    <ul>
+                        <li>Text is inserted at your cursor position — you can position your cursor mid-note before tapping the mic</li>
+                        <li>Common terms are automatically corrected — "db board" becomes "DB board", "coc" becomes "COC"</li>
+                        <li>Voice notes use your device's built-in speech recognition and require an active microphone permission</li>
+                        <li>This feature works on Android only</li>
+                    </ul>
+
+                    <div class="tip-box">
+                        <i class="fas fa-microphone"></i>
+                        <span><strong>Speed tip:</strong> Voice notes are the fastest way to capture detailed observations on-site. Rate the item with the star buttons, then speak your findings hands-free while you continue inspecting the area.</span>
+                    </div>
                 `
             },
             {
@@ -590,6 +687,116 @@ const helpContent = {
                     <div class="tip-box">
                         <i class="fas fa-chart-line"></i>
                         <span><strong>Professional Advantage:</strong> Assessment reports provide the documentation and analysis needed for confident property decisions and professional negotiations.</span>
+                    </div>
+                `
+            },
+            {
+                id: 'customizeAssessment',
+                title: 'Customize Your Assessment',
+                icon: 'fa-sliders-h',
+                summary: 'Add your own features, items and questions that appear in every assessment and PDF report (Premium)',
+                content: `
+                    <div class="welcome-banner" style="background:linear-gradient(135deg,rgba(200,150,62,0.15),rgba(232,184,75,0.08));border:1px solid rgba(200,150,62,0.3)">
+                        <div class="banner-icon" style="background:linear-gradient(135deg,#C8963E,#e8b84b);color:#1a1a1a">
+                            <i class="fas fa-crown"></i>
+                        </div>
+                        <div class="banner-content">
+                            <h3>Premium Feature</h3>
+                            <p>Customize Assessment is available on all premium plans. Access it via <strong>Settings → Customize Assessment</strong>.</p>
+                        </div>
+                    </div>
+
+                    <h4><i class="fas fa-sliders-h"></i> What is Customize Assessment?</h4>
+
+                    <p>The standard assessment covers the most common property features — but every property is different. Customize Assessment lets you add your own features and questions once, and they automatically appear in <strong>every future assessment and PDF report</strong>. No need to reconfigure for each new property.</p>
+
+                    <p>This is especially useful for estate agents and property inspectors who assess many properties and want a consistent, personalised checklist beyond the built-in items.</p>
+
+                    <h4><i class="fas fa-puzzle-piece"></i> Custom Features</h4>
+
+                    <p>Custom features are additional assessment items — things like a granny flat, a borehole, solar panels, or any feature not covered in the standard checklist.</p>
+
+                    <h5>Adding a Custom Feature</h5>
+                    <div class="process-flow">
+                        <div class="step-item">
+                            <div class="step-number">1</div>
+                            <div class="step-content">
+                                <strong>Tap "Add Feature"</strong>
+                                <p>Opens the feature creation form</p>
+                            </div>
+                        </div>
+                        <div class="step-item">
+                            <div class="step-number">2</div>
+                            <div class="step-content">
+                                <strong>Name your feature</strong>
+                                <p>Give it a clear label — e.g. "Granny Flat", "Solar System", "Borehole"</p>
+                            </div>
+                        </div>
+                        <div class="step-item">
+                            <div class="step-number">3</div>
+                            <div class="step-content">
+                                <strong>Choose a category</strong>
+                                <p>Select where it appears: Location, Exterior, Interior, or Other Features</p>
+                            </div>
+                        </div>
+                        <div class="step-item">
+                            <div class="step-number">4</div>
+                            <div class="step-content">
+                                <strong>Set the weight</strong>
+                                <p>Choose how much a poor rating on this item affects the overall property score</p>
+                            </div>
+                        </div>
+                        <div class="step-item">
+                            <div class="step-number">5</div>
+                            <div class="step-content">
+                                <strong>Add tooltip &amp; guidance (optional)</strong>
+                                <p>Write what to look for, and what each rating level means for this item</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <h5>Understanding Weight — Impact on Score</h5>
+                    <p>Not all items matter equally. The weight setting controls how much a poor rating pulls down the overall property score:</p>
+                    <ul>
+                        <li><strong>Low (1):</strong> Minor cosmetic detail — e.g. peeling paint, cracked driveway tile</li>
+                        <li><strong>Moderate (2):</strong> Standard importance — e.g. garden gate, outbuilding window</li>
+                        <li><strong>High (3):</strong> Significant factor — e.g. roof of a granny flat, structural wall cracks</li>
+                        <li><strong>Very High (3.5):</strong> Major consideration — e.g. electrical installation, serious damp</li>
+                        <li><strong>Critical (4):</strong> Deal-breaker level — e.g. structural integrity of a separate dwelling</li>
+                    </ul>
+
+                    <h5>Tooltip</h5>
+                    <p>During assessment, tapping the ⓘ icon next to your custom item shows the tooltip you wrote. Use this to remind yourself or a colleague exactly what to inspect — be specific and practical.</p>
+
+                    <h5>Guidance (Optional)</h5>
+                    <p>Pre-write what Excellent, Good, Fair and Poor look like for this item. When the assessment is rated, the matching guidance text fills into the PDF report automatically. If left blank, you can type your own findings before generating the PDF.</p>
+
+                    <h5>Exclude Toggle</h5>
+                    <p>Temporarily stop a custom feature from appearing in new assessments — useful for features that only apply to certain property types. Toggle it back on whenever needed. Existing assessments already using this feature are not affected.</p>
+
+                    <h4><i class="fas fa-question-circle"></i> Custom Questions</h4>
+
+                    <p>Custom Questions are specific things you want to ask the seller or agent during every viewing. They appear in the "Important Questions" section of the assessment and are included in the PDF report.</p>
+
+                    <ul>
+                        <li>Add any question relevant to your buying criteria or professional practice</li>
+                        <li>Responses are typed or dictated with the voice note feature during assessment</li>
+                        <li>All question and response pairs appear in the generated PDF report</li>
+                    </ul>
+
+                    <h4><i class="fas fa-save"></i> Backup &amp; Restore</h4>
+
+                    <p>Your entire custom configuration — all features and questions — can be exported to a file on your device and loaded back at any time.</p>
+
+                    <ul>
+                        <li><strong>Save to Device:</strong> Exports your configuration as a file — useful as a backup before reinstalling the app</li>
+                        <li><strong>Load from Device:</strong> Restores a previously saved configuration</li>
+                        <li><strong>Share with colleagues:</strong> Estate agents and inspectors can share their full setup in one file — ideal for standardising assessments across a team</li>
+                    </ul>
+
+                    <div class="tip-box">
+                        <i class="fas fa-lightbulb"></i>
+                        <span><strong>Pro tip:</strong> Set up your custom features and questions once, then every new property you add automatically includes them. Your custom items also appear in the search bar during assessment — type the feature name to jump straight to it.</span>
                     </div>
                 `
             }
@@ -836,6 +1043,16 @@ function renderHelpScreen() {
                     <div class="quick-link" onclick="openHelpSection('propertyAssessment', 'assessmentResults')">
                         <div class="quick-link-icon"><i class="fas fa-chart-bar"></i></div>
                         <span>Understanding your score</span>
+                        <i class="fas fa-chevron-right quick-link-arrow"></i>
+                    </div>
+                    <div class="quick-link" onclick="openHelpSection('propertyAssessment', 'conductingAssessment')">
+                        <div class="quick-link-icon"><i class="fas fa-microphone" style="color:#2E86AB"></i></div>
+                        <span>Recording voice notes during assessment</span>
+                        <i class="fas fa-chevron-right quick-link-arrow"></i>
+                    </div>
+                    <div class="quick-link" onclick="openHelpSection('propertyAssessment', 'customizeAssessment')">
+                        <div class="quick-link-icon"><i class="fas fa-sliders-h" style="color:#C8963E"></i></div>
+                        <span>Customize your assessment (Premium)</span>
                         <i class="fas fa-chevron-right quick-link-arrow"></i>
                     </div>
                 </div>
