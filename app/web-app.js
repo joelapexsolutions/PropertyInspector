@@ -43,14 +43,20 @@
             var input = document.createElement('input');
             input.type = 'file';
             input.accept = 'image/*';
-            // Deliberately no `capture` attribute here — this is what
-            // lets the browser offer Camera + Photo Library + Files,
-            // instead of jumping straight into the camera.
-            input.style.display = 'none';
+            // No `capture` attribute — lets the browser show Camera + Gallery + Files.
+            // Use off-screen positioning (not display:none) so iOS/Android browsers
+            // keep the picker open — some mobile browsers silently cancel the picker
+            // if the input is hidden or removed before the user selects a file.
+            input.style.position = 'fixed';
+            input.style.left    = '-9999px';
+            input.style.top     = '-9999px';
+            input.style.opacity = '0';
 
             var self = this;
             input.onchange = async function (event) {
                 var file = event.target.files[0];
+                // Remove input only AFTER file is captured
+                if (input.parentNode) input.parentNode.removeChild(input);
                 if (file && self.currentCapture) {
                     await self.processPhoto(file, self.currentCapture.roomId, self.currentCapture.itemText);
                     self.currentCapture = null;
@@ -59,7 +65,11 @@
 
             document.body.appendChild(input);
             input.click();
-            document.body.removeChild(input);
+
+            // Safety cleanup if user cancels the picker (no change event fires)
+            setTimeout(function () {
+                if (input.parentNode) input.parentNode.removeChild(input);
+            }, 600000); // 10 minutes
         };
     }
 
@@ -111,6 +121,14 @@
         deferredInstallPrompt = e;   // Android Chrome / desktop Chrome & Edge
     });
 
+    // When the app is installed via the browser prompt, permanently record it
+    // so the install banner never appears again (even across sessions).
+    window.addEventListener('appinstalled', function () {
+        try { localStorage.setItem('hbgAppInstalled', '1'); } catch (e) {}
+        dismissInstallBanner();
+        console.log('🌐 web-app: app installed — install banner permanently dismissed');
+    });
+
     function isStandalone() {
         return (window.matchMedia && window.matchMedia('(display-mode: standalone)').matches)
             || window.navigator.standalone === true;
@@ -123,9 +141,12 @@
     }
 
     function installBannerDismissed() {
+        // Permanent: app has been installed at some point
+        try { if (localStorage.getItem('hbgAppInstalled')) return true; } catch (e) {}
+        // Temporary: user dismissed within the last 30 days
         try {
             var t = localStorage.getItem('hbgInstallDismissed');
-            return t && (Date.now() - parseInt(t, 10)) < 7 * 24 * 60 * 60 * 1000; // 7 days
+            return t && (Date.now() - parseInt(t, 10)) < 30 * 24 * 60 * 60 * 1000; // 30 days
         } catch (e) { return false; }
     }
 
@@ -187,7 +208,61 @@
     }
 
     // ----------------------------------------------------------------
-    // 5. WEB SPEECH API — voice notes in the browser
+    // 5. FULLSCREEN PROMPT — "feel like a native app" on first visit
+    //    Shows a small banner asking the user to go full screen.
+    //    Only shows in a browser (not when already in standalone mode).
+    //    Dismissed permanently on either button.
+    // ----------------------------------------------------------------
+    function supportsFullscreen() {
+        var el = document.documentElement;
+        return !!(el.requestFullscreen || el.webkitRequestFullscreen || el.mozRequestFullScreen);
+    }
+
+    function enterFullscreen() {
+        var el = document.documentElement;
+        try {
+            if (el.requestFullscreen)       el.requestFullscreen();
+            else if (el.webkitRequestFullscreen) el.webkitRequestFullscreen();
+            else if (el.mozRequestFullScreen)    el.mozRequestFullScreen();
+        } catch (e) {}
+        try { localStorage.setItem('hbgFullscreenDismissed', '1'); } catch (e) {}
+    }
+
+    function showFullscreenPrompt() {
+        if (isStandalone()) return;                           // already standalone
+        if (!supportsFullscreen()) return;                    // browser can't do it
+        if (document.getElementById('hbgFsPrompt')) return;  // already showing
+        try { if (localStorage.getItem('hbgFullscreenDismissed')) return; } catch (e) {}
+
+        var prompt = document.createElement('div');
+        prompt.id        = 'hbgFsPrompt';
+        prompt.className = 'hbg-fs-prompt';
+        prompt.innerHTML =
+            '<div class="hbg-fp-icon"><i class="fas fa-expand"></i></div>' +
+            '<div class="hbg-fp-text">' +
+                '<strong>Full Screen Mode</strong>' +
+                '<span>Tap to hide browser bars for an app-like experience</span>' +
+            '</div>' +
+            '<button class="hbg-fp-yes">Go Full Screen</button>' +
+            '<button class="hbg-fp-close" aria-label="Dismiss">&times;</button>';
+
+        document.body.appendChild(prompt);
+
+        prompt.querySelector('.hbg-fp-yes').addEventListener('click', function () {
+            enterFullscreen();
+            prompt.remove();
+        });
+        prompt.querySelector('.hbg-fp-close').addEventListener('click', function () {
+            try { localStorage.setItem('hbgFullscreenDismissed', '1'); } catch (e) {}
+            prompt.remove();
+        });
+
+        // Auto-dismiss after 15 seconds if ignored
+        setTimeout(function () { if (prompt.parentNode) prompt.remove(); }, 15000);
+    }
+
+    // ----------------------------------------------------------------
+    // 6. WEB SPEECH API — voice notes in the browser
     //    Android uses the native SpeechRecognizer bridge via
     //    Android.startVoiceNote(). On web we use the browser's own
     //    SpeechRecognition API and wire up the same callbacks that
@@ -283,7 +358,7 @@
     })();
 
     // ----------------------------------------------------------------
-    // 6. BOOT (after DOM + premium system are ready)
+    // 7. BOOT (after DOM + premium system are ready)
     // ----------------------------------------------------------------
     function boot() {
         document.body.classList.add('web-mode');
@@ -305,9 +380,10 @@
             console.warn('web-app: premium override issue', e);
         }
 
-        // Show the install banner a few seconds after load, once the
-        // loading modal and onboarding have had their moment.
-        setTimeout(showInstallBanner, 6000);
+        // Show the fullscreen prompt first (3 s), then the install banner (8 s),
+        // so both can't appear simultaneously.
+        setTimeout(showFullscreenPrompt, 3000);
+        setTimeout(showInstallBanner, 8000);
 
         console.log('🌐 web-app: web mode active — full access enabled');
     }
