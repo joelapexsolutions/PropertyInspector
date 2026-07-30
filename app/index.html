@@ -30,7 +30,7 @@
 	<!-- Onboarding System -->
 	<link rel="stylesheet" href="onboarding.css">
 	<link rel="stylesheet" href="theme.css">
-	<link rel="stylesheet" href="web-app.css?v=5">
+	<link rel="stylesheet" href="web-app.css?v=6">
 	<script src="onboarding.js"></script>
 	
 	<!-- Google Analytics 4 -->
@@ -57,7 +57,7 @@
 	<script src="help-guide.js"></script>
 	<script src="premium-system.js"></script>
 	<script src="premium-integration.js"></script>
-	<script src="web-app.js?v=5"></script>
+	<script src="web-app.js?v=6"></script>
 	<script src="app.js"></script>
 
 </head>
@@ -483,6 +483,19 @@
                 </div>
             </div>
 
+            <!-- ── Customization ── -->
+            <div class="stg-section-label">Customization</div>
+            <div class="stg-card">
+                <div class="stg-row" onclick="openCustomizeAssessment()">
+                    <div class="stg-row-icon" style="background:rgba(29,158,117,0.15)"><i class="fas fa-sliders-h" style="color:var(--brand-green)"></i></div>
+                    <div class="stg-row-info">
+                        <span class="stg-row-title">Customize Assessment <span class="stg-premium-tag" id="customizeAssessmentPremiumTag"><i class="fas fa-crown"></i> Premium</span></span>
+                        <span class="stg-row-sub">Add custom features, items &amp; questions to all assessments</span>
+                    </div>
+                    <i class="fas fa-chevron-right stg-chevron"></i>
+                </div>
+            </div>
+
             <!-- ── Danger zone ── -->
             <div class="stg-section-label">Data</div>
             <div class="stg-card">
@@ -496,6 +509,123 @@
                 </div>
             </div>
 
+        </div>
+    </div>
+
+    <!-- ═══════════════════════════════════════════════════════
+         CUSTOMIZE ASSESSMENT SCREEN
+    ════════════════════════════════════════════════════════════ -->
+    <div id="customizeAssessmentScreen" class="screen">
+        <div class="screen-header">
+            <button class="back-button" onclick="navTo('settingsScreen','navSettings')">
+                <i class="fas fa-arrow-left"></i>
+            </button>
+            <h2>Customize Assessment</h2>
+        </div>
+
+        <div class="customize-page">
+
+            <!-- HOW THIS WORKS INFO CARD -->
+            <div class="cust-info-card" id="custInfoCard">
+                <div class="cust-info-header" onclick="toggleCustInfo()">
+                    <div class="cust-info-header-left">
+                        <i class="fas fa-book-open"></i>
+                        <span>How This Works</span>
+                    </div>
+                    <i class="fas fa-chevron-down cust-info-chevron" id="custInfoChevron"></i>
+                </div>
+                <div class="cust-info-body" id="custInfoBody">
+                    <p class="cust-info-intro">Add custom features and questions here once — they automatically appear in <strong>every future assessment and PDF report</strong>.</p>
+
+                    <div class="cust-info-row">
+                        <div class="cust-info-icon"><i class="fas fa-comment-alt"></i></div>
+                        <div>
+                            <p class="cust-info-term">Tooltip</p>
+                            <p class="cust-info-desc">During assessment, tapping the ⓘ icon shows your tooltip. Write exactly what the assessor should look for — be specific.<br><em style="color:var(--text-3);font-size:0.72rem">Example: "Check ceiling for water stains, wall cracks wider than 2mm, and damp on floor perimeter."</em></p>
+                        </div>
+                    </div>
+
+                    <div class="cust-info-row">
+                        <div class="cust-info-icon"><i class="fas fa-weight-hanging"></i></div>
+                        <div>
+                            <p class="cust-info-term">Weight — Impact on Score</p>
+                            <p class="cust-info-desc">Not all items carry the same importance. A cracked tile matters less than a leaking roof. Choose the weight that reflects how seriously a poor rating should affect the overall property score.</p>
+                            <div class="cust-weight-guide" style="margin-top:8px">
+                                <div class="cust-wg-row"><span class="cust-wg-badge wg-low">Low 1</span><span>Minor cosmetic detail. Won't noticeably reduce the score.<br><em style="color:var(--text-3);font-size:0.68rem">E.g. Peeling paint, cracked driveway tile</em></span></div>
+                                <div class="cust-wg-row"><span class="cust-wg-badge wg-mod">Moderate 2</span><span>Standard importance — same as a typical built-in item.<br><em style="color:var(--text-3);font-size:0.68rem">E.g. Garden gate condition, outbuilding window</em></span></div>
+                                <div class="cust-wg-row"><span class="cust-wg-badge wg-high">High 3</span><span>Significant factor. Issues here visibly pull the score down.<br><em style="color:var(--text-3);font-size:0.68rem">E.g. Roof of a granny flat, structural wall cracks</em></span></div>
+                                <div class="cust-wg-row"><span class="cust-wg-badge wg-vhigh">Very High 3.5</span><span>Major consideration. Carries more weight than most items.<br><em style="color:var(--text-3);font-size:0.68rem">E.g. Electrical installation, serious damp damage</em></span></div>
+                                <div class="cust-wg-row"><span class="cust-wg-badge wg-crit">Critical 4</span><span>Deal-breaker level — as serious as foundation issues.<br><em style="color:var(--text-3);font-size:0.68rem">E.g. Structural integrity of a separate dwelling</em></span></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="cust-info-row">
+                        <div class="cust-info-icon"><i class="fas fa-clipboard-list"></i></div>
+                        <div>
+                            <p class="cust-info-term">Guidance (Optional)</p>
+                            <p class="cust-info-desc">Pre-write what Excellent, Good, Fair and Poor look like for this item. The right guidance fills into the PDF report automatically based on the rating given. If left blank, you can type your own findings in the report before generating the PDF.</p>
+                        </div>
+                    </div>
+
+                    <div class="cust-info-row">
+                        <div class="cust-info-icon"><i class="fas fa-ban"></i></div>
+                        <div>
+                            <p class="cust-info-term">Exclude</p>
+                            <p class="cust-info-desc">Temporarily stop a feature from appearing in new assessments — useful for features that only apply to certain property types. Existing assessments are not affected.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- CUSTOM FEATURES SECTION -->
+            <div class="cust-section-header">
+                <div class="cust-section-label">
+                    <i class="fas fa-puzzle-piece"></i>
+                    <span>Custom Features</span>
+                </div>
+                <button class="cust-add-btn" onclick="showAddFeatureModal()">
+                    <i class="fas fa-plus"></i> Add Feature
+                </button>
+            </div>
+            <div id="customFeaturesList" class="cust-list-container"></div>
+
+            <!-- CUSTOM QUESTIONS SECTION -->
+            <div class="cust-section-header">
+                <div class="cust-section-label">
+                    <i class="fas fa-question-circle"></i>
+                    <span>Custom Questions</span>
+                </div>
+                <button class="cust-add-btn" onclick="showAddQuestionModal()">
+                    <i class="fas fa-plus"></i> Add Question
+                </button>
+            </div>
+            <div id="customQuestionsList" class="cust-list-container"></div>
+
+            <!-- BACKUP & RESTORE SECTION -->
+            <div class="cust-section-header">
+                <div class="cust-section-label">
+                    <i class="fas fa-save"></i>
+                    <span>Backup &amp; Restore</span>
+                </div>
+            </div>
+            <div class="cust-backup-card">
+                <p class="cust-backup-desc">Save your custom configuration to a file on your device. Load it later after reinstalling the app, or share it with colleagues — estate agents and inspectors can share their entire setup with one file.</p>
+                <div class="cust-backup-btns">
+                    <button class="cust-backup-btn cust-export-btn" onclick="exportCustomSettings()">
+                        <i class="fas fa-download"></i> Save to Device
+                    </button>
+                    <button class="cust-backup-btn cust-import-btn" onclick="importCustomSettings()">
+                        <i class="fas fa-upload"></i> Load Settings
+                    </button>
+                </div>
+            </div>
+
+            <!-- Hidden file input for import -->
+            <input type="file" id="customConfigImportInput" accept=".json" style="display:none"
+                   onchange="handleCustomConfigImport(event)">
+
+            <div style="height:30px"></div>
         </div>
     </div>
 
