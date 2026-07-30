@@ -187,7 +187,103 @@
     }
 
     // ----------------------------------------------------------------
-    // 5. BOOT (after DOM + premium system are ready)
+    // 5. WEB SPEECH API — voice notes in the browser
+    //    Android uses the native SpeechRecognizer bridge via
+    //    Android.startVoiceNote(). On web we use the browser's own
+    //    SpeechRecognition API and wire up the same callbacks that
+    //    checklist.js already defines:
+    //      onVoiceNoteListening / onVoiceNotePartial / onVoiceNoteResult / onVoiceNoteError
+    //    A minimal window.Android shim is created so that:
+    //      - isVoiceAvailable() in checklist.js returns true
+    //      - startVoiceInto() can call Android.startVoiceNote()
+    //    Mic buttons will be shown and fully functional on iOS Safari,
+    //    Chrome, Edge, and Firefox (where SpeechRecognition is available).
+    // ----------------------------------------------------------------
+    (function () {
+        var SpeechAPI = window.SpeechRecognition || window.webkitSpeechRecognition;
+        if (!SpeechAPI) return; // browser has no speech support — mic stays hidden
+
+        var _rec = null;
+
+        // Create the minimal Android shim (only adds voice methods).
+        // Guarded so we never overwrite if something else set it first.
+        if (!window.Android) window.Android = {};
+
+        window.Android.isVoiceNoteAvailable = function () { return true; };
+
+        window.Android.startVoiceNote = function () {
+            // Abort any recognition still in progress
+            if (_rec) { try { _rec.abort(); } catch (e) {} }
+
+            _rec = new SpeechAPI();
+            _rec.continuous     = false;  // single utterance per tap
+            _rec.interimResults = true;   // show words appearing as user speaks
+            _rec.lang           = 'en-ZA'; // South African English
+
+            _rec.onstart = function () {
+                if (typeof window.onVoiceNoteListening === 'function') {
+                    window.onVoiceNoteListening();
+                }
+            };
+
+            _rec.onresult = function (event) {
+                var interim = '';
+                var final   = '';
+                for (var i = event.resultIndex; i < event.results.length; i++) {
+                    if (event.results[i].isFinal) {
+                        final += event.results[i][0].transcript;
+                    } else {
+                        interim += event.results[i][0].transcript;
+                    }
+                }
+                if (interim && typeof window.onVoiceNotePartial === 'function') {
+                    window.onVoiceNotePartial(interim);
+                }
+                if (final && typeof window.onVoiceNoteResult === 'function') {
+                    window.onVoiceNoteResult(final);
+                    _rec = null;
+                }
+            };
+
+            _rec.onerror = function (event) {
+                _rec = null;
+                var kind = 'error';
+                if (event.error === 'no-speech') kind = 'no_speech';
+                if (event.error === 'not-allowed' || event.error === 'permission-denied') {
+                    kind = 'permission_denied';
+                }
+                if (typeof window.onVoiceNoteError === 'function') {
+                    window.onVoiceNoteError(kind);
+                }
+            };
+
+            _rec.onend = function () {
+                // Fired after onerror OR after a final result — safe to null here
+                _rec = null;
+            };
+
+            try {
+                _rec.start();
+            } catch (e) {
+                _rec = null;
+                if (typeof window.onVoiceNoteError === 'function') {
+                    window.onVoiceNoteError('error');
+                }
+            }
+        };
+
+        window.Android.stopVoiceNote = function () {
+            if (_rec) {
+                try { _rec.stop(); } catch (e) {}
+                _rec = null;
+            }
+        };
+
+        console.log('🎤 web-app: Web Speech API voice shim active');
+    })();
+
+    // ----------------------------------------------------------------
+    // 6. BOOT (after DOM + premium system are ready)
     // ----------------------------------------------------------------
     function boot() {
         document.body.classList.add('web-mode');
