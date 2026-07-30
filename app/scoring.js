@@ -283,6 +283,11 @@ const scoringEngine = {
 		}
 
 		const roomScores = this.calculateCostWeightedRoomScores(assessments, categories);
+
+		// ── Merge custom item scores ──────────────────────────────
+		const customRoomScores = this.calculateCustomItemScores(property);
+		Object.assign(roomScores, customRoomScores);
+
 		const weightedScore = this.calculateRealisticOverallScore(roomScores);
 		const finalScore = Math.round(weightedScore);
 		const recommendations = this.generateEnhancedRecommendations(property, assessments, roomScores);
@@ -301,6 +306,42 @@ const scoringEngine = {
 		property.score = scoreData.overall;
 		scoreData.dynamicGuidance = this.getDynamicGuidanceFromAssessment(property, scoreData);
 		return scoreData;
+	},
+
+	// Score all rated custom items and return as room-score entries
+	calculateCustomItemScores(property) {
+		const customAssessments = property.customAssessments || {};
+		if (!Object.keys(customAssessments).length) return {};
+		if (typeof getCustomConfig !== 'function') return {};
+
+		const config = getCustomConfig();
+		const scores = {};
+
+		config.customFeatures.forEach(feature => {
+			if (feature.excluded) return;
+			feature.items.forEach(item => {
+				const assessed = customAssessments[item.id];
+				if (!assessed || !assessed.rating || assessed.rating === 'na') return;
+
+				const multiplier = ratingMultipliers[assessed.rating];
+				if (multiplier === undefined) return;
+
+				const weight   = item.weightValue || 2;
+				const earned   = weight * multiplier;
+				const maxScore = weight * 1.0;
+
+				scores['custom_' + item.id] = {
+					roomName:    feature.name + ' — ' + item.name,
+					score:       Math.round((earned / maxScore) * 100),
+					weightedScore: earned,
+					maxWeightedScore: maxScore,
+					assessedItems: 1,
+					isCustom: true
+				};
+			});
+		});
+
+		return scores;
 	},
     
     calculateCostWeightedRoomScores(assessments, categories) {
@@ -690,7 +731,11 @@ getDynamicGuidanceFromAssessment(property, scoreData) {
                 bedrooms: property.bedrooms,
                 bathrooms: property.bathrooms,
                 price: property.price,
-                assessmentDate: property.assessmentDate
+                assessmentDate: property.assessmentDate,
+                // Custom feature data — needed by generateCustomFeaturesReportSection
+                customAssessments:    property.customAssessments    || {},
+                customGuidanceNotes:  property.customGuidanceNotes  || {},
+                activatedCustomItems: property.activatedCustomItems  || []
             },
             assessment: {
                 type: 'assessment',
@@ -804,7 +849,64 @@ getDynamicGuidanceFromAssessment(property, scoreData) {
 				sections.push(categorySection);
 			}
 		});
-		
+
+		// Inject activated custom features into their correct category sections
+		if (typeof getCustomConfig === 'function') {
+			var customConfig = getCustomConfig();
+			var customAssess = property.customAssessments   || {};
+			var custGuidance = property.customGuidanceNotes || {};
+			var activated    = property.activatedCustomItems || [];
+			var sectionMap   = { exterior: ['exterior','location'], interior: ['interior'], other: ['other'] };
+
+			customConfig.customFeatures.forEach(function(feature) {
+				if (feature.excluded) return;
+				var ratedItems = feature.items.filter(function(item) {
+					if (!activated.includes(item.id)) return false;
+					var a = customAssess[item.id];
+					return a && a.rating && a.rating !== '';
+				});
+				if (!ratedItems.length) return;
+
+				var targetId = Object.keys(sectionMap).find(function(sid) {
+					return sectionMap[sid].includes(feature.section);
+				}) || 'other';
+
+				var targetSection = sections.find(function(s) { return s.id === targetId; });
+				if (!targetSection) {
+					var catDef = typeof assessmentCategories !== 'undefined'
+						? assessmentCategories.find(function(c) { return c.id === targetId; }) : null;
+					targetSection = { id: targetId, name: catDef ? catDef.name : targetId, icon: catDef ? catDef.icon : 'fa-star', color: '#1d9e75', rooms: [] };
+					sections.push(targetSection);
+				}
+
+				targetSection.rooms.push({
+					id:       'custom_' + feature.id,
+					name:     feature.name,
+					icon:     'fa-puzzle-piece',
+					notes:    '',
+					isCustom: true,
+					items:    ratedItems.map(function(item) {
+						var a = customAssess[item.id];
+						var guide = custGuidance[item.id] || (item.guidance && item.guidance[a.rating]) || '';
+						var rScore = { excellent:5, good:4, fair:3, poor:2, na:0 };
+						var wt = item.weightValue || 2;
+						return {
+							text:                    item.name,
+							info:                    item.tooltip || '',
+							rating:                  a.rating,
+							ratingDescription:       guide,
+							issuesRequiringAttention: (a.rating === 'poor' || a.rating === 'fair') ? guide : '',
+							score:                   rScore[a.rating] || 0,
+							costWeight:              wt,
+							costCategory:            wt >= 4 ? 'CRITICAL' : wt >= 3 ? 'HIGH' : wt >= 2 ? 'MODERATE' : 'LOW',
+							note:                    a.note || null,
+							photos:                  []
+						};
+					})
+				});
+			});
+		}
+
 		return sections;
 	},
     
