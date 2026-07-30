@@ -325,6 +325,8 @@ function renderPropertyList() {
     if (homeList) homeList.innerHTML = properties.map(p => buildPropertyCard(p)).join('');
     // Update stats
     updateHomeStats(properties);
+    // Re-apply premium lock badges after rebuilding the card HTML
+    if (window.addLimitIndicators) window.addLimitIndicators();
 }
 
 function buildPropertyCard(property) {
@@ -820,3 +822,226 @@ window.confirmDeleteProperty = confirmDeleteProperty;
 window.viewPropertyDetails = viewPropertyDetails;
 window.renderPropertyDetailView = renderPropertyDetailView;
 window.toggleEditMode = toggleEditMode;
+
+// ═══════════════════════════════════════════════════════════════
+// CUSTOM APP CONFIG — global customization, stored in localStorage
+// Configured once in "Customize Assessment" screen.
+// Applies to ALL future assessments automatically.
+// ═══════════════════════════════════════════════════════════════
+
+// Key used for localStorage — literal string avoids any const TDZ issues
+function _custKey() { return 'hbg_custom_config'; }
+
+function _defaultCustomConfig() {
+    return { version: 1, customFeatures: [], customQuestions: [] };
+}
+
+function getCustomConfig() {
+    try {
+        var raw = localStorage.getItem(_custKey());
+        if (!raw) return _defaultCustomConfig();
+        var parsed = JSON.parse(raw);
+        return {
+            version: parsed.version || 1,
+            customFeatures: Array.isArray(parsed.customFeatures) ? parsed.customFeatures : [],
+            customQuestions: Array.isArray(parsed.customQuestions) ? parsed.customQuestions : []
+        };
+    } catch(e) { return _defaultCustomConfig(); }
+}
+
+function saveCustomConfig(config) {
+    try {
+        localStorage.setItem(_custKey(), JSON.stringify(config));
+        return true;
+    } catch(e) {
+        console.error('Failed to save custom config:', e);
+        return false;
+    }
+}
+
+// ── Custom Features CRUD ──────────────────────────────────────
+
+function addCustomFeature(data) {
+    const config = getCustomConfig();
+    const feature = {
+        id: 'cf_' + Date.now(),
+        name: data.name,
+        section: data.section,   // 'location' | 'exterior' | 'interior' | 'other'
+        excluded: false,
+        items: []
+    };
+    config.customFeatures.push(feature);
+    saveCustomConfig(config);
+    return feature;
+}
+
+function updateCustomFeature(featureId, updates) {
+    const config = getCustomConfig();
+    const idx = config.customFeatures.findIndex(f => f.id === featureId);
+    if (idx === -1) return null;
+    config.customFeatures[idx] = { ...config.customFeatures[idx], ...updates };
+    saveCustomConfig(config);
+    return config.customFeatures[idx];
+}
+
+function deleteCustomFeature(featureId) {
+    const config = getCustomConfig();
+    config.customFeatures = config.customFeatures.filter(f => f.id !== featureId);
+    saveCustomConfig(config);
+}
+
+function toggleCustomFeatureExcluded(featureId) {
+    const config = getCustomConfig();
+    const feature = config.customFeatures.find(f => f.id === featureId);
+    if (!feature) return false;
+    feature.excluded = !feature.excluded;
+    saveCustomConfig(config);
+    return feature.excluded;
+}
+
+// ── Custom Feature Items CRUD ────────────────────────────────
+
+function addCustomFeatureItem(featureId, data) {
+    const config = getCustomConfig();
+    const feature = config.customFeatures.find(f => f.id === featureId);
+    if (!feature) return null;
+    const item = {
+        id: 'cfi_' + Date.now(),
+        name: data.name,
+        tooltip: data.tooltip || '',
+        weightLabel: data.weightLabel,          // 'Low'|'Moderate'|'High'|'Very High'|'Critical'
+        weightValue: Number(data.weightValue),  // 1 | 2 | 3 | 3.5 | 4
+        includeAs: data.includeAs || 'dropdown', // 'dropdown' | 'main'
+        guidance: {
+            excellent: data.guidance?.excellent || '',
+            good:      data.guidance?.good      || '',
+            fair:      data.guidance?.fair      || '',
+            poor:      data.guidance?.poor      || ''
+        }
+    };
+    feature.items.push(item);
+    saveCustomConfig(config);
+    return item;
+}
+
+function updateCustomFeatureItem(featureId, itemId, updates) {
+    const config = getCustomConfig();
+    const feature = config.customFeatures.find(f => f.id === featureId);
+    if (!feature) return null;
+    const idx = feature.items.findIndex(i => i.id === itemId);
+    if (idx === -1) return null;
+    if (updates.guidance) {
+        feature.items[idx].guidance = { ...feature.items[idx].guidance, ...updates.guidance };
+        const { guidance, ...rest } = updates;
+        feature.items[idx] = { ...feature.items[idx], ...rest };
+    } else {
+        feature.items[idx] = { ...feature.items[idx], ...updates };
+    }
+    saveCustomConfig(config);
+    return feature.items[idx];
+}
+
+function deleteCustomFeatureItem(featureId, itemId) {
+    const config = getCustomConfig();
+    const feature = config.customFeatures.find(f => f.id === featureId);
+    if (!feature) return;
+    feature.items = feature.items.filter(i => i.id !== itemId);
+    saveCustomConfig(config);
+}
+
+// ── Custom Questions CRUD ────────────────────────────────────
+
+function addCustomQuestion(data) {
+    const config = getCustomConfig();
+    const question = {
+        id: 'cq_' + Date.now(),
+        question: data.question,
+        tooltip: data.tooltip || ''
+    };
+    config.customQuestions.push(question);
+    saveCustomConfig(config);
+    return question;
+}
+
+function deleteCustomQuestion(questionId) {
+    const config = getCustomConfig();
+    config.customQuestions = config.customQuestions.filter(q => q.id !== questionId);
+    saveCustomConfig(config);
+}
+
+// ── Export / Import ──────────────────────────────────────────
+
+function exportCustomConfig() {
+    const config   = getCustomConfig();
+    const json     = JSON.stringify(config, null, 2);
+    const filename = 'hbg_custom_settings_' + new Date().toISOString().slice(0, 10) + '.json';
+
+    if (typeof Android !== 'undefined' && Android.shareJsonFile) {
+        // Android WebView — use native bridge (Blob URLs not supported in WebView)
+        try {
+            const bytes  = new TextEncoder().encode(json);
+            const binary = Array.from(bytes).map(b => String.fromCharCode(b)).join('');
+            const base64 = btoa(binary);
+            Android.shareJsonFile(base64, filename);
+        } catch (e) {
+            console.error('Export via bridge failed:', e);
+        }
+    } else {
+        // PWA / browser fallback
+        const blob = new Blob([json], { type: 'application/json' });
+        const url  = URL.createObjectURL(blob);
+        const a    = document.createElement('a');
+        a.href     = url;
+        a.download = filename;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
+    }
+}
+
+function importCustomConfig(jsonString) {
+    try {
+        const parsed = JSON.parse(jsonString);
+        if (!Array.isArray(parsed.customFeatures) || !Array.isArray(parsed.customQuestions)) {
+            return { success: false, error: 'Invalid settings file. Please use a file exported from this app.' };
+        }
+        saveCustomConfig({
+            version: parsed.version || 1,
+            customFeatures: parsed.customFeatures,
+            customQuestions: parsed.customQuestions
+        });
+        return { success: true };
+    } catch(e) {
+        return { success: false, error: 'Could not read the file. Make sure it is a valid settings file.' };
+    }
+}
+
+// ── Custom Assessment State helpers ─────────────────────────
+// Custom item ratings stored in property.customAssessments[itemId] = { rating, note }
+// Custom guidance notes (from full report screen) in property.customGuidanceNotes[itemId]
+
+function getCustomAssessments(property) {
+    return property.customAssessments || {};
+}
+
+function getCustomGuidanceNotes(property) {
+    return property.customGuidanceNotes || {};
+}
+
+// Expose everything
+window.getCustomConfig            = getCustomConfig;
+window.saveCustomConfig           = saveCustomConfig;
+window.addCustomFeature           = addCustomFeature;
+window.updateCustomFeature        = updateCustomFeature;
+window.deleteCustomFeature        = deleteCustomFeature;
+window.toggleCustomFeatureExcluded = toggleCustomFeatureExcluded;
+window.addCustomFeatureItem       = addCustomFeatureItem;
+window.updateCustomFeatureItem    = updateCustomFeatureItem;
+window.deleteCustomFeatureItem    = deleteCustomFeatureItem;
+window.addCustomQuestion          = addCustomQuestion;
+window.deleteCustomQuestion       = deleteCustomQuestion;
+window.exportCustomConfig         = exportCustomConfig;
+window.importCustomConfig         = importCustomConfig;
+window.getCustomAssessments       = getCustomAssessments;
+window.getCustomGuidanceNotes     = getCustomGuidanceNotes;
