@@ -1324,11 +1324,26 @@ function renderCategorizedNavigationWithQuestions() {
     const roomMatchesSearch = (room) => !searchQ ||
         room.name.toLowerCase().includes(searchQ) ||
         room.items.some(it => it.text.toLowerCase().includes(searchQ));
+
+    const customMatchesSearch = (categoryId) => {
+        if (!searchQ || typeof getCustomConfig !== 'function') return false;
+        const config   = getCustomConfig();
+        const property = appState.currentProperty;
+        const activated = property?.activatedCustomItems || [];
+        const sectionMap = { exterior: ['exterior','location'], interior: ['interior'], other: ['other'] };
+        const sections = sectionMap[categoryId] || [];
+        return config.customFeatures.some(f =>
+            !f.excluded && sections.includes(f.section) &&
+            f.items.some(i => activated.includes(i.id) &&
+                (f.name.toLowerCase().includes(searchQ) || i.name.toLowerCase().includes(searchQ)))
+        );
+    };
+
     const categoryHasSearchMatch = (category) => category.rooms.some(r => {
         const inst = assessmentState.roomInstances[r.id] || [];
         if (r.conditional && inst.length === 0) return false;
         return roomMatchesSearch(r);
-    });
+    }) || customMatchesSearch(category.id);
 
     container.innerHTML = `
         <div class="assessment-search-bar">
@@ -1583,6 +1598,8 @@ function renderCategorizedNavigationWithQuestions() {
                                 `;
                             }).join('')}
                             
+                            ${renderCustomFeaturesForCategory(category.id, searchQ)}
+
                             ${(category.id === 'other' && !searchQ) ? `
                                 <div class="add-other-features-section">
                                     <h4><i class="fas fa-plus-circle"></i> Add Additional Features</h4>
@@ -1795,13 +1812,283 @@ function addFeatureFromSearch(roomId) {
     if (typeof showSuccess === 'function') showSuccess(`${foundRoom.name} added!`);
 }
 
+// ═══════════════════════════════════════════════════════════════
+// CUSTOM FEATURES INJECTION — renders custom features per category
+// ═══════════════════════════════════════════════════════════════
+
+// Maps assessment category IDs to custom config section names
+var CATEGORY_TO_SECTION = {
+    exterior: ['exterior', 'location'],
+    interior: ['interior'],
+    other:    ['other']
+};
+
+function renderCustomFeaturesForCategory(categoryId, searchQ) {
+    if (typeof getCustomConfig !== 'function') return '';
+    var config    = getCustomConfig();
+    var sections  = CATEGORY_TO_SECTION[categoryId] || [];
+    var property  = appState.currentProperty;
+    var activated = property?.activatedCustomItems || [];
+
+    var sq = (searchQ || '').toLowerCase();
+    var features = config.customFeatures.filter(f =>
+        sections.includes(f.section) && !f.excluded && f.items.some(i => activated.includes(i.id)) &&
+        (!sq || f.name.toLowerCase().includes(sq) ||
+            f.items.some(i => activated.includes(i.id) && i.name.toLowerCase().includes(sq)))
+    );
+    if (features.length === 0) return '';
+
+    var customAssessments = property?.customAssessments || {};
+
+    // Returns true when every activated item in the feature has a rating
+    function isCustomFeatureDone(feature) {
+        var active = feature.items.filter(function(i) { return activated.includes(i.id); });
+        if (!active.length) return false;
+        return active.every(function(item) {
+            var a = customAssessments[item.id];
+            return a && a.rating && a.rating !== '';
+        });
+    }
+
+    return features.map(feature => {
+        var activeItems = feature.items.filter(i => activated.includes(i.id));
+        if (activeItems.length === 0) return '';
+
+        var panelId   = 'custFeatPanel_'   + feature.id;
+        var chevronId = 'custFeatChevron_' + feature.id;
+        var isExpanded = assessmentState._expandedCustomFeatures?.[feature.id] || false;
+        var isDone     = isCustomFeatureDone(feature);
+
+        return `
+        <div class="room-section" id="custFeatSection_${feature.id}">
+            <div class="room-header-bar room-header-clickable ${isDone ? 'room-header-done' : ''}"
+                 onclick="toggleCustomFeaturePanel('${feature.id}')">
+                <div class="room-title-section">
+                    <i class="fas fa-puzzle-piece"></i>
+                    <h4>${feature.name}</h4>
+                    ${isDone ? '<i class="fas fa-check-circle room-done-tick"></i>' : ''}
+                </div>
+                <div class="room-controls">
+                    <button class="delete-room-instance-btn" onclick="event.stopPropagation(); removeCustomFeatureFromAssessment('${feature.id}')" title="Remove">
+                        <i class="fas fa-times"></i>
+                    </button>
+                    <div class="room-expand-indicator">
+                        <i class="fas fa-chevron-down" id="${chevronId}" style="${isExpanded ? 'transform:rotate(180deg)' : ''}"></i>
+                    </div>
+                </div>
+            </div>
+
+            ${isExpanded ? `
+            <div class="room-instances-panel" id="${panelId}">
+                <div class="assessment-items">
+                    ${activeItems.map(item => {
+                        var saved    = customAssessments[item.id] || {};
+                        var rating   = saved.rating || '';
+                        var note     = saved.note   || '';
+                        var infoStr  = item.tooltip ? item.tooltip.replace(/'/g,"&#39;").replace(/"/g,'&quot;') : '';
+                        var photoKey = 'custom_' + item.id;
+                        var photoId  = 'photos_' + photoKey + '_' + item.name.replace(/\s+/g,'_').replace(/[^\w]/g,'');
+                        return `
+                        <div class="assessment-item" id="customItem_${item.id}">
+                            <div class="item-question">
+                                <span class="question-text">${item.name}</span>
+                                ${item.tooltip ? `<button class="info-btn" onclick="showItemInfo('${infoStr}')" title="Assessment Guide"><i class="fas fa-info-circle"></i></button>` : ''}
+                            </div>
+                            <div class="item-rating">
+                                <select class="rating-dropdown" onchange="setCustomItemRating('${item.id}', this.value)">
+                                    <option value="">Select rating...</option>
+                                    <option value="excellent" ${rating==='excellent'?'selected':''}>⭐ Excellent (5/5)</option>
+                                    <option value="good"      ${rating==='good'     ?'selected':''}>✅ Good (4/5)</option>
+                                    <option value="fair"      ${rating==='fair'     ?'selected':''}>⚠️ Fair (3/5)</option>
+                                    <option value="poor"      ${rating==='poor'     ?'selected':''}>❌ Poor (2/5)</option>
+                                    <option value="na"        ${rating==='na'       ?'selected':''}>➖ N/A</option>
+                                </select>
+                            </div>
+                            <div class="item-photos">
+                                <div class="photo-actions">
+                                    <button class="photo-btn capture-btn" onclick="capturePhoto('${photoKey}', '${item.name.replace(/'/g,"&#39;")}')">
+                                        <i class="fas fa-camera"></i> Add Photo
+                                    </button>
+                                    <button class="photo-btn note-btn ${note ? 'has-note' : ''}" onclick="toggleNoteArea(this)">
+                                        <i class="fas fa-pencil-alt"></i> Note
+                                    </button>
+                                </div>
+                                <div class="item-note-area" style="display:${note ? 'block' : 'none'};">
+                                    <div class="voice-listening" style="display:none;">
+                                        <span class="voice-dot"></span>
+                                        <span class="voice-listening-text">Listening&hellip; speak now</span>
+                                        <button class="voice-stop-btn" onclick="stopVoiceCapture()">
+                                            <i class="fas fa-stop"></i> Stop
+                                        </button>
+                                    </div>
+                                    <div class="note-input-row">
+                                        <textarea class="item-note-textarea" rows="2"
+                                            placeholder="Add note for this item..."
+                                            onchange="updateCustomItemNote('${item.id}', this.value)">${note}</textarea>
+                                        <button class="voice-mic-btn" onclick="startVoiceIntoCustomItem(this,'${item.id}')" title="Speak your note">
+                                            <i class="fas fa-microphone"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                                <div class="photo-preview" id="${photoId}"></div>
+                            </div>
+                        </div>`;
+                    }).join('')}
+                </div>
+
+                <!-- Done / Save & Continue — identical to built-in rooms -->
+                <div class="done-button-container">
+                    <button class="done-button ${isDone ? 'complete' : 'incomplete'}"
+                            onclick="completeAndCollapseCustomFeature('${feature.id}')">
+                        <i class="fas ${isDone ? 'fa-check-circle' : 'fa-arrow-up'}"></i>
+                        ${isDone ? 'Done - Next Section' : 'Save &amp; Continue'}
+                    </button>
+                </div>
+            </div>
+            ` : `<div class="room-instances-panel" id="${panelId}" style="display:none"></div>`}
+        </div>`;
+    }).join('');
+}
+
+// Toggle expand/collapse for custom feature panels — mirrors built-in room toggling
+function toggleCustomFeaturePanel(featureId) {
+    if (!assessmentState._expandedCustomFeatures) assessmentState._expandedCustomFeatures = {};
+    var isExpanded = assessmentState._expandedCustomFeatures[featureId] || false;
+    assessmentState._expandedCustomFeatures[featureId] = !isExpanded;
+
+    var panel   = document.getElementById('custFeatPanel_'   + featureId);
+    var chevron = document.getElementById('custFeatChevron_' + featureId);
+
+    if (panel) {
+        if (isExpanded) {
+            panel.style.display = 'none';
+        } else {
+            // Rebuild content on expand (lazy render)
+            renderCategorizedNavigationWithQuestions();
+            return; // re-render handles everything
+        }
+    }
+    if (chevron) chevron.style.transform = isExpanded ? '' : 'rotate(180deg)';
+}
+
+// Remove a custom feature from THIS assessment (deactivate its items)
+function removeCustomFeatureFromAssessment(featureId) {
+    var property = appState.currentProperty;
+    if (!property) return;
+    var config  = typeof getCustomConfig === 'function' ? getCustomConfig() : null;
+    var feature = config?.customFeatures?.find(function(f) { return f.id === featureId; });
+    if (!feature) return;
+    if (!property.activatedCustomItems) return;
+    feature.items.forEach(function(item) {
+        property.activatedCustomItems = property.activatedCustomItems.filter(function(id) { return id !== item.id; });
+    });
+    if (assessmentState._expandedCustomFeatures) {
+        delete assessmentState._expandedCustomFeatures[featureId];
+    }
+    saveCurrentAssessmentProgress();
+    renderCategorizedNavigationWithQuestions();
+    showSuccess(feature.name + ' removed from assessment.');
+}
+
+window.toggleCustomFeaturePanel          = toggleCustomFeaturePanel;
+window.removeCustomFeatureFromAssessment = removeCustomFeatureFromAssessment;
+
+// Rating handler for custom items — saves and refreshes the feature header tick
+function setCustomItemRating(itemId, value) {
+    var property = appState.currentProperty;
+    if (!property) return;
+    if (!property.customAssessments) property.customAssessments = {};
+    var existing = property.customAssessments[itemId] || {};
+    property.customAssessments[itemId] = { ...existing, rating: value };
+    if (typeof updateProperty === 'function') {
+        updateProperty(property.id, { customAssessments: property.customAssessments });
+    }
+    // Trigger progress update so the header tick and category % update live
+    if (typeof updateProgressBar === 'function') updateProgressBar();
+    // Re-render assessment to refresh header tick state
+    if (typeof renderCategorizedNavigationWithQuestions === 'function') {
+        renderCategorizedNavigationWithQuestions();
+    }
+}
+
+// Custom item note handler
+function updateCustomItemNote(itemId, value) {
+    const property = appState.currentProperty;
+    if (!property) return;
+    if (!property.customAssessments) property.customAssessments = {};
+    const existing = property.customAssessments[itemId] || {};
+    property.customAssessments[itemId] = { ...existing, note: value };
+    updateProperty(property.id, { customAssessments: property.customAssessments });
+}
+
+// Voice into custom item note
+function startVoiceIntoCustomItem(btn, itemId) {
+    // Use .item-note-area as container — same pattern as startVoiceInto
+    const noteArea = btn.closest('.item-note-area');
+    if (!noteArea) return;
+    const ta = noteArea.querySelector('.item-note-textarea');
+    if (!ta) return;
+
+    const value = ta.value || '';
+    let pos = value.length;
+    try {
+        if (typeof ta.selectionStart === 'number') pos = ta.selectionStart;
+    } catch (e) {}
+
+    __voiceTarget = {
+        mode: 'custom',
+        customItemId: itemId,
+        container: noteArea,
+        before: value.slice(0, pos),
+        after:  value.slice(pos),
+        insertPos: pos
+    };
+
+    const indicator = noteArea.querySelector('.voice-listening');
+    if (indicator) {
+        indicator.style.display = 'flex';
+        const lt = indicator.querySelector('.voice-listening-text');
+        if (lt) lt.textContent = 'Starting microphone\u2026';
+    }
+    btn.classList.add('mic-active');
+
+    try { Android.startVoiceNote(); }
+    catch (e) { if (typeof onVoiceNoteError === 'function') onVoiceNoteError('error'); }
+}
+
+window.renderCustomFeaturesForCategory = renderCustomFeaturesForCategory;
+window.setCustomItemRating             = setCustomItemRating;
+window.updateCustomItemNote            = updateCustomItemNote;
+window.startVoiceIntoCustomItem        = startVoiceIntoCustomItem;
+window._activateCustomItem             = _activateCustomItem;
+
+// "Done - Next Section" for custom features — mirrors completeAndCollapseRoom
+function completeAndCollapseCustomFeature(featureId) {
+    saveCurrentAssessmentProgress();
+    if (!assessmentState._expandedCustomFeatures) assessmentState._expandedCustomFeatures = {};
+    assessmentState._expandedCustomFeatures[featureId] = false;
+    renderCategorizedNavigationWithQuestions();
+    const config = typeof getCustomConfig === 'function' ? getCustomConfig() : null;
+    const name = config?.customFeatures?.find(f => f.id === featureId)?.name || 'Custom Feature';
+    showSuccess(`${name} saved!`);
+    setTimeout(() => {
+        const section = document.getElementById('custFeatSection_' + featureId);
+        if (section) section.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    }, 200);
+}
+window.completeAndCollapseCustomFeature = completeAndCollapseCustomFeature;
+
+
 function renderQuestionsSection(property) {
     const propertyType = property.type === 'complex' ? 'complex' : 'house';
     const questions = importantQuestions[propertyType] || [];
     
-    if (questions.length === 0) return '';
+    // Load custom questions
+    const customQs = (typeof getCustomConfig === 'function') ? getCustomConfig().customQuestions : [];
     
-    const qCount = questions.length;
+    if (questions.length === 0 && customQs.length === 0) return '';
+    
+    const qCount = questions.length + customQs.length;
     return `
         <div class="questions-section ${assessmentState.questionsExpanded ? 'open' : ''}">
             <div class="questions-header" onclick="toggleQuestions()">
@@ -1843,13 +2130,60 @@ function renderQuestionsSection(property) {
                             </div>
                         </div>
                     `).join('')}
+
+                    ${customQs.map(q => `
+                        <div class="question-item custom-question-item">
+                            <div class="question-header custom-question-header">
+                                <h5 class="custom-question-text">${q.question} <span class="custom-badge" style="font-size:0.55rem">CUSTOM</span></h5>
+                                <div style="display:flex;align-items:center;gap:4px">
+                                    ${q.tooltip ? `<button class="question-info-btn" onclick="showQuestionInfo('${q.tooltip.replace(/'/g,"&#39;")}')" title="More Info"><i class="fas fa-info-circle"></i></button>` : ''}
+                                    <button class="custom-q-del-btn" onclick="deleteCustomQuestionFromAssessment('${q.id}')" title="Delete this question">
+                                        <i class="fas fa-times"></i>
+                                    </button>
+                                </div>
+                            </div>
+                            <div class="question-response">
+                                <div class="voice-listening" style="display:none;">
+                                    <span class="voice-dot"></span>
+                                    <span class="voice-listening-text">Listening&hellip; speak now</span>
+                                    <button class="voice-stop-btn" onclick="stopVoiceCapture()"><i class="fas fa-stop"></i> Stop</button>
+                                </div>
+                                <div class="note-input-row">
+                                    <textarea class="question-textarea"
+                                              placeholder="Record the response here..."
+                                              onchange="updateQuestionResponse('custom_${q.id}', this.value)">${assessmentState.questionResponses['custom_' + q.id] || ''}</textarea>
+                                    <button class="voice-mic-btn" onclick="startVoiceIntoQuestion(this, 'custom_${q.id}')" title="Speak the response">
+                                        <i class="fas fa-microphone"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    `).join('')}
                 </div>
             ` : ''}
         </div>
     `;
 }
 
+// Delete a custom question directly from the assessment screen
+function deleteCustomQuestionFromAssessment(questionId) {
+    showModal(
+        'Delete Question?',
+        'Remove this custom question from all assessments?',
+        () => {
+            if (typeof deleteCustomQuestion === 'function') deleteCustomQuestion(questionId);
+            renderCategorizedNavigationWithQuestions();
+            showSuccess('Question removed.');
+        },
+        'Remove', null, 'Cancel'
+    );
+}
+window.deleteCustomQuestionFromAssessment = deleteCustomQuestionFromAssessment;
+
+// ═══════════════════════════════════════════════════════════════
 // UTILITY FUNCTIONS
+// ═══════════════════════════════════════════════════════════════
+
 function isCurrentRoom(categoryIndex, roomId, instanceIndex) {
     const currentCategory = assessmentCategories[assessmentState.currentCategory];
     const currentRoom = currentCategory?.rooms?.[assessmentState.currentRoom];
@@ -1880,6 +2214,26 @@ function getCategoryProgress(category) {
             });
         }
     });
+
+    // Include activated custom items for this category in progress
+    if (typeof getCustomConfig === 'function') {
+        var property = appState.currentProperty;
+        var activated = property?.activatedCustomItems || [];
+        var customAssessments = property?.customAssessments || {};
+        var sections = CATEGORY_TO_SECTION[category.id] || [];
+
+        getCustomConfig().customFeatures.forEach(function(feature) {
+            if (feature.excluded || !sections.includes(feature.section)) return;
+            feature.items.forEach(function(item) {
+                if (!activated.includes(item.id)) return;
+                totalItems++;
+                var assessed = customAssessments[item.id];
+                if (assessed && assessed.rating && assessed.rating !== '') {
+                    completedItems++;
+                }
+            });
+        });
+    }
     
     return totalItems > 0 ? (completedItems / totalItems) * 360 : 0;
 }
@@ -2368,9 +2722,13 @@ window.onVoiceNoteListening = function() {
 };
 
 function getVoiceTextarea(target) {
-    return target.container.querySelector(
-        target.mode === 'question' ? '.question-textarea' : '.item-note-textarea'
-    );
+    if (target.mode === 'question') {
+        return target.container.querySelector('.question-textarea');
+    }
+    if (target.mode === 'custom') {
+        return target.container.querySelector('.item-note-textarea');
+    }
+    return target.container.querySelector('.item-note-textarea');
 }
 
 window.onVoiceNotePartial = function(text) {
@@ -2407,6 +2765,15 @@ window.onVoiceNoteResult = function(text) {
 
     if (target.mode === 'question') {
         updateQuestionResponse(target.questionId, finalText);
+    } else if (target.mode === 'custom') {
+        if (typeof updateCustomItemNote === 'function') {
+            updateCustomItemNote(target.customItemId, finalText);
+        }
+        const ta2 = getVoiceTextarea(target);
+        if (ta2) {
+            ta2.value = finalText;
+            ta2.dispatchEvent(new Event('change'));
+        }
     } else {
         updateItemNote(target.instanceId, target.itemText, finalText);
     }
@@ -2542,7 +2909,20 @@ function getAvailableOtherFeatures() {
         { id: 'air-conditioning', name: 'Air Conditioning' },
         { id: 'heating-systems', name: 'Heating Systems' }
     ];
-    
+
+    // Append custom features for 'other' section — add the whole feature, not individual items
+    if (typeof getCustomConfig === 'function') {
+        var activated = appState.currentProperty?.activatedCustomItems || [];
+        getCustomConfig().customFeatures.forEach(function(f) {
+            if (!f.excluded && f.section === 'other' && f.items.length > 0) {
+                var allActivated = f.items.every(function(i) { return activated.includes(i.id); });
+                if (!allActivated) {
+                    allOtherFeatures.push({ id: 'custom_feat_' + f.id, name: f.name });
+                }
+            }
+        });
+    }
+
     return allOtherFeatures.filter(feature => !currentFeatures.includes(feature.id));
 }
 
@@ -2558,7 +2938,20 @@ function getAvailableExteriorFeatures() {
         { id: 'swimming-pool', name: 'Swimming Pool' },
         { id: 'water-features', name: 'Water Features' }
     ];
-    
+
+    // Append custom features for 'exterior' and 'location' sections — add the whole feature
+    if (typeof getCustomConfig === 'function') {
+        var activated = appState.currentProperty?.activatedCustomItems || [];
+        getCustomConfig().customFeatures.forEach(function(f) {
+            if (!f.excluded && (f.section === 'exterior' || f.section === 'location') && f.items.length > 0) {
+                var allActivated = f.items.every(function(i) { return activated.includes(i.id); });
+                if (!allActivated) {
+                    allExteriorFeatures.push({ id: 'custom_feat_' + f.id, name: f.name });
+                }
+            }
+        });
+    }
+
     return allExteriorFeatures.filter(feature => !currentFeatures.includes(feature.id));
 }
 
@@ -2573,7 +2966,20 @@ function getAvailableInteriorFeatures() {
         { id: 'laundry-room', name: 'Laundry Room' },
         { id: 'home-theater', name: 'Home Theater' }
     ];
-    
+
+    // Append custom features for 'interior' section — add the whole feature
+    if (typeof getCustomConfig === 'function') {
+        var activated = appState.currentProperty?.activatedCustomItems || [];
+        getCustomConfig().customFeatures.forEach(function(f) {
+            if (!f.excluded && f.section === 'interior' && f.items.length > 0) {
+                var allActivated = f.items.every(function(i) { return activated.includes(i.id); });
+                if (!allActivated) {
+                    allInteriorFeatures.push({ id: 'custom_feat_' + f.id, name: f.name });
+                }
+            }
+        });
+    }
+
     return allInteriorFeatures.filter(feature => !currentFeatures.includes(feature.id));
 }
 
@@ -2589,21 +2995,61 @@ function getFeatureIcon(featureId) {
 // FIXED: Updated feature icon mapping with consistent naming
 
 
+// ── Custom feature activation helper ─────────────────────────
+// Called when a custom feature is selected from any assessment dropdown.
+// Activates ALL items of the feature at once for this property.
+function _activateCustomItem(selectedValue, displayName) {
+    var featureId = selectedValue.replace('custom_feat_', '');
+    var property  = appState.currentProperty;
+    if (!property) return false;
+
+    var config  = typeof getCustomConfig === 'function' ? getCustomConfig() : null;
+    var feature = config?.customFeatures?.find(function(f) { return f.id === featureId; });
+    if (!feature || !feature.items.length) return false;
+
+    if (!property.activatedCustomItems) property.activatedCustomItems = [];
+
+    var allActivated = feature.items.every(function(i) {
+        return property.activatedCustomItems.includes(i.id);
+    });
+    if (allActivated) {
+        showModal('Already Added', '<div class="warning-modal-content"><div class="warning-icon"><i class="fas fa-exclamation-triangle"></i></div><p><strong>' + displayName + '</strong> is already in this assessment.</p></div>');
+        return false;
+    }
+
+    // Activate every item in the feature
+    feature.items.forEach(function(item) {
+        if (!property.activatedCustomItems.includes(item.id)) {
+            property.activatedCustomItems.push(item.id);
+        }
+    });
+
+    if (!property.customAssessments) property.customAssessments = {};
+    saveCurrentAssessmentProgress();
+    return true;
+}
+
 function addOtherFeature(categoryId) {
     const dropdown = document.getElementById(`otherFeatureDropdown_${categoryId}`);
     if (!dropdown || !dropdown.value) {
-        showModal('Add Feature', `
-            <div class="info-modal-content">
-                <div class="info-icon"><i class="fas fa-info-circle"></i></div>
-                <p>Please select a feature to add.</p>
-            </div>
-        `);
+        showModal('Add Feature', `<div class="info-modal-content"><div class="info-icon"><i class="fas fa-info-circle"></i></div><p>Please select a feature to add.</p></div>`);
         return;
     }
-    
+
     const selectedValue = dropdown.value;
-    const selectedText = dropdown.options[dropdown.selectedIndex].text;
-    
+    const selectedText  = dropdown.options[dropdown.selectedIndex].text;
+
+    // Handle custom items (from Customize Assessment)
+    if (selectedValue.startsWith('custom_feat_')) {
+        dropdown.value = '';
+        if (_activateCustomItem(selectedValue, selectedText)) {
+            renderCategorizedNavigationWithQuestions();
+            updateProgressBar();
+            showSuccess(`${selectedText} added!`);
+        }
+        return;
+    }
+
    const quickFeatureId = `quick_${selectedValue}`;
 if (assessmentState.roomInstances[quickFeatureId] || assessmentState.roomInstances[selectedValue]) {
         showModal('Feature Already Added', `
@@ -2655,18 +3101,24 @@ if (assessmentState.roomInstances[quickFeatureId] || assessmentState.roomInstanc
 function addExteriorFeature(categoryId) {
     const dropdown = document.getElementById(`exteriorFeatureDropdown_${categoryId}`);
     const selectedValue = dropdown.value;
-    
+
     if (!selectedValue) {
-        showModal('Add Feature', `
-            <div class="info-modal-content">
-                <div class="info-icon"><i class="fas fa-info-circle"></i></div>
-                <p>Please select a feature to add.</p>
-            </div>
-        `);
+        showModal('Add Feature', `<div class="info-modal-content"><div class="info-icon"><i class="fas fa-info-circle"></i></div><p>Please select a feature to add.</p></div>`);
         return;
     }
-    
+
     const selectedText = dropdown.options[dropdown.selectedIndex].text;
+
+    // Handle custom items (from Customize Assessment)
+    if (selectedValue.startsWith('custom_feat_')) {
+        dropdown.value = '';
+        if (_activateCustomItem(selectedValue, selectedText)) {
+            renderCategorizedNavigationWithQuestions();
+            updateProgressBar();
+            showSuccess(`${selectedText} added!`);
+        }
+        return;
+    }
     
     if (assessmentState.roomInstances[selectedValue]) {
         showModal('Feature Already Added', `
@@ -2728,7 +3180,18 @@ function addInteriorFeature(categoryId) {
     
     const selectedValue = dropdown.value;
     const selectedText = dropdown.options[dropdown.selectedIndex].text;
-    
+
+    // Handle custom items (from Customize Assessment)
+    if (selectedValue.startsWith('custom_feat_')) {
+        dropdown.value = '';
+        if (_activateCustomItem(selectedValue, selectedText)) {
+            renderCategorizedNavigationWithQuestions();
+            updateProgressBar();
+            showSuccess(`${selectedText} added!`);
+        }
+        return;
+    }
+
     if (assessmentState.roomInstances[selectedValue]) {
         showModal('Feature Already Added', `
             <div class="warning-modal-content">
@@ -3037,6 +3500,14 @@ function saveCurrentAssessmentProgress() {
     updates.questionResponses = JSON.parse(JSON.stringify(assessmentState.questionResponses));
     updates.roomInstances = JSON.parse(JSON.stringify(assessmentState.roomInstances));
     updates.progress = calculateAccurateProgress();
+
+    // Persist custom feature activation and ratings so they survive app restarts
+    if (property.activatedCustomItems) {
+        updates.activatedCustomItems = [...property.activatedCustomItems];
+    }
+    if (property.customAssessments) {
+        updates.customAssessments = JSON.parse(JSON.stringify(property.customAssessments));
+    }
     
     Object.assign(property, updates);
     
