@@ -714,6 +714,101 @@ class PropertyPDFGenerator {
         this.currentY = startY + boxH + 8;
     }
 
+    renderCustomFeaturesInPDF(property) {
+        if (typeof getCustomConfig !== 'function') return;
+        const config   = getCustomConfig();
+        const features = config.customFeatures.filter(f => !f.excluded && f.items.length > 0);
+        if (features.length === 0) return;
+
+        const customAssessments  = property.customAssessments  || {};
+        const customGuidanceNotes = property.customGuidanceNotes || {};
+
+        // Only include features that have at least one rated item
+        const ratedFeatures = features.filter(f =>
+            f.items.some(i => customAssessments[i.id]?.rating)
+        );
+        if (ratedFeatures.length === 0) return;
+
+        if (this.currentY > this.pageHeight - 20) this.addNewPage();
+        this.doc.setTextColor(...this.colors.navy);
+        this.doc.setFont('helvetica', 'bold');
+        this.doc.setFontSize(12);
+        this.doc.text('Custom Assessment Features', this.margin, this.currentY);
+        this.currentY += 8;
+
+        const ratingColors = {
+            excellent: [29, 158, 117],
+            good:      [59, 130, 246],
+            fair:      [234, 179, 8],
+            poor:      [239, 68, 68],
+            na:        [107, 114, 128]
+        };
+
+        ratedFeatures.forEach(feature => {
+            if (this.currentY > this.pageHeight - 18) this.addNewPage();
+
+            // Feature heading
+            this.doc.setFillColor(...this.colors.navy);
+            this.doc.roundedRect(this.margin, this.currentY, this.contentWidth, 9, 2, 2, 'F');
+            this.doc.setTextColor(...this.colors.white);
+            this.doc.setFont('helvetica', 'bold');
+            this.doc.setFontSize(8);
+            this.doc.text(feature.name.toUpperCase() + '  [CUSTOM]', this.margin + 4, this.currentY + 6);
+            this.currentY += 12;
+
+            feature.items.forEach(item => {
+                const assessed = customAssessments[item.id];
+                if (!assessed?.rating) return;
+
+                if (this.currentY > this.pageHeight - 14) this.addNewPage();
+
+                const ratingLabel = assessed.rating === 'na' ? 'N/A'
+                    : assessed.rating.charAt(0).toUpperCase() + assessed.rating.slice(1);
+                const ratingColor = ratingColors[assessed.rating] || [107,114,128];
+
+                // Item name
+                this.doc.setTextColor(...this.colors.text);
+                this.doc.setFont('helvetica', 'bold');
+                this.doc.setFontSize(8.5);
+                this.doc.text(item.name, this.margin + 3, this.currentY);
+
+                // Rating pill
+                const pillW = 24;
+                const pillX = this.margin + this.contentWidth - pillW;
+                this.doc.setFillColor(...ratingColor);
+                this.doc.roundedRect(pillX, this.currentY - 4, pillW, 6, 1.5, 1.5, 'F');
+                this.doc.setTextColor(255,255,255);
+                this.doc.setFont('helvetica', 'bold');
+                this.doc.setFontSize(6.5);
+                this.doc.text(ratingLabel.toUpperCase(), pillX + pillW/2, this.currentY, { align: 'center' });
+                this.currentY += 7;
+
+                // Guidance or user notes
+                const guidanceNote = customGuidanceNotes[item.id];
+                const configGuidance = guidanceNote || (assessed.rating !== 'na'
+                    ? item.guidance?.[assessed.rating] : '');
+                const noteText = configGuidance || assessed.note || '';
+
+                if (noteText) {
+                    this.doc.setFillColor(245, 248, 252);
+                    const noteLines = this.doc.splitTextToSize(noteText, this.contentWidth - 12);
+                    const noteH = noteLines.length * 4.5 + 5;
+                    this.doc.roundedRect(this.margin + 3, this.currentY, this.contentWidth - 6, noteH, 1.5, 1.5, 'F');
+                    this.doc.setTextColor(...this.colors.secondary);
+                    this.doc.setFont('helvetica', 'italic');
+                    this.doc.setFontSize(7.5);
+                    noteLines.forEach((line, li) => {
+                        this.doc.text(line, this.margin + 6, this.currentY + 4 + li * 4.5);
+                    });
+                    this.currentY += noteH + 3;
+                }
+
+                this.currentY += 2;
+            });
+            this.currentY += 4;
+        });
+    }
+
     renderExecutiveSummary(property, score, grade, options, reportData = null) {
         // Section heading
         this.doc.setTextColor(...this.colors.navy);
@@ -1585,21 +1680,45 @@ class PropertyPDFGenerator {
 
     getAllPropertyFeatures(property) {
         const features = { internal: [], external: [], other: [] };
-        
-        if (property.bedrooms) features.internal.push({ name: 'Bedrooms', quantity: property.bedrooms });
-        if (property.bathrooms) features.internal.push({ name: 'Bathrooms', quantity: property.bathrooms });
-        features.internal.push({ name: 'Kitchen', quantity: 1 });
-        
-        if (property.parking) features.external.push({ name: 'Parking', quantity: property.parking });
-        
+
+        // Use stored features as primary source
         if (property.features) {
             ['internal', 'external', 'other'].forEach(category => {
                 if (property.features[category]) {
-                    features[category] = [...features[category], ...property.features[category]];
+                    features[category] = [...property.features[category]];
                 }
             });
         }
-        
+
+        // Ensure default internal features always appear (no duplicates).
+        // Mirrors getPropertyFeatures() in app.js — handles old properties too.
+        const defaultInternal = [
+            { name: 'Bedrooms',  quantity: parseInt(property.bedrooms)  || 1 },
+            { name: 'Bathrooms', quantity: parseInt(property.bathrooms) || 1 },
+            { name: 'Kitchen',   quantity: 1 },
+            { name: 'Lounge',    quantity: 1 },
+        ];
+        [...defaultInternal].reverse().forEach(def => {
+            const exists = features.internal.find(
+                f => f.name.toLowerCase() === def.name.toLowerCase()
+            );
+            if (!exists) features.internal.unshift(def);
+        });
+
+        // Ensure default external features (no duplicates)
+        if (property.parking && parseInt(property.parking) > 0) {
+            const parkingExists = features.external.find(
+                f => f.name.toLowerCase().includes('parking') ||
+                     f.name.toLowerCase().includes('garage')
+            );
+            if (!parkingExists) {
+                features.external.unshift({
+                    name: 'Parking / Garages',
+                    quantity: parseInt(property.parking) || 1
+                });
+            }
+        }
+
         return features;
     }
 
