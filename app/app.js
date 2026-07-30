@@ -3,6 +3,21 @@
  * CLEANED VERSION - Removes duplicates and ensures proper sync
  */
 
+// ── Customize Assessment constants — defined HERE at the very top
+// so they are available regardless of any runtime errors later in the file.
+var SECTION_COLORS = { location:'#ca8a04', exterior:'#28A745', interior:'#2E86AB', other:'#6F42C1' };
+var SECTION_ICONS  = { location:'fa-map-marker-alt', exterior:'fa-tree', interior:'fa-door-open', other:'fa-star' };
+var SECTION_LABELS = {
+    location: 'Location & Neighbourhood',
+    exterior: 'Exterior Assessment',
+    interior: 'Interior Assessment',
+    other:    'Other Features Assessment'
+};
+var WEIGHT_OPTIONS = [
+    { label:'Low', value:1 }, { label:'Moderate', value:2 }, { label:'High', value:3 },
+    { label:'Very High', value:3.5 }, { label:'Critical', value:4 }
+];
+
 
 // ═══════════════════════════════════════════════
 // APP VERSION — single source of truth.
@@ -355,6 +370,7 @@ function onScreenChanged(screenId) {
             break;	
         case 'settingsScreen':
             updateSettingsScreen();
+            if (typeof updateCustomizeAssessmentPremiumTag === 'function') updateCustomizeAssessmentPremiumTag();
             break;
         case 'helpScreen':
             updateHelpScreen(); // This will now properly initialize the help system
@@ -372,6 +388,8 @@ function onScreenChanged(screenId) {
             // Home shows property cards too — rebuild them, not just the stats
             if (typeof updatePropertyList === 'function') updatePropertyList();
             renderHomeScreen();
+            // Re-apply lock badges on home screen cards after rendering
+            if (window.addLimitIndicators) window.addLimitIndicators();
             break;
         case 'assessmentResultsScreen':
             initializeAssessmentResults();
@@ -738,6 +756,27 @@ function syncAssessmentGuideToggleUI() {
         : 'Hidden — tap to show again';
 }
 window.syncAssessmentGuideToggleUI = syncAssessmentGuideToggleUI;
+
+// ── Customize Assessment — premium gate ──────────────────────────────────────
+// Called from the Settings screen row. Only premium users can access this.
+function openCustomizeAssessment() {
+    if (window.premiumState && !window.premiumState.isPremium) {
+        if (window.showPremiumModal) window.showPremiumModal('customize_assessment');
+        return;
+    }
+    showScreen('customizeAssessmentScreen');
+    if (typeof initCustomizeScreen === 'function') initCustomizeScreen();
+}
+window.openCustomizeAssessment = openCustomizeAssessment;
+
+// Show/hide the crown tag on the Customize Assessment row based on premium status
+function updateCustomizeAssessmentPremiumTag() {
+    var tag = document.getElementById('customizeAssessmentPremiumTag');
+    if (!tag) return;
+    var isPremium = window.premiumState && window.premiumState.isPremium;
+    tag.style.display = isPremium ? 'none' : 'inline-flex';
+}
+window.updateCustomizeAssessmentPremiumTag = updateCustomizeAssessmentPremiumTag;
 
 function toggleNotifications() {
     appState.settings.notifications = !appState.settings.notifications;
@@ -1156,7 +1195,10 @@ function saveAppData() {
 		createdAt: prop.createdAt,
 		updatedAt: prop.updatedAt,
 		assessedAt: prop.assessedAt,
-		features: prop.features
+		features: prop.features,
+		activatedCustomItems: prop.activatedCustomItems || [],
+		customAssessments: prop.customAssessments || {},
+		customGuidanceNotes: prop.customGuidanceNotes || {}
 	}));
         
         // Save detailed assessments to IndexedDB
@@ -1251,6 +1293,17 @@ async function loadAssessmentsFromIndexedDB() {
                                          assessmentData.quickScore || undefined;
 
                         property.roomScores = assessmentData.roomScores || {};
+
+                        // Restore custom feature activation and ratings
+                        if (assessmentData.activatedCustomItems) {
+                            property.activatedCustomItems = assessmentData.activatedCustomItems;
+                        }
+                        if (assessmentData.customAssessments) {
+                            property.customAssessments = assessmentData.customAssessments;
+                        }
+                        if (assessmentData.customGuidanceNotes) {
+                            property.customGuidanceNotes = assessmentData.customGuidanceNotes;
+                        }
                     }
                 });
                 
@@ -1303,41 +1356,27 @@ let propertyFeatures = {
 
 // Auto-populate assessment rooms based on property details
 function autoPopulateAssessmentRooms(property) {
-    // Ensure the property has the basic structure
     if (!property.features) {
         property.features = { internal: [], external: [], other: [] };
     }
-    
-    // Auto-populate based on property type and details
-    const autoFeatures = [];
-    
-    // Always add these based on property type
-    if (property.type === 'house') {
-        // Add house-specific features if not already present
-        if (!hasExistingFeature(property, 'garden-areas')) {
-            autoFeatures.push({ category: 'external', id: 'garden-areas', name: 'Garden' });
+
+    // Seed default internal features: Bedrooms, Bathrooms, Kitchen, Lounge
+    const defaultInternal = getDefaultInternalSeeds(property);
+    for (let i = defaultInternal.length - 1; i >= 0; i--) {
+        const def = defaultInternal[i];
+        if (!property.features.internal.find(f => f.id === def.id)) {
+            property.features.internal.unshift({ ...def });
         }
     }
-    
-    // Add features based on property details
-    if (property.parking && parseInt(property.parking) > 0) {
-        if (!hasExistingFeature(property, 'garages')) {
-            autoFeatures.push({ category: 'external', id: 'garages', name: 'Garages' });
+
+    // Seed default external features: Garden (houses), Parking/Garages
+    const defaultExternal = getDefaultExternalSeeds(property);
+    for (const def of defaultExternal) {
+        if (!property.features.external.find(f => f.id === def.id)) {
+            property.features.external.push({ ...def });
         }
     }
-    
-    // Add the auto-features
-    autoFeatures.forEach(feature => {
-        if (!property.features[feature.category]) {
-            property.features[feature.category] = [];
-        }
-        property.features[feature.category].push({
-            id: feature.id,
-            name: feature.name,
-            quantity: 1
-        });
-    });
-    
+
     return property;
 }
 
@@ -1350,6 +1389,29 @@ function hasExistingFeature(property, featureId) {
         }
     }
     return false;
+}
+
+// Central definition of default internal features every property always has.
+// Called on CREATE (autoPopulateAssessmentRooms) and on LOAD (loadPropertyFeatures).
+function getDefaultInternalSeeds(property) {
+    return [
+        { id: 'bedrooms', name: 'Bedrooms', quantity: parseInt(property.bedrooms) || 1 },
+        { id: 'bathrooms', name: 'Bathrooms', quantity: parseInt(property.bathrooms) || 1 },
+        { id: 'kitchen', name: 'Kitchen', quantity: 1 },
+        { id: 'lounge', name: 'Lounge', quantity: 1 },
+    ];
+}
+
+// Default external features — conditional on property type and parking count.
+function getDefaultExternalSeeds(property) {
+    const seeds = [];
+    if (property.type === 'house') {
+        seeds.push({ id: 'garden-areas', name: 'Garden', quantity: 1 });
+    }
+    if (property.parking && parseInt(property.parking) > 0) {
+        seeds.push({ id: 'garages', name: 'Parking / Garages', quantity: parseInt(property.parking) || 1 });
+    }
+    return seeds;
 }
 
 // Reset property features when starting new property
@@ -1371,6 +1433,40 @@ function loadPropertyFeatures(property) {
         };
     } else {
         resetPropertyFeatures();
+    }
+
+    if (property) {
+        // Ensure default internal features (handles old properties too)
+        const defaultInternal = getDefaultInternalSeeds(property);
+        for (let i = defaultInternal.length - 1; i >= 0; i--) {
+            const def = defaultInternal[i];
+            const existingIdx = propertyFeatures.internal.findIndex(
+                f => f.id === def.id || f.name.toLowerCase() === def.name.toLowerCase()
+            );
+            if (existingIdx === -1) {
+                // Feature not found — add it with the correct quantity
+                propertyFeatures.internal.unshift({ ...def });
+            } else {
+                // Feature exists — ALWAYS sync the quantity from the property fields
+                // so the edit screen always reflects what was set in the form.
+                // This fixes old properties that have the feature stored without quantity.
+                propertyFeatures.internal[existingIdx].quantity = def.quantity;
+            }
+        }
+
+        // Ensure default external features (Garden, Parking/Garages)
+        const defaultExternal = getDefaultExternalSeeds(property);
+        for (const def of defaultExternal) {
+            const existingIdx = propertyFeatures.external.findIndex(
+                f => f.id === def.id || f.name.toLowerCase() === def.name.toLowerCase()
+            );
+            if (existingIdx === -1) {
+                propertyFeatures.external.push({ ...def });
+            } else {
+                // Sync Parking qty from property.parking
+                propertyFeatures.external[existingIdx].quantity = def.quantity;
+            }
+        }
     }
 }
 
@@ -1585,7 +1681,25 @@ function handlePropertyDetailsSubmit(event) {
     let savedProperty;
     
     if (appState.editingPropertyId) {
+        // Before saving, sync property fields from feature quantities
+        // so property.bedrooms always matches the Bedrooms feature qty
+        const bedroomsFeature = propertyFeatures.internal?.find(f => f.id === 'bedrooms');
+        if (bedroomsFeature && bedroomsFeature.quantity > 1) {
+            formData.bedrooms = String(bedroomsFeature.quantity);
+        }
+        const bathroomsFeature = propertyFeatures.internal?.find(f => f.id === 'bathrooms');
+        if (bathroomsFeature && bathroomsFeature.quantity > 1) {
+            formData.bathrooms = String(bathroomsFeature.quantity);
+        }
+        const parkingFeature = propertyFeatures.external?.find(f => f.id === 'garages');
+        if (parkingFeature && parkingFeature.quantity > 0) {
+            formData.parking = String(parkingFeature.quantity);
+        }
+
         savedProperty = window.propertyDataManager.updateProperty(appState.editingPropertyId, formData);
+        // Also ensure defaults are seeded/updated in case property was created before auto-seeding
+        savedProperty = autoPopulateAssessmentRooms(savedProperty);
+        window.propertyDataManager.updateProperty(savedProperty.id, savedProperty);
         appState.editingPropertyId = null;
         showSuccess('Property updated successfully!');
         
@@ -3557,6 +3671,13 @@ window.clearReportRatingFilter = clearReportRatingFilter;
 function generateReportHTML(reportData) {
     const { property, assessment, sections, recommendations, summary, options } = reportData;
     const grade = assessment.grade;
+
+    // Custom feature data for inline integration
+    const _fullProp = (typeof appState !== 'undefined' && appState.currentProperty && appState.currentProperty.id === property.id)
+        ? appState.currentProperty : property;
+    const _custAssessments   = _fullProp.customAssessments   || property.customAssessments   || {};
+    const _custGuidanceNotes = _fullProp.customGuidanceNotes || property.customGuidanceNotes || {};
+    const _propId = property.id;
     
     // FIX: Get the correct assessment type from the report data
     const currentAssessmentType = assessment.type || 'assessment';
@@ -3596,6 +3717,20 @@ function generateReportHTML(reportData) {
             });
         });
     });
+
+    // Also count custom item ratings so filter chips include them
+    if (typeof getCustomConfig === 'function') {
+        getCustomConfig().customFeatures.forEach(f => {
+            if (f.excluded) return;
+            f.items.forEach(item => {
+                const assessed = _custAssessments[item.id];
+                if (assessed?.rating && ratingCounts[assessed.rating] !== undefined) {
+                    ratingCounts[assessed.rating]++;
+                    totalItems++;
+                }
+            });
+        });
+    }
 
     return `
         <div class="assessment-report rpt-v2">
@@ -3809,6 +3944,7 @@ function generateReportHTML(reportData) {
                                 ` : ''}
                             </div>
                         `).join('')}
+                        ${_buildCustomRoomsForSection(section.id, _custAssessments, _custGuidanceNotes, _propId)}
                     </div>
                 </div>
             `;}).join('')}
@@ -3820,6 +3956,7 @@ function generateReportHTML(reportData) {
                     <span>Back to Top</span>
                 </button>
             </div>
+
         </div>
     `;
 }
@@ -3831,6 +3968,165 @@ function toggleRptSection(headerEl) {
     if (acc) acc.classList.toggle('open');
 }
 window.toggleRptSection = toggleRptSection;
+
+// ── Custom Features section in Full Report screen ─────────────
+// Shows rated custom items with guidance notes textareas.
+// Notes saved here go into the PDF when generated.
+function generateCustomFeaturesReportSection(property) { return ''; }
+
+// ── Custom rooms inline in report sections ──────────────────────────────────
+// Called from generateReportHTML for each section — adds custom feature rooms
+// in the same format as built-in rooms so they look identical.
+function _buildCustomRoomsForSection(sectionId, customAssessments, customGuidanceNotes, propId) {
+    if (typeof getCustomConfig !== 'function') return '';
+    const config = getCustomConfig();
+    const sectionMap = {
+        exterior: ['exterior', 'location'],
+        interior: ['interior'],
+        other:    ['other']
+    };
+    const sections = sectionMap[sectionId] || [];
+
+    const rc = r =>
+        r === 'excellent' ? '#06D6A0' :
+        r === 'good'      ? '#28A745' :
+        r === 'fair'      ? '#F18F01' :
+        r === 'poor'      ? '#E63946' : '#6C757D';
+
+    const features = config.customFeatures.filter(f =>
+        !f.excluded && sections.includes(f.section) &&
+        f.items.some(i => customAssessments[i.id]?.rating)
+    );
+    if (!features.length) return '';
+
+    const editStyle = [
+        'background:none','border:none','cursor:pointer',
+        'color:var(--brand-green,#1d9e75)',
+        'font-size:0.7rem','padding:0 0 0 8px','vertical-align:middle'
+    ].join(';');
+
+    return features.map(feature => {
+        const ratedItems = feature.items.filter(i => customAssessments[i.id]?.rating);
+        if (!ratedItems.length) return '';
+        return `
+        <div class="rpt-room" data-room="1">
+            <div class="rpt-room-head">
+                <span class="rpt-room-name">
+                    <i class="fas fa-puzzle-piece"></i>${feature.name}
+                </span>
+                <span class="rpt-room-count">${ratedItems.length} item${ratedItems.length !== 1 ? 's' : ''}</span>
+            </div>
+            ${ratedItems.map(item => {
+                const assessed  = customAssessments[item.id];
+                const rating    = assessed.rating;
+                const color     = rc(rating);
+                const rLabel    = rating === 'na' ? 'N/A' : rating.toUpperCase();
+                const savedNote = customGuidanceNotes[item.id] || '';
+                const cfgGuide  = rating !== 'na' ? (item.guidance?.[rating] || '') : '';
+                const guidance  = savedNote || cfgGuide;
+                const escaped   = guidance ? guidance.replace(/</g,'&lt;').replace(/>/g,'&gt;') : '';
+                const nameEsc   = item.name.replace(/'/g,"&#39;");
+                return `
+                <div class="rpt-item" data-rating="${rating}">
+                    <div class="rpt-item-row">
+                        <span class="rpt-item-text">${item.name}</span>
+                        <span class="rpt-pill" style="background:${color}1c;color:${color}">${rLabel}</span>
+                    </div>
+                    <div class="rpt-item-guide" id="custGuide_${item.id}">
+                        ${escaped || ''}
+                        <button onclick="editCustomGuidanceModal('${item.id}','${propId}','${nameEsc}')"
+                            style="${editStyle}" title="${guidance ? 'Edit guidance' : 'Add guidance'}">
+                            <i class="fas fa-pencil-alt"></i>
+                        </button>
+                    </div>
+                </div>`;
+            }).join('')}
+        </div>`;
+    }).join('');
+}
+
+// Opens a modal to edit guidance for a custom item in the report
+// Opens a modal to edit guidance for a custom item in the report
+function editCustomGuidanceModal(itemId, propId, itemName) {
+    if (typeof openCustModal !== 'function') return;
+    const prop = (typeof appState !== 'undefined' && appState.currentProperty?.id === propId)
+        ? appState.currentProperty : null;
+    const currentNote = prop?.customGuidanceNotes?.[itemId] || '';
+    const taStyle = 'width:100%;box-sizing:border-box;background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:11px 13px;color:var(--text-1);font-size:0.85rem;font-family:Poppins,sans-serif;resize:vertical;line-height:1.5;min-height:90px;display:block;margin-top:8px';
+
+    openCustModal('Guidance: ' + itemName, `
+        <p style="font-size:0.8rem;color:var(--text-3);margin:0 0 2px;font-family:Poppins,sans-serif;line-height:1.5">
+            Add your guidance or findings — this will appear in the PDF report.
+        </p>
+        <div class="voice-listening" id="guidModalVoice_${itemId}" style="display:none">
+            <span class="voice-dot"></span>
+            <span class="voice-listening-text">Listening… speak now</span>
+            <button class="voice-stop-btn" onclick="stopVoiceCapture()">
+                <i class="fas fa-stop"></i> Stop
+            </button>
+        </div>
+        <div class="note-input-row" style="margin-top:10px">
+            <textarea id="cgEditNote_${itemId}"
+                style="${taStyle}"
+                placeholder="e.g. No visible defects found. Fully operational.">${currentNote}</textarea>
+            <button class="voice-mic-btn"
+                onclick="startVoiceIntoGuidanceModal(this,'${itemId}')"
+                title="Speak guidance">
+                <i class="fas fa-microphone"></i>
+            </button>
+        </div>
+    `, 'Save ✓', () => {
+        const el = document.getElementById('cgEditNote_' + itemId);
+        if (!el) return;
+        const value = el.value;
+        saveCustomGuidanceNote(propId, itemId, value);
+
+        const escaped   = value ? value.replace(/</g,'&lt;').replace(/>/g,'&gt;') : '';
+        const editStyle = 'background:none;border:none;cursor:pointer;color:var(--brand-green,#1d9e75);font-size:0.7rem;padding:0 0 0 8px;vertical-align:middle';
+        const nameEsc   = itemName.replace(/'/g,"&#39;");
+        const guideDiv  = document.getElementById('custGuide_' + itemId);
+        if (guideDiv) {
+            guideDiv.innerHTML = (escaped || '') +
+                `<button onclick="editCustomGuidanceModal('${itemId}','${propId}','${nameEsc}')" style="${editStyle}" title="${value ? 'Edit guidance' : 'Add guidance'}"><i class="fas fa-pencil-alt"></i></button>`;
+        }
+        closeCustModal();
+        showSuccess('Guidance saved!');
+    });
+}
+
+function startVoiceIntoGuidanceModal(btn, itemId) {
+    if (typeof startVoiceInto !== 'function') return;
+    startVoiceInto(btn, null, null, function(text) {
+        var ta = document.getElementById('cgEditNote_' + itemId);
+        if (ta) ta.value = (ta.value ? ta.value + ' ' : '') + text;
+    });
+}
+window.editCustomGuidanceModal     = editCustomGuidanceModal;
+window.startVoiceIntoGuidanceModal = startVoiceIntoGuidanceModal;
+
+window._buildCustomRoomsForSection = _buildCustomRoomsForSection;
+window.editCustomGuidanceModal     = editCustomGuidanceModal;
+
+function saveCustomGuidanceNote(propertyId, itemId, value) {
+    const property = getProperty(propertyId);
+    if (!property) return;
+    if (!property.customGuidanceNotes) property.customGuidanceNotes = {};
+    property.customGuidanceNotes[itemId] = value;
+    updateProperty(propertyId, { customGuidanceNotes: property.customGuidanceNotes });
+}
+
+function startVoiceIntoCustomGuidance(btn, propertyId, itemId) {
+    const textarea = document.getElementById('cgNote_' + itemId);
+    if (!textarea) return;
+    startVoiceInto(btn, null, null, (text) => {
+        textarea.value = (textarea.value ? textarea.value + ' ' : '') + text;
+        saveCustomGuidanceNote(propertyId, itemId, textarea.value);
+    });
+}
+
+window.generateCustomFeaturesReportSection = generateCustomFeaturesReportSection;
+window.saveCustomGuidanceNote              = saveCustomGuidanceNote;
+window.startVoiceIntoCustomGuidance        = startVoiceIntoCustomGuidance;
 
 // Get rating icon for display
 function getRatingIcon(rating) {
@@ -4123,26 +4419,32 @@ function renderFeatureSection(property, category, title, icon) {
     `;
 }
 
-// NEW: Get property features for display
+// Get property features for display (property detail view screen)
 function getPropertyFeatures(property, category) {
-    const features = [];
-    
-    // Add basic property features
+    // Use stored features as primary source
+    const features = (property.features && property.features[category])
+        ? [...property.features[category]]
+        : [];
+
     if (category === 'internal') {
-        if (property.bedrooms) features.push({ name: 'Bedrooms', quantity: property.bedrooms });
-        if (property.bathrooms) features.push({ name: 'Bathrooms', quantity: property.bathrooms });
-        features.push({ name: 'Kitchen', quantity: 1 }); // Default kitchen
+        const defaults = getDefaultInternalSeeds(property);
+        for (let i = defaults.length - 1; i >= 0; i--) {
+            const def = defaults[i];
+            if (!features.find(f => f.id === def.id || f.name.toLowerCase() === def.name.toLowerCase())) {
+                features.unshift(def);
+            }
+        }
     }
-    
+
     if (category === 'external') {
-        if (property.parking) features.push({ name: 'Parking', quantity: property.parking });
+        const defaults = getDefaultExternalSeeds(property);
+        for (const def of defaults) {
+            if (!features.find(f => f.id === def.id || f.name.toLowerCase() === def.name.toLowerCase())) {
+                features.push(def);
+            }
+        }
     }
-    
-    // Add stored features
-    if (property.features && property.features[category]) {
-        features.push(...property.features[category]);
-    }
-    
+
     return features;
 }
 
@@ -4165,115 +4467,136 @@ function toggleFeatureSection(categoryId) {
 }
 
 function renderFeatureManagementSections() {
-    const formContainer = document.querySelector('.property-details-form');
-    
     if (document.getElementById('featureManagementContainer')) {
         return;
     }
-    
+
+    // Inject AFTER the form wrapper so category cards fill the full screen width
+    // (the form has padding:25px which would constrain the cards if injected inside)
+    const formWrapper = document.querySelector('#propertyDetailsScreen .property-details-form');
+    if (!formWrapper) return;
+
     const featureManagementHTML = `
-        <div id="featureManagementContainer" class="features-section">
-            <h3 class="features-title">
-                <i class="fas fa-plus-circle"></i> Additional Property Features
-            </h3>
-            
-            <!-- External Features -->
-            <div class="feature-group">
-                <div class="group-header" onclick="toggleManagementSection('external')">
-                    <span><i class="fas fa-tree"></i> External Features</span>
-                    <i class="fas fa-chevron-down toggle-icon" id="externalManagementToggle"></i>
-                </div>
-                <div class="group-content collapsed" id="externalManagementContent">
-                    <div class="add-row">
-                        <select id="externalFeaturesManagement" class="feature-select" onchange="if(this.value) addFeatureInManagement('external')">
-                            <option value="">Tap to add external feature…</option>
-                            <option value="gate-entrance">Gate/Entrance</option>
-                            <option value="security-safety">Security/Safety</option>
-                            <option value="garages">Garages</option>
-                            <option value="garden-areas">Garden</option>
-                            <option value="swimming-pool">Pool</option>
-                            <option value="water-features">Water Features</option>
-                            <option value="sports-court">Sports Court</option>
-                            <option value="outbuildings">Outbuildings</option>
-                        </select>
-                    </div>
-                    <div id="externalFeaturesManagementList" class="feature-chips"></div>
+        <div id="featureManagementContainer" class="pf-mgmt-section">
+            <div class="pf-mgmt-heading">
+                <i class="fas fa-sliders-h"></i>
+                <div>
+                    <span class="pf-mgmt-title">Property Features</span>
+                    <p class="pf-mgmt-hint">Tap a section below to expand and manage features included in your assessment.</p>
                 </div>
             </div>
-            
-            <!-- Internal Features -->
-            <div class="feature-group">
-                <div class="group-header" onclick="toggleManagementSection('internal')">
-                    <span><i class="fas fa-door-open"></i> Internal Features</span>
-                    <i class="fas fa-chevron-down toggle-icon" id="internalManagementToggle"></i>
-                </div>
-                <div class="group-content collapsed" id="internalManagementContent">
-                    <div class="add-row">
-                        <select id="internalFeaturesManagement" class="feature-select" onchange="if(this.value) addFeatureInManagement('internal')">
-                            <option value="">Tap to add internal feature…</option>
-                            <option value="lounge">Lounge</option>
-                            <option value="family-tv-rooms">Family/TV Rooms</option>
-                            <option value="dining-room">Dining Room</option>
-                            <option value="reception">Reception</option>
-                            <option value="study-office">Study/Office</option>
-                            <option value="laundry-room">Laundry Room</option>
-                            <option value="home-theater">Home Theater</option>
-                        </select>
+
+            <div class="assessment-categories">
+                <!-- External Features -->
+                <div class="assessment-category pf-cat" id="pf-cat-external">
+                    <div class="category-header" onclick="toggleManagementSection('external')">
+                        <div class="category-title">
+                            <div class="category-icon" style="background:#28A745">
+                                <i class="fas fa-tree"></i>
+                            </div>
+                            <span class="category-name">External Features</span>
+                        </div>
+                        <i class="fas fa-chevron-down category-toggle collapsed" id="externalManagementToggle"></i>
                     </div>
-                    <div id="internalFeaturesManagementList" class="feature-chips"></div>
                 </div>
-            </div>
-            
-            <!-- Other Features -->
-            <div class="feature-group">
-                <div class="group-header" onclick="toggleManagementSection('other')">
-                    <span><i class="fas fa-star"></i> Other Features</span>
-                    <i class="fas fa-chevron-down toggle-icon" id="otherManagementToggle"></i>
-                </div>
-                <div class="group-content collapsed" id="otherManagementContent">
-                    <div class="add-row">
-                        <select id="otherFeaturesManagement" class="feature-select" onchange="if(this.value) addFeatureInManagement('other')">
-                            <option value="">Tap to add other feature…</option>
-                            <option value="solar-power">Solar Power</option>
-                            <option value="backup-power">Backup Power/UPS</option>
-                            <option value="borehole">Borehole</option>
-                            <option value="irrigation-systems">Irrigation Systems</option>
-                            <option value="water-tank">Water Tank/Storage</option>
-                            <option value="gas-installation">Gas Installation</option>
-                            <option value="internet-fibre">Internet Access/Fibre</option>
-                            <option value="smart-home">Smart Home</option>
-                            <option value="air-conditioning">Air Conditioning</option>
-                            <option value="heating-systems">Heating Systems</option>
-                        </select>
+
+                <!-- Internal Features -->
+                <div class="assessment-category pf-cat" id="pf-cat-internal">
+                    <div class="category-header" onclick="toggleManagementSection('internal')">
+                        <div class="category-title">
+                            <div class="category-icon" style="background:#2E86AB">
+                                <i class="fas fa-door-open"></i>
+                            </div>
+                            <span class="category-name">Internal Features</span>
+                        </div>
+                        <i class="fas fa-chevron-down category-toggle collapsed" id="internalManagementToggle"></i>
                     </div>
-                    <div id="otherFeaturesManagementList" class="feature-chips"></div>
+                </div>
+
+                <!-- Other Features -->
+                <div class="assessment-category pf-cat" id="pf-cat-other">
+                    <div class="category-header" onclick="toggleManagementSection('other')">
+                        <div class="category-title">
+                            <div class="category-icon" style="background:#6F42C1">
+                                <i class="fas fa-star"></i>
+                            </div>
+                            <span class="category-name">Other Features</span>
+                        </div>
+                        <i class="fas fa-chevron-down category-toggle collapsed" id="otherManagementToggle"></i>
+                    </div>
                 </div>
             </div>
         </div>
     `;
-    
-    formContainer.insertAdjacentHTML('beforeend', featureManagementHTML);
-    
-    renderManagementFeaturesList('external');
-    renderManagementFeaturesList('internal');
-    renderManagementFeaturesList('other');
+
+    formWrapper.insertAdjacentHTML('afterend', featureManagementHTML);
 }
 
-// NEW: Toggle management sections
-function toggleManagementSection(categoryId) {
-    const content = document.getElementById(categoryId + 'ManagementContent');
-    const toggle = document.getElementById(categoryId + 'ManagementToggle');
-    
-    if (content && toggle) {
-        if (content.classList.contains('collapsed')) {
-            content.classList.remove('collapsed');
-            content.classList.add('expanded');
-            toggle.classList.remove('collapsed');
-        } else {
-            content.classList.remove('expanded');
-            content.classList.add('collapsed');
-            toggle.classList.add('collapsed');
-        }
+// Toggle management sections — assessment-screen style (build on expand, remove on collapse)
+function toggleManagementSection(category) {
+    const catEl = document.getElementById('pf-cat-' + category);
+    const toggle = document.getElementById(category + 'ManagementToggle');
+    if (!catEl || !toggle) return;
+
+    const existingContent = catEl.querySelector('.category-expanded-content');
+
+    if (existingContent) {
+        // Collapse: remove content block and reset chevron
+        existingContent.remove();
+        toggle.classList.add('collapsed');
+    } else {
+        // Expand: build and inject content, rotate chevron
+        toggle.classList.remove('collapsed');
+
+        const optionSets = {
+            external: `
+                <option value="">Select feature to add...</option>
+                <option value="gate-entrance">Gate/Entrance</option>
+                <option value="security-safety">Security/Safety</option>
+                <option value="garages">Garages</option>
+                <option value="garden-areas">Garden</option>
+                <option value="swimming-pool">Pool</option>
+                <option value="water-features">Water Features</option>
+                <option value="sports-court">Sports Court</option>
+                <option value="outbuildings">Outbuildings</option>`,
+            internal: `
+                <option value="">Select feature to add...</option>
+                <option value="lounge">Lounge</option>
+                <option value="family-tv-rooms">Family/TV Rooms</option>
+                <option value="dining-room">Dining Room</option>
+                <option value="reception">Reception</option>
+                <option value="study-office">Study/Office</option>
+                <option value="laundry-room">Laundry Room</option>
+                <option value="home-theater">Home Theater</option>`,
+            other: `
+                <option value="">Select feature to add...</option>
+                <option value="solar-power">Solar Power</option>
+                <option value="backup-power">Backup Power/UPS</option>
+                <option value="borehole">Borehole</option>
+                <option value="irrigation-systems">Irrigation Systems</option>
+                <option value="water-tank">Water Tank/Storage</option>
+                <option value="gas-installation">Gas Installation</option>
+                <option value="internet-fibre">Internet Access/Fibre</option>
+                <option value="smart-home">Smart Home</option>
+                <option value="air-conditioning">Air Conditioning</option>
+                <option value="heating-systems">Heating Systems</option>`
+        };
+
+        const label = category.charAt(0).toUpperCase() + category.slice(1);
+        const content = document.createElement('div');
+        content.className = 'category-expanded-content';
+        content.id = category + 'ManagementContent';
+        content.innerHTML = `
+            <div class="pf-features-list" id="${category}FeaturesManagementList"></div>
+            <div class="add-other-features-section">
+                <h4><i class="fas fa-plus-circle"></i> Add ${label} Feature</h4>
+                <select id="${category}FeaturesManagement" class="feature-dropdown" onchange="if(this.value) addFeatureInManagement('${category}')">
+                    ${optionSets[category]}
+                </select>
+            </div>
+        `;
+        catEl.appendChild(content);
+        renderManagementFeaturesList(category);
     }
 }
 
@@ -4312,21 +4635,21 @@ function addFeatureInManagement(category) {
     renderManagementFeaturesList(category);
 }
 
-// NEW: Render features list in management mode
+// Render features list — flat rows matching assessment-screen room style
 function renderManagementFeaturesList(category) {
     const container = document.getElementById(category + 'FeaturesManagementList');
     if (!container) return;
-    
+
     const features = propertyFeatures[category] || [];
-    
+
     if (features.length === 0) {
-        container.innerHTML = '<div class="no-features-clean">No features added yet</div>';
+        container.innerHTML = '<div class="pf-no-features">No features added yet — use the dropdown below to add one.</div>';
         return;
     }
-    
+
     container.innerHTML = features.map(feature => `
-        <div class="feature-chip">
-            <span class="feature-text">${feature.name}</span>
+        <div class="pf-feature-row">
+            <span class="pf-feature-name">${feature.name}</span>
             <div class="feature-controls">
                 <button class="qty-btn" onclick="updateFeatureQuantityManagement('${category}', '${feature.name}', -1)">-</button>
                 <span class="qty-num">${feature.quantity || 1}</span>
@@ -4339,25 +4662,52 @@ function renderManagementFeaturesList(category) {
     `).join('');
 }
 
-// NEW: Update feature quantity in management mode
+// Update feature quantity in management mode
 function updateFeatureQuantityManagement(category, featureName, change) {
     const feature = propertyFeatures[category].find(f => f.name === featureName);
     if (!feature) return;
     
     feature.quantity = Math.max(1, Math.min(20, (feature.quantity || 1) + change));
+    
+    // Sync qty back to the matching property form field and appState
+    // so the property overview, list, and PDF always reflect the same value.
+    if (category === 'internal') {
+        if (feature.id === 'bedrooms') {
+            const el = document.getElementById('propertyBedrooms');
+            if (el) el.value = feature.quantity;
+            if (appState.currentProperty) appState.currentProperty.bedrooms = String(feature.quantity);
+        } else if (feature.id === 'bathrooms') {
+            const el = document.getElementById('propertyBathrooms');
+            if (el) el.value = feature.quantity;
+            if (appState.currentProperty) appState.currentProperty.bathrooms = String(feature.quantity);
+        }
+    } else if (category === 'external') {
+        if (feature.id === 'garages') {
+            const el = document.getElementById('propertyParking');
+            if (el) el.value = feature.quantity;
+            if (appState.currentProperty) appState.currentProperty.parking = String(feature.quantity);
+        }
+    }
+
     renderManagementFeaturesList(category);
 }
 
 // NEW: Remove feature from management mode
 function removeFeatureFromManagement(category, featureName) {
-    if (!confirm(`Remove ${featureName}?`)) return;
-    
-    const featureIndex = propertyFeatures[category].findIndex(f => f.name === featureName);
-    if (featureIndex === -1) return;
-    
-    propertyFeatures[category].splice(featureIndex, 1);
-    showSuccess('Feature removed successfully!');
-    renderManagementFeaturesList(category);
+    showModal(
+        'Remove Feature',
+        `Remove <strong>${featureName}</strong> from the property?`,
+        () => {
+            const featureIndex = propertyFeatures[category].findIndex(f => f.name === featureName);
+            if (featureIndex === -1) return;
+            propertyFeatures[category].splice(featureIndex, 1);
+            showSuccess('Feature removed!');
+            renderManagementFeaturesList(category);
+        },
+        'Remove',
+        () => {},
+        'Cancel'
+    );
 }
 
 function showPDFExportModal(propertyId) {
@@ -5572,3 +5922,743 @@ function shareApp() {
 
 // Export shareApp function
 window.shareApp = shareApp;
+
+// ═══════════════════════════════════════════════════════════════
+// CUSTOMIZE ASSESSMENT SCREEN
+// ═══════════════════════════════════════════════════════════════
+
+function initCustomizeScreen() {
+    renderCustomizeScreen();
+}
+
+function renderCustomizeScreen() {
+    renderCustomFeaturesList();
+    renderCustomQuestionsList();
+}
+
+// ── Render custom features list ──────────────────────────────
+
+function renderCustomFeaturesList() {
+    const container = document.getElementById('customFeaturesList');
+    if (!container) return;
+
+    const config   = getCustomConfig();
+    const features = config.customFeatures;
+
+    if (features.length === 0) {
+        container.innerHTML = `
+            <div class="cust-empty-state">
+                <i class="fas fa-puzzle-piece"></i>
+                <p>No custom features yet.<br>Tap <strong>Add Feature</strong> to get started.</p>
+            </div>`;
+        return;
+    }
+
+    container.innerHTML = features.map(feature => {
+        const color    = SECTION_COLORS[feature.section] || '#6F42C1';
+        const label    = SECTION_LABELS[feature.section]  || feature.section;
+        const excluded = feature.excluded;
+        const count    = feature.items.length;
+
+        return `
+        <div class="cust-feat-card${excluded ? ' cf-excluded' : ''}" id="featCard_${feature.id}">
+            <!-- Row header -->
+            <div class="cust-feat-row" onclick="toggleFeatureCard('${feature.id}')">
+                <span class="cf-dot" style="background:${color}"></span>
+                <div class="cf-info">
+                    <span class="cf-name">${feature.name}</span>
+                    <span class="cf-meta">${label}&ensp;·&ensp;${count} item${count !== 1 ? 's' : ''}${excluded ? '&ensp;·&ensp;<em>Excluded</em>' : ''}</span>
+                </div>
+                <div class="cf-actions" onclick="event.stopPropagation()">
+                    <button class="cf-btn" onclick="showEditFeatureModal('${feature.id}')" title="Edit"><i class="fas fa-pencil-alt"></i></button>
+                    <button class="cf-btn cf-del" onclick="deleteCustomFeatureUI('${feature.id}')" title="Delete"><i class="fas fa-trash-alt"></i></button>
+                    <i class="fas fa-chevron-down cf-chev" id="chevron_${feature.id}"></i>
+                </div>
+            </div>
+
+            <!-- Expanded items -->
+            <div class="cf-expanded" id="featItems_${feature.id}" style="display:none">
+                ${feature.items.length === 0 ? `<p class="cf-no-items">No items yet — tap Add Item below.</p>` :
+                    feature.items.map(item => `
+                    <div class="cf-item-row">
+                        <span class="cf-item-bullet" style="background:${color}"></span>
+                        <span class="cf-item-name">${item.name}</span>
+                        <span class="cf-item-wt">${item.weightLabel}</span>
+                        ${(item.guidance?.excellent || item.guidance?.good || item.guidance?.fair || item.guidance?.poor) ? '<span class="cf-guide-pill">guide</span>' : ''}
+                        <div class="cf-actions">
+                            <button class="cf-btn" onclick="showEditItemModal('${feature.id}','${item.id}')" title="Edit item"><i class="fas fa-pencil-alt"></i></button>
+                            <button class="cf-btn cf-del" onclick="deleteCustomItemUI('${feature.id}','${item.id}')" title="Delete item"><i class="fas fa-trash-alt"></i></button>
+                        </div>
+                    </div>`).join('')
+                }
+                <div class="cf-expanded-foot">
+                    <button class="cf-add-item" onclick="showAddItemModal('${feature.id}')">
+                        <i class="fas fa-plus-circle"></i> Add Item
+                    </button>
+                    <label class="cf-exclude-row" onclick="toggleFeatureExcludeUI('${feature.id}')">
+                        <span class="cf-exclude-lbl">Exclude from new assessments</span>
+                        <div class="stg-toggle" style="cursor:pointer">
+                            <div class="stg-toggle-knob" style="${excluded ? 'transform:translateX(22px)' : ''}"></div>
+                        </div>
+                    </label>
+                </div>
+            </div>
+        </div>`;
+    }).join('');
+}
+
+function toggleFeatureCard(featureId) {
+    const body    = document.getElementById('featItems_'  + featureId);
+    const chevron = document.getElementById('chevron_'    + featureId);
+    if (!body) return;
+    const open = body.style.display !== 'none';
+    body.style.display    = open ? 'none' : '';
+    chevron.classList.toggle('open', !open);
+}
+
+// ── Render custom questions list ─────────────────────────────
+
+function renderCustomQuestionsList() {
+    const container = document.getElementById('customQuestionsList');
+    if (!container) return;
+
+    const config    = getCustomConfig();
+    const questions = config.customQuestions;
+
+    if (questions.length === 0) {
+        container.innerHTML = `
+            <div class="cust-empty-state">
+                <i class="fas fa-question-circle"></i>
+                <p>No custom questions yet.<br>Tap <strong>Add Question</strong> to add one.</p>
+            </div>`;
+        return;
+    }
+
+    container.innerHTML = questions.map(q => `
+        <div class="cust-q-compact">
+            <span class="cf-dot" style="background:var(--brand-green)"></span>
+            <span class="cf-name" style="flex:1">${q.question}</span>
+            <div class="cf-actions">
+                <button class="cf-btn" onclick="showEditQuestionModal('${q.id}')" title="Edit question"><i class="fas fa-pencil-alt"></i></button>
+                <button class="cf-btn cf-del" onclick="deleteCustomQuestionUI('${q.id}')" title="Delete question"><i class="fas fa-trash-alt"></i></button>
+            </div>
+        </div>`).join('');
+}
+
+// ── Info card toggle ─────────────────────────────────────────
+
+function toggleCustInfo() {
+    const body    = document.getElementById('custInfoBody');
+    const chevron = document.getElementById('custInfoChevron');
+    if (!body) return;
+    const open = body.classList.toggle('open');
+    chevron.classList.toggle('open', open);
+}
+
+// ── Modal helpers ────────────────────────────────────────────
+// Mirrors the existing showModal pattern: creates element + appends to document.body
+// This avoids stacking context issues caused by screen animation transforms.
+
+function openCustModal(title, bodyHTML, saveLabel, onSave) {
+    const existing = document.getElementById('custModalInstance');
+    if (existing) existing.remove();
+
+    const overlay = document.createElement('div');
+    overlay.id = 'custModalInstance';
+    overlay.style.cssText = 'position:fixed;inset:0;z-index:9999;background:rgba(0,0,0,0.82);backdrop-filter:blur(4px);-webkit-backdrop-filter:blur(4px);display:flex;align-items:center;justify-content:center;padding:16px;box-sizing:border-box';
+
+    overlay.innerHTML = `
+        <div style="background:var(--bg-primary);border-radius:20px;width:100%;max-width:500px;max-height:calc(100vh - 140px);display:flex;flex-direction:column;overflow:hidden;box-shadow:0 24px 60px rgba(0,0,0,0.6)">
+            <div style="display:flex;align-items:center;justify-content:space-between;padding:18px 20px 15px;border-bottom:0.5px solid var(--border);flex-shrink:0">
+                <h3 style="font-size:1rem;font-weight:700;color:var(--text-1);margin:0;font-family:'Poppins',sans-serif">${title}</h3>
+                <button onclick="closeCustModal()" style="width:34px;height:34px;border-radius:50%;background:var(--surface);border:none;color:var(--text-3);cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:0.82rem"><i class="fas fa-times"></i></button>
+            </div>
+            <div style="flex:1;overflow-y:auto;padding:18px 20px;-webkit-overflow-scrolling:touch">
+                ${bodyHTML}
+            </div>
+            <div style="padding:14px 20px;border-top:0.5px solid var(--border);display:flex;gap:10px;flex-shrink:0;background:var(--bg-primary)">
+                <button onclick="closeCustModal()" style="flex:1;padding:13px;border-radius:12px;font-size:0.88rem;font-weight:600;cursor:pointer;font-family:'Poppins',sans-serif;background:var(--surface);color:var(--text-2);border:1px solid var(--border)">Cancel</button>
+                <button onclick="_custModalSave()" style="flex:1;padding:13px;border-radius:12px;font-size:0.88rem;font-weight:600;cursor:pointer;font-family:'Poppins',sans-serif;background:var(--gradient-success);color:#fff;border:none">${saveLabel}</button>
+            </div>
+        </div>
+    `;
+
+    overlay.addEventListener('click', (e) => { if (e.target === overlay) closeCustModal(); });
+    window._custModalSaveFn = onSave;
+    document.body.appendChild(overlay);
+}
+
+function closeCustModal() {
+    const modal = document.getElementById('custModalInstance');
+    if (modal) modal.remove();
+}
+
+function closeCustModalOnBg(e) {
+    if (e.target && e.target.id === 'custModalInstance') closeCustModal();
+}
+
+function _custModalSave() {
+    if (typeof window._custModalSaveFn === 'function') window._custModalSaveFn();
+}
+
+// ── Add Feature Modal — unified: feature details + first item in one form ──
+
+function showAddFeatureModal() {
+    const weightOpts = WEIGHT_OPTIONS.map(w =>
+        `<option value="${w.value}">${w.label} (${w.value})</option>`
+    ).join('');
+
+    const fieldStyle  = 'margin-bottom:16px';
+    const labelStyle  = 'display:block;font-size:0.78rem;font-weight:600;color:var(--text-2);margin-bottom:6px;font-family:Poppins,sans-serif';
+    const hintStyle   = 'display:block;font-size:0.7rem;color:var(--text-3);margin-top:4px;line-height:1.4;font-family:Poppins,sans-serif';
+    const inputStyle  = 'width:100%;background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:11px 13px;color:var(--text-1);font-size:0.85rem;font-family:Poppins,sans-serif;box-sizing:border-box';
+    const divStyle    = 'display:flex;align-items:center;gap:8px;margin:18px 0 14px;color:var(--brand-green);font-size:0.8rem;font-weight:700;font-family:Poppins,sans-serif';
+    const divLine     = 'flex:1;height:1px;background:var(--border)';
+
+    const body = `
+        <!-- FEATURE DETAILS -->
+        <div style="${fieldStyle}">
+            <label style="${labelStyle}">Feature Name <span style="color:#ef4444">*</span></label>
+            <input id="cfName" type="text" maxlength="60" placeholder="e.g. Granny Flat, Borehole, Solar System" style="${inputStyle}">
+            <span style="${hintStyle}">The name of the feature group (e.g. Granny Flat).</span>
+        </div>
+        <div style="${fieldStyle}">
+            <label style="${labelStyle}">Section <span style="color:#ef4444">*</span></label>
+            <select id="cfSection" style="${inputStyle}">
+                <option value="exterior">Exterior Assessment</option>
+                <option value="interior">Interior Assessment</option>
+                <option value="location">Location &amp; Neighbourhood</option>
+                <option value="other">Other Features Assessment</option>
+            </select>
+            <span style="${hintStyle}">Which part of the assessment this feature belongs to.</span>
+        </div>
+
+        <!-- DIVIDER -->
+        <div style="${divStyle}">
+            <div style="${divLine}"></div>
+            <span><i class="fas fa-plus-circle" style="margin-right:5px"></i>Add First Item to Inspect</span>
+            <div style="${divLine}"></div>
+        </div>
+
+        <!-- ITEM DETAILS -->
+        <div style="${fieldStyle}">
+            <label style="${labelStyle}">Item Name <span style="color:#ef4444">*</span></label>
+            <input id="cfiName" type="text" maxlength="80" placeholder="e.g. Structural Condition, Water Pressure" style="${inputStyle}">
+        </div>
+        <div style="${fieldStyle}">
+            <label style="${labelStyle}">Tooltip — What to look for <span style="color:#ef4444">*</span>
+                <span style="font-weight:400;color:var(--text-3)"> · shown to assessor during inspection</span>
+            </label>
+            <textarea id="cfiTooltip" rows="3" placeholder="e.g. Check walls and ceiling for cracks, damp patches, or signs of settling..." style="${inputStyle};resize:vertical;line-height:1.5"></textarea>
+        </div>
+        <div style="${fieldStyle}">
+            <label style="${labelStyle}">Weight — Impact on Score <span style="color:#ef4444">*</span></label>
+            <select id="cfiWeight" style="${inputStyle}">
+                <option value="" disabled selected>Select weight...</option>
+                ${weightOpts}
+            </select>
+            <span style="${hintStyle}">Low (1) = minor · Moderate (2) = standard · High (3) = significant · Very High (3.5) = major · Critical (4) = deal-breaker</span>
+        </div>
+
+        <!-- GUIDANCE (COLLAPSIBLE) -->
+        <div style="border-top:0.5px solid var(--divider);margin-top:4px;padding-top:12px">
+            <div onclick="toggleCustGuidance()" style="display:flex;align-items:center;justify-content:space-between;cursor:pointer;margin-bottom:8px">
+                <span style="font-size:0.82rem;font-weight:600;color:var(--text-2);font-family:Poppins,sans-serif;display:flex;align-items:center;gap:7px">
+                    <i class="fas fa-clipboard-list" style="color:var(--brand-green);font-size:0.78rem"></i>
+                    Guidance
+                    <span style="font-size:0.65rem;color:var(--text-3);background:var(--surface);padding:2px 6px;border-radius:99px">Optional</span>
+                </span>
+                <i class="fas fa-chevron-down" id="guidanceChevron" style="font-size:0.75rem;color:var(--text-3);transition:transform 0.2s"></i>
+            </div>
+            <div id="custGuidanceBody" style="display:none">
+                <p style="font-size:0.72rem;color:var(--text-3);margin:0 0 12px;line-height:1.5;font-family:Poppins,sans-serif">Define what each rating looks like. If left blank, the assessor can add their own notes in the Full Report screen before generating the PDF.</p>
+                <div style="${fieldStyle}">
+                    <label style="${labelStyle}">✅ Excellent</label>
+                    <textarea id="guideExcellent" rows="2" placeholder="No visible defects, fully operational..." style="${inputStyle};resize:vertical"></textarea>
+                </div>
+                <div style="${fieldStyle}">
+                    <label style="${labelStyle}">👍 Good</label>
+                    <textarea id="guideGood" rows="2" placeholder="Minor cosmetic issues, functional..." style="${inputStyle};resize:vertical"></textarea>
+                </div>
+                <div style="${fieldStyle}">
+                    <label style="${labelStyle}">⚠️ Fair</label>
+                    <textarea id="guideFair" rows="2" placeholder="Some maintenance needed..." style="${inputStyle};resize:vertical"></textarea>
+                </div>
+                <div style="${fieldStyle}">
+                    <label style="${labelStyle}">❌ Poor</label>
+                    <textarea id="guidePoor" rows="2" placeholder="Major repairs required, consider impact on purchase..." style="${inputStyle};resize:vertical"></textarea>
+                </div>
+            </div>
+        </div>
+    `;
+
+    openCustModal('Add Custom Feature', body, 'Save Feature ✓', () => {
+        // Read all values
+        const featureName = document.getElementById('cfName').value.trim();
+        const section     = document.getElementById('cfSection').value;
+        const itemName    = document.getElementById('cfiName').value.trim();
+        const tooltip     = document.getElementById('cfiTooltip').value.trim();
+        const weight      = document.getElementById('cfiWeight').value;
+
+        // Validate feature
+        if (!featureName) { _custModalAlert('Please enter a Feature Name.'); return; }
+        // Validate item
+        if (!itemName)    { _custModalAlert('Please enter an Item Name.'); return; }
+        if (!tooltip)     { _custModalAlert('Please enter a Tooltip for the item.'); return; }
+        if (!weight)      { _custModalAlert('Please select a Weight for the item.'); return; }
+
+        const wLabel = WEIGHT_OPTIONS.find(w => String(w.value) === String(weight))?.label || '';
+
+        // Create feature + item together (always dropdown)
+        const feature = addCustomFeature({ name: featureName, section });
+        addCustomFeatureItem(feature.id, {
+            name: itemName, tooltip,
+            weightLabel: wLabel, weightValue: Number(weight),
+            includeAs: 'dropdown',
+            guidance: {
+                excellent: (document.getElementById('guideExcellent')?.value || '').trim(),
+                good:      (document.getElementById('guideGood')?.value      || '').trim(),
+                fair:      (document.getElementById('guideFair')?.value      || '').trim(),
+                poor:      (document.getElementById('guidePoor')?.value      || '').trim()
+            }
+        });
+
+        closeCustModal();
+        renderCustomFeaturesList();
+        // Auto-expand the new feature card so user sees their item immediately
+        setTimeout(() => {
+            const body = document.getElementById('featItems_' + feature.id);
+            const chev = document.getElementById('chevron_'   + feature.id);
+            if (body) { body.style.display = ''; if (chev) chev.classList.add('open'); }
+        }, 80);
+        showSuccess('Feature and item saved!');
+    });
+}
+
+// Visual toggle for Include As buttons
+function selectIncludeAs(value) {
+    const dd = document.getElementById('inclDropdown');
+    const mn = document.getElementById('inclMain');
+    const hd = document.getElementById('cfIncludeAs');
+    if (!dd || !mn || !hd) return;
+
+    const activeStyle   = 'flex:1;border:1.5px solid var(--brand-green);border-radius:12px;padding:11px 8px;cursor:pointer;text-align:center;background:rgba(29,158,117,0.08)';
+    const inactiveStyle = 'flex:1;border:1.5px solid var(--border);border-radius:12px;padding:11px 8px;cursor:pointer;text-align:center';
+
+    if (value === 'dropdown') {
+        dd.style.cssText = activeStyle;
+        mn.style.cssText = inactiveStyle;
+        dd.querySelector('i').style.color  = 'var(--brand-green)';
+        mn.querySelector('i').style.color  = 'var(--text-3)';
+        dd.querySelector('span').style.color = 'var(--brand-green)';
+        mn.querySelector('span').style.color = 'var(--text-2)';
+    } else {
+        mn.style.cssText = activeStyle;
+        dd.style.cssText = inactiveStyle;
+        mn.querySelector('i').style.color  = 'var(--brand-green)';
+        dd.querySelector('i').style.color  = 'var(--text-3)';
+        mn.querySelector('span').style.color = 'var(--brand-green)';
+        dd.querySelector('span').style.color = 'var(--text-2)';
+    }
+    hd.value = value;
+}
+
+function _custModalAlert(msg) {
+    const el = document.createElement('div');
+    el.style.cssText = 'position:fixed;top:24px;left:50%;transform:translateX(-50%);background:#ef4444;color:#fff;padding:10px 20px;border-radius:10px;font-size:0.82rem;font-weight:600;z-index:99999;font-family:Poppins,sans-serif;white-space:nowrap;box-shadow:0 4px 20px rgba(0,0,0,0.3)';
+    el.textContent = msg;
+    document.body.appendChild(el);
+    setTimeout(() => el.remove(), 2800);
+}
+
+function toggleCustGuidance() {
+    const body = document.getElementById('custGuidanceBody');
+    const chev = document.getElementById('guidanceChevron');
+    if (!body) return;
+    const open = body.style.display !== 'none';
+    body.style.display = open ? 'none' : '';
+    if (chev) chev.style.transform = open ? '' : 'rotate(180deg)';
+}
+
+// ── Add Item Modal — for adding MORE items to an existing feature ──
+
+function showAddItemModal(featureId) {
+    const config  = getCustomConfig();
+    const feature = config.customFeatures.find(f => f.id === featureId);
+    if (!feature) return;
+
+    const weightOpts  = WEIGHT_OPTIONS.map(w =>
+        `<option value="${w.value}">${w.label} (${w.value})</option>`
+    ).join('');
+    const s = 'width:100%;background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:11px 13px;color:var(--text-1);font-size:0.85rem;font-family:Poppins,sans-serif;box-sizing:border-box';
+    const l = 'display:block;font-size:0.78rem;font-weight:600;color:var(--text-2);margin-bottom:6px;font-family:Poppins,sans-serif';
+    const h = 'display:block;font-size:0.7rem;color:var(--text-3);margin-top:4px;line-height:1.4;font-family:Poppins,sans-serif';
+
+    const body = `
+        <div style="margin-bottom:16px">
+            <label style="${l}">Item Name <span style="color:#ef4444">*</span></label>
+            <input type="text" id="cfiName" maxlength="80" placeholder="e.g. Structural Condition, Pump Pressure" style="${s}">
+        </div>
+        <div style="margin-bottom:16px">
+            <label style="${l}">Tooltip — What to look for <span style="color:#ef4444">*</span></label>
+            <textarea id="cfiTooltip" rows="3" placeholder="e.g. Check for cracks, damp patches, signs of settling..." style="${s};resize:vertical;line-height:1.5"></textarea>
+            <span style="${h}">Shown as a hint to the assessor during the assessment.</span>
+        </div>
+        <div style="margin-bottom:16px">
+            <label style="${l}">Weight — Impact on Score <span style="color:#ef4444">*</span></label>
+            <select id="cfiWeight" style="${s}">
+                <option value="" disabled selected>Select weight...</option>
+                ${weightOpts}
+            </select>
+            <span style="${h}">Low (1) = minor · Moderate (2) = standard · High (3) = significant · Very High (3.5) = major · Critical (4) = deal-breaker</span>
+        </div>
+        <div style="border-top:0.5px solid var(--divider);padding-top:12px">
+            <div onclick="toggleCustGuidance()" style="display:flex;align-items:center;justify-content:space-between;cursor:pointer;margin-bottom:8px">
+                <span style="font-size:0.82rem;font-weight:600;color:var(--text-2);font-family:Poppins,sans-serif;display:flex;align-items:center;gap:7px">
+                    <i class="fas fa-clipboard-list" style="color:var(--brand-green);font-size:0.78rem"></i>
+                    Guidance
+                    <span style="font-size:0.65rem;color:var(--text-3);background:var(--surface);padding:2px 6px;border-radius:99px">Optional</span>
+                </span>
+                <i class="fas fa-chevron-down" id="guidanceChevron" style="font-size:0.75rem;color:var(--text-3)"></i>
+            </div>
+            <div id="custGuidanceBody" style="display:none">
+                <span style="${h};display:block;margin-bottom:10px">Define what each rating looks like. Leave blank to add notes manually in the Full Report screen.</span>
+                <div style="margin-bottom:12px"><label style="${l}">✅ Excellent</label><textarea id="guideExcellent" rows="2" placeholder="No visible defects, fully operational..." style="${s};resize:vertical"></textarea></div>
+                <div style="margin-bottom:12px"><label style="${l}">👍 Good</label><textarea id="guideGood" rows="2" placeholder="Minor cosmetic issues, functional..." style="${s};resize:vertical"></textarea></div>
+                <div style="margin-bottom:12px"><label style="${l}">⚠️ Fair</label><textarea id="guideFair" rows="2" placeholder="Some maintenance needed..." style="${s};resize:vertical"></textarea></div>
+                <div style="margin-bottom:4px"><label style="${l}">❌ Poor</label><textarea id="guidePoor" rows="2" placeholder="Major repairs required..." style="${s};resize:vertical"></textarea></div>
+            </div>
+        </div>`;
+
+    openCustModal(`Add Item to "${feature.name}"`, body, 'Save Item ✓', () => {
+        const name    = document.getElementById('cfiName').value.trim();
+        const tooltip = document.getElementById('cfiTooltip').value.trim();
+        const weight  = document.getElementById('cfiWeight').value;
+        const wLabel  = WEIGHT_OPTIONS.find(w => String(w.value) === String(weight))?.label || '';
+        if (!name)    { _custModalAlert('Please enter an item name.'); return; }
+        if (!tooltip) { _custModalAlert('Please enter a tooltip.'); return; }
+        if (!weight)  { _custModalAlert('Please select a weight.'); return; }
+        addCustomFeatureItem(featureId, {
+            name, tooltip,
+            weightLabel: wLabel, weightValue: Number(weight),
+            includeAs: 'dropdown',
+            guidance: {
+                excellent: (document.getElementById('guideExcellent')?.value || '').trim(),
+                good:      (document.getElementById('guideGood')?.value      || '').trim(),
+                fair:      (document.getElementById('guideFair')?.value      || '').trim(),
+                poor:      (document.getElementById('guidePoor')?.value      || '').trim()
+            }
+        });
+        closeCustModal();
+        renderCustomFeaturesList();
+        setTimeout(() => {
+            const b = document.getElementById('featItems_' + featureId);
+            const c = document.getElementById('chevron_'   + featureId);
+            if (b) { b.style.display = ''; if (c) c.classList.add('open'); }
+        }, 80);
+        showSuccess('Item added!');
+    });
+}
+
+// ── Add Question Modal ────────────────────────────────────────
+
+function showAddQuestionModal() {
+    const s = 'width:100%;background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:11px 13px;color:var(--text-1);font-size:0.85rem;font-family:Poppins,sans-serif;box-sizing:border-box';
+    const l = 'display:block;font-size:0.78rem;font-weight:600;color:var(--text-2);margin-bottom:6px;font-family:Poppins,sans-serif';
+    const h = 'display:block;font-size:0.7rem;color:var(--text-3);margin-top:4px;line-height:1.4;font-family:Poppins,sans-serif';
+
+    const body = `
+        <div style="margin-bottom:16px">
+            <label style="${l}">Question <span style="color:#ef4444">*</span></label>
+            <textarea id="cqQuestion" rows="3" placeholder="e.g. Has the property been renovated in the last 5 years?" style="${s};resize:vertical;line-height:1.5"></textarea>
+        </div>
+        <div style="margin-bottom:8px">
+            <label style="${l}">Tooltip — Context for the assessor</label>
+            <textarea id="cqTooltip" rows="2" placeholder="e.g. Ask the agent or check property records for renovation permits..." style="${s};resize:vertical;line-height:1.5"></textarea>
+            <span style="${h}">Optional hint shown when the assessor taps the info button.</span>
+        </div>`;
+
+    openCustModal('Add Custom Question', body, 'Save Question ✓', () => {
+        const question = document.getElementById('cqQuestion').value.trim();
+        const tooltip  = document.getElementById('cqTooltip').value.trim();
+        if (!question) { _custModalAlert('Please enter a question.'); return; }
+        addCustomQuestion({ question, tooltip });
+        closeCustModal();
+        renderCustomQuestionsList();
+        showSuccess('Question added!');
+    });
+}
+
+// ── Delete handlers ───────────────────────────────────────────
+
+function showEditFeatureModal(featureId) {
+    const config  = getCustomConfig();
+    const feature = config.customFeatures.find(f => f.id === featureId);
+    if (!feature) return;
+
+    const s = 'width:100%;background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:11px 13px;color:var(--text-1);font-size:0.85rem;font-family:Poppins,sans-serif;box-sizing:border-box';
+    const l = 'display:block;font-size:0.78rem;font-weight:600;color:var(--text-2);margin-bottom:6px;font-family:Poppins,sans-serif';
+
+    const body = `
+        <div style="margin-bottom:16px">
+            <label style="${l}">Feature Name <span style="color:#ef4444">*</span></label>
+            <input id="efName" type="text" maxlength="60" value="${feature.name}" style="${s}">
+        </div>
+        <div style="margin-bottom:8px">
+            <label style="${l}">Section <span style="color:#ef4444">*</span></label>
+            <select id="efSection" style="${s}">
+                <option value="exterior" ${feature.section==='exterior'?'selected':''}>Exterior Assessment</option>
+                <option value="interior" ${feature.section==='interior'?'selected':''}>Interior Assessment</option>
+                <option value="location" ${feature.section==='location'?'selected':''}>Location &amp; Neighbourhood</option>
+                <option value="other"    ${feature.section==='other'   ?'selected':''}>Other Features Assessment</option>
+            </select>
+        </div>`;
+
+    openCustModal('Edit Feature', body, 'Save Changes ✓', () => {
+        const name    = document.getElementById('efName').value.trim();
+        const section = document.getElementById('efSection').value;
+        if (!name) { _custModalAlert('Please enter a feature name.'); return; }
+        updateCustomFeature(featureId, { name, section });
+        closeCustModal();
+        renderCustomFeaturesList();
+        showSuccess('Feature updated!');
+    });
+}
+window.showEditFeatureModal = showEditFeatureModal;
+
+// ── Edit Item Modal ────────────────────────────────────────────
+function showEditItemModal(featureId, itemId) {
+    const config  = getCustomConfig();
+    const feature = config.customFeatures.find(f => f.id === featureId);
+    const item    = feature?.items.find(i => i.id === itemId);
+    if (!item) return;
+
+    const weightOpts = WEIGHT_OPTIONS.map(w =>
+        `<option value="${w.value}" ${String(item.weightValue) === String(w.value) ? 'selected' : ''}>${w.label} (${w.value})</option>`
+    ).join('');
+
+    const s = 'width:100%;background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:11px 13px;color:var(--text-1);font-size:0.85rem;font-family:Poppins,sans-serif;box-sizing:border-box';
+    const l = 'display:block;font-size:0.78rem;font-weight:600;color:var(--text-2);margin-bottom:6px;font-family:Poppins,sans-serif';
+    const h = 'display:block;font-size:0.7rem;color:var(--text-3);margin-top:4px;line-height:1.4;font-family:Poppins,sans-serif';
+
+    const body = `
+        <div style="margin-bottom:16px">
+            <label style="${l}">Item Name <span style="color:#ef4444">*</span></label>
+            <input id="eiName" type="text" maxlength="80" value="${item.name}" style="${s}">
+        </div>
+        <div style="margin-bottom:16px">
+            <label style="${l}">Tooltip — What to look for <span style="color:#ef4444">*</span></label>
+            <textarea id="eiTooltip" rows="3" style="${s};resize:vertical;line-height:1.5">${item.tooltip || ''}</textarea>
+        </div>
+        <div style="margin-bottom:16px">
+            <label style="${l}">Weight <span style="color:#ef4444">*</span></label>
+            <select id="eiWeight" style="${s}">
+                ${weightOpts}
+            </select>
+            <span style="${h}">Low (1) = minor · Moderate (2) = standard · High (3) = significant · Very High (3.5) = major · Critical (4) = deal-breaker</span>
+        </div>
+        <div style="border-top:0.5px solid var(--divider);padding-top:12px">
+            <div onclick="toggleCustGuidance()" style="display:flex;align-items:center;justify-content:space-between;cursor:pointer;margin-bottom:8px">
+                <span style="font-size:0.82rem;font-weight:600;color:var(--text-2);font-family:Poppins,sans-serif;display:flex;align-items:center;gap:7px">
+                    <i class="fas fa-clipboard-list" style="color:var(--brand-green);font-size:0.78rem"></i>
+                    Guidance <span style="font-size:0.65rem;color:var(--text-3);background:var(--surface);padding:2px 6px;border-radius:99px">Optional</span>
+                </span>
+                <i class="fas fa-chevron-down" id="guidanceChevron" style="font-size:0.75rem;color:var(--text-3)"></i>
+            </div>
+            <div id="custGuidanceBody" style="display:none">
+                <div style="margin-bottom:12px"><label style="${l}">✅ Excellent</label><textarea id="guideExcellent" rows="2" style="${s};resize:vertical">${item.guidance?.excellent || ''}</textarea></div>
+                <div style="margin-bottom:12px"><label style="${l}">👍 Good</label><textarea id="guideGood" rows="2" style="${s};resize:vertical">${item.guidance?.good || ''}</textarea></div>
+                <div style="margin-bottom:12px"><label style="${l}">⚠️ Fair</label><textarea id="guideFair" rows="2" style="${s};resize:vertical">${item.guidance?.fair || ''}</textarea></div>
+                <div><label style="${l}">❌ Poor</label><textarea id="guidePoor" rows="2" style="${s};resize:vertical">${item.guidance?.poor || ''}</textarea></div>
+            </div>
+        </div>`;
+
+    openCustModal(`Edit Item — ${feature.name}`, body, 'Save Changes ✓', () => {
+        const name    = document.getElementById('eiName').value.trim();
+        const tooltip = document.getElementById('eiTooltip').value.trim();
+        const weight  = document.getElementById('eiWeight').value;
+        if (!name)    { _custModalAlert('Please enter an item name.'); return; }
+        if (!tooltip) { _custModalAlert('Please enter a tooltip.'); return; }
+        if (!weight)  { _custModalAlert('Please select a weight.'); return; }
+        const wLabel = WEIGHT_OPTIONS.find(w => String(w.value) === String(weight))?.label || '';
+        updateCustomFeatureItem(featureId, itemId, {
+            name, tooltip,
+            weightLabel: wLabel, weightValue: Number(weight),
+            guidance: {
+                excellent: (document.getElementById('guideExcellent')?.value || '').trim(),
+                good:      (document.getElementById('guideGood')?.value      || '').trim(),
+                fair:      (document.getElementById('guideFair')?.value      || '').trim(),
+                poor:      (document.getElementById('guidePoor')?.value      || '').trim()
+            }
+        });
+        closeCustModal();
+        renderCustomFeaturesList();
+        showSuccess('Item updated!');
+    });
+}
+window.showEditItemModal = showEditItemModal;
+
+// ── Edit Question Modal ────────────────────────────────────────
+function showEditQuestionModal(questionId) {
+    const config = getCustomConfig();
+    const q      = config.customQuestions.find(q => q.id === questionId);
+    if (!q) return;
+
+    const s = 'width:100%;background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:11px 13px;color:var(--text-1);font-size:0.85rem;font-family:Poppins,sans-serif;box-sizing:border-box';
+    const l = 'display:block;font-size:0.78rem;font-weight:600;color:var(--text-2);margin-bottom:6px;font-family:Poppins,sans-serif';
+
+    const body = `
+        <div style="margin-bottom:16px">
+            <label style="${l}">Question <span style="color:#ef4444">*</span></label>
+            <textarea id="eqQuestion" rows="3" style="${s};resize:vertical;line-height:1.5">${q.question}</textarea>
+        </div>
+        <div style="margin-bottom:8px">
+            <label style="${l}">Tooltip — Context for the assessor</label>
+            <textarea id="eqTooltip" rows="2" style="${s};resize:vertical;line-height:1.5">${q.tooltip || ''}</textarea>
+        </div>`;
+
+    openCustModal('Edit Question', body, 'Save Changes ✓', () => {
+        const question = document.getElementById('eqQuestion').value.trim();
+        const tooltip  = document.getElementById('eqTooltip').value.trim();
+        if (!question) { _custModalAlert('Please enter a question.'); return; }
+        const config2 = getCustomConfig();
+        const idx = config2.customQuestions.findIndex(q => q.id === questionId);
+        if (idx !== -1) {
+            config2.customQuestions[idx] = { ...config2.customQuestions[idx], question, tooltip };
+            saveCustomConfig(config2);
+        }
+        closeCustModal();
+        renderCustomQuestionsList();
+        showSuccess('Question updated!');
+    });
+}
+window.showEditQuestionModal = showEditQuestionModal;
+
+function deleteCustomFeatureUI(featureId) {
+    const config  = getCustomConfig();
+    const feature = config.customFeatures.find(f => f.id === featureId);
+    if (!feature) return;
+    showModal(
+        'Delete Feature?',
+        `Delete <strong>${feature.name}</strong> and all its items? This cannot be undone.`,
+        () => {
+            deleteCustomFeature(featureId);
+            renderCustomFeaturesList();
+            showSuccess('Feature deleted.');
+        },
+        'Delete', null, 'Cancel'
+    );
+}
+
+function deleteCustomItemUI(featureId, itemId) {
+    const config  = getCustomConfig();
+    const feature = config.customFeatures.find(f => f.id === featureId);
+    const item    = feature?.items.find(i => i.id === itemId);
+    if (!item) return;
+    showModal(
+        'Delete Item?',
+        `Delete <strong>${item.name}</strong> from ${feature.name}?`,
+        () => {
+            deleteCustomFeatureItem(featureId, itemId);
+            renderCustomFeaturesList();
+            showSuccess('Item deleted.');
+        },
+        'Delete', null, 'Cancel'
+    );
+}
+
+function deleteCustomQuestionUI(questionId) {
+    const config = getCustomConfig();
+    const q      = config.customQuestions.find(q => q.id === questionId);
+    if (!q) return;
+    showModal(
+        'Delete Question?',
+        `Delete this question: <em>"${q.question}"</em>?`,
+        () => {
+            deleteCustomQuestion(questionId);
+            renderCustomQuestionsList();
+            showSuccess('Question deleted.');
+        },
+        'Delete', null, 'Cancel'
+    );
+}
+
+function toggleFeatureExcludeUI(featureId) {
+    const nowExcluded = toggleCustomFeatureExcluded(featureId);
+    renderCustomFeaturesList();
+    showSuccess(nowExcluded ? 'Feature excluded from new assessments.' : 'Feature re-enabled.');
+}
+
+// ── Export / Import ───────────────────────────────────────────
+
+function exportCustomSettings() {
+    exportCustomConfig();
+}
+
+function importCustomSettings() {
+    if (typeof Android !== 'undefined' && Android.pickJsonFile) {
+        // Android WebView — use native file picker bridge
+        Android.pickJsonFile();
+    } else {
+        // PWA / browser fallback — use hidden file input
+        document.getElementById('customConfigImportInput').click();
+    }
+}
+
+// Called by MainActivity.kt jsonPickerLauncher after user selects a JSON file
+// Content is passed as base64 to avoid escaping issues
+function handleJsonFileContentBase64(base64) {
+    try {
+        const binary = atob(base64);
+        const bytes  = new Uint8Array(binary.length);
+        for (let i = 0; i < binary.length; i++) bytes[i] = binary.charCodeAt(i);
+        const jsonString = new TextDecoder().decode(bytes);
+        const result = importCustomConfig(jsonString);
+        if (result.success) {
+            renderCustomizeScreen();
+            showSuccess('Settings loaded successfully!');
+        } else {
+            showModal('Import Failed', result.error || 'Could not load settings file.');
+        }
+    } catch (e) {
+        showModal('Import Failed', 'Could not read the file. Make sure it is a valid settings file.');
+    }
+}
+window.handleJsonFileContentBase64 = handleJsonFileContentBase64;
+
+function handleCustomConfigImport(event) {
+    const file = event.target.files[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = (e) => {
+        const result = importCustomConfig(e.target.result);
+        if (result.success) {
+            renderCustomizeScreen();
+            showSuccess('Settings loaded successfully!');
+        } else {
+            showModal('Import Failed', result.error || 'Could not load settings file.');
+        }
+        event.target.value = '';
+    };
+    reader.readAsText(file);
+}
+
+// Expose functions
+window.initCustomizeScreen        = initCustomizeScreen;
+window.renderCustomizeScreen      = renderCustomizeScreen;
+window.toggleFeatureCard          = toggleFeatureCard;
+window.toggleCustInfo             = toggleCustInfo;
+window.showAddFeatureModal        = showAddFeatureModal;
+window.showAddItemModal           = showAddItemModal;
+window.showAddQuestionModal       = showAddQuestionModal;
+window.selectIncludeAs            = selectIncludeAs;
+window.toggleCustGuidance         = toggleCustGuidance;
+window.deleteCustomFeatureUI      = deleteCustomFeatureUI;
+window.deleteCustomItemUI         = deleteCustomItemUI;
+window.deleteCustomQuestionUI     = deleteCustomQuestionUI;
+window.toggleFeatureExcludeUI     = toggleFeatureExcludeUI;
+window.exportCustomSettings       = exportCustomSettings;
+window.importCustomSettings       = importCustomSettings;
+window.handleCustomConfigImport   = handleCustomConfigImport;
+window.closeCustModal             = closeCustModal;
+window.closeCustModalOnBg         = closeCustModalOnBg;
