@@ -388,3 +388,43 @@ body.web-mode .hbg-fp-close {
         to   { transform: translate(-50%, 0);     opacity: 1; }
     }
 }
+
+/* --------------------------------------------------------------------
+   7. FULLSCREEN RESTORE BUTTON
+      Small floating button that appears when the user exits fullscreen.
+      Positioned just below the app top bar, inside the frame.
+   -------------------------------------------------------------------- */
+body.web-mode .hbg-fs-restore-btn {
+    position: fixed;
+    top: 62px;   /* just below the app top bar */
+    right: 12px;
+    z-index: 8500;
+    width: 34px;
+    height: 34px;
+    padding: 0;
+    border: 1px solid rgba(6, 214, 160, 0.35);
+    border-radius: 50%;
+    background: rgba(13, 21, 32, 0.88);
+    color: #06D6A0;
+    font-size: 0.85rem;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    box-shadow: 0 2px 10px rgba(0,0,0,0.35);
+    transition: background 0.2s ease;
+}
+
+body.web-mode .hbg-fs-restore-btn:hover,
+body.web-mode .hbg-fs-restore-btn:active {
+    background: rgba(6, 214, 160, 0.18);
+}
+
+@media (min-width: 768px) {
+    /* On desktop, pin it inside the right edge of the centred frame */
+    body.web-mode .hbg-fs-restore-btn {
+        right: calc(50vw - 280px + 12px);
+    }
+}
