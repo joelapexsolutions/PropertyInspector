@@ -56,10 +56,21 @@
         input.style.cssText =
             'position:fixed;top:0;left:0;width:1px;height:1px;' +
             'opacity:0;overflow:hidden;pointer-events:none;';
+
+        // Remember fullscreen state BEFORE opening picker.
+        // Browsers always exit fullscreen when the camera / file picker opens.
+        var _wasFullscreen = isInFullscreen();
+
         input.onchange = function (e) {
             if (input.parentNode) input.parentNode.removeChild(input);
             var file = e.target.files && e.target.files[0];
-            if (file) onFile(file);
+            if (file) {
+                // Re-enter fullscreen automatically (onchange IS a user gesture)
+                if (_wasFullscreen && supportsFullscreen()) {
+                    enterFullscreen();
+                }
+                onFile(file);
+            }
         };
         document.body.appendChild(input);
         input.click();
@@ -299,9 +310,10 @@
         try { sessionStorage.setItem('hbgWasFullscreen', '1'); } catch (e) {}
     }
 
-    // Small floating button that reappears after the user exits fullscreen
+    // Small floating button — shown ALWAYS when not in fullscreen (not just after
+    // entering fullscreen once). Positioned inside the top-right of the app frame.
     function showFullscreenRestoreBtn() {
-        if (isStandalone() || !supportsFullscreen()) return;
+        if (isStandalone() || !supportsFullscreen() || isInFullscreen()) return;
         if (document.getElementById('hbgFsRestoreBtn')) return;
 
         var btn = document.createElement('button');
@@ -312,7 +324,7 @@
 
         btn.addEventListener('click', function () {
             enterFullscreen();
-            // onFullscreenChange will remove the button once fullscreen activates
+            // onFullscreenChange removes the button once fullscreen activates
         });
 
         document.body.appendChild(btn);
@@ -323,17 +335,13 @@
         if (btn) btn.remove();
     }
 
-    // Detect fullscreen exit → show restore button; fullscreen enter → hide it
+    // Fullscreen entered → hide button. Fullscreen exited → always show button.
     function onFullscreenChange() {
         if (isInFullscreen()) {
             removeFullscreenRestoreBtn();
         } else {
-            // Only show restore button if the user entered fullscreen this session
-            try {
-                if (sessionStorage.getItem('hbgWasFullscreen')) {
-                    showFullscreenRestoreBtn();
-                }
-            } catch (e) {}
+            // Always show restore button when leaving fullscreen
+            showFullscreenRestoreBtn();
         }
     }
 
@@ -498,8 +506,9 @@
             console.warn('web-app: premium override issue', e);
         }
 
-        // Show the fullscreen prompt first (3 s), then the install banner (8 s),
-        // so both can't appear simultaneously.
+        // Show fullscreen restore button if not in fullscreen (always visible)
+        setTimeout(showFullscreenRestoreBtn, 2000);
+        // Fullscreen prompt for first-time visitors, install banner after
         setTimeout(showFullscreenPrompt, 3000);
         setTimeout(showInstallBanner, 8000);
 
