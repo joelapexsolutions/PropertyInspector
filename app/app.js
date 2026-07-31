@@ -5331,10 +5331,22 @@ function updateProperty(propertyId, updates) {
 
 // Handle profile picture selection
 function selectProfilePicture(propertyId) {
+    // On PWA/web: use the same Camera + Gallery bottom-sheet as assessment photos
+    if (typeof window._hbgPickerSheet === 'function') {
+        window._hbgPickerSheet('Profile Picture', function(file) {
+            var reader = new FileReader();
+            reader.onload = function(e) {
+                handlePropertyProfilePicChange(propertyId, e.target.result);
+            };
+            reader.readAsDataURL(file);
+        });
+        return;
+    }
+    // Android WebView path
     const input = document.createElement('input');
     input.type = 'file';
     input.accept = 'image/*';
-    input.style.display = 'none';
+    input.style.cssText = 'position:fixed;top:0;left:0;width:1px;height:1px;opacity:0;overflow:hidden;pointer-events:none;';
     
     input.onchange = async (event) => {
         const file = event.target.files[0];
@@ -5359,7 +5371,10 @@ function selectProfilePicture(propertyId) {
     
     document.body.appendChild(input);
     input.click();
-    document.body.removeChild(input);
+    // Keep in DOM until file chosen
+    setTimeout(function() {
+        if (input.parentNode) input.parentNode.removeChild(input);
+    }, 600000);
 }
 
 // Get profile picture for display
