@@ -22,7 +22,10 @@ const photoManager = {
         const input = document.createElement('input');
         input.type = 'file';
         input.accept = 'image/*';
-        input.capture = 'camera';
+        // No capture attribute — lets onShowFileChooser in MainActivity show
+        // the native Android chooser (Camera + Gallery). With capture='camera'
+        // set, modern Android bypasses the chooser entirely and opens camera
+        // directly at OS level, skipping onShowFileChooser.
         input.style.display = 'none';
         
         input.onchange = async (event) => {
