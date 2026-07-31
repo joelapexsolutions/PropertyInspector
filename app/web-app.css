@@ -521,3 +521,312 @@ body.web-mode .hbg-pp-cancel {
 body.web-mode .hbg-pp-cancel:active {
     background: rgba(255, 255, 255, 0.05);
 }
+
+/* --------------------------------------------------------------------
+   9. PREMIUM GATE SCREEN — sign-in + subscription plans
+   -------------------------------------------------------------------- */
+body.web-mode #premiumGateScreen {
+    overflow-y: auto;
+}
+
+body.web-mode .pgs-container {
+    max-width: 480px;
+    margin: 0 auto;
+    padding: 24px 20px calc(40px + env(safe-area-inset-bottom, 0px));
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 18px;
+    min-height: 100%;
+}
+
+body.web-mode .pgs-header {
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+}
+
+body.web-mode .pgs-logo {
+    height: 48px;
+    object-fit: contain;
+}
+
+body.web-mode .pgs-crown {
+    background: linear-gradient(135deg, #F9C74F, #F3722C);
+    color: #0d1520;
+    font-weight: 800;
+    font-size: 0.82rem;
+    padding: 5px 14px;
+    border-radius: 20px;
+    letter-spacing: 0.04em;
+}
+
+body.web-mode .pgs-feature-msg {
+    color: var(--text-primary, #fff);
+    font-size: 1rem;
+    font-weight: 700;
+    text-align: center;
+    line-height: 1.4;
+    margin: 0;
+}
+
+/* Sign-in section */
+body.web-mode .pgs-sub {
+    color: var(--text-secondary, #8bbad4);
+    font-size: 0.85rem;
+    text-align: center;
+    line-height: 1.5;
+    margin: 0;
+}
+
+body.web-mode .pgs-email-input {
+    width: 100%;
+    padding: 13px 16px;
+    background: rgba(255,255,255,0.06);
+    border: 1px solid rgba(255,255,255,0.15);
+    border-radius: 12px;
+    color: var(--text-primary, #fff);
+    font-size: 1rem;
+    font-family: 'Poppins', sans-serif;
+    margin-bottom: 10px;
+    box-sizing: border-box;
+}
+
+body.web-mode .pgs-email-input:focus {
+    outline: none;
+    border-color: #06D6A0;
+}
+
+body.web-mode .pgs-btn-primary {
+    width: 100%;
+    padding: 14px;
+    background: var(--gradient-success, linear-gradient(135deg,#06D6A0,#1DB88A));
+    color: #0d1520;
+    border: none;
+    border-radius: 12px;
+    font-size: 0.95rem;
+    font-weight: 700;
+    font-family: 'Poppins', sans-serif;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+}
+
+body.web-mode .pgs-btn-secondary {
+    width: 100%;
+    padding: 12px;
+    background: transparent;
+    border: 1px solid rgba(255,255,255,0.15);
+    border-radius: 12px;
+    color: var(--text-secondary, #8bbad4);
+    font-size: 0.88rem;
+    font-family: 'Poppins', sans-serif;
+    cursor: pointer;
+}
+
+/* Email sent */
+body.web-mode .pgs-sent-icon {
+    font-size: 2.5rem;
+    color: #06D6A0;
+    text-align: center;
+}
+
+body.web-mode .pgs-sent-title {
+    color: var(--text-primary, #fff);
+    font-size: 1.1rem;
+    font-weight: 700;
+    text-align: center;
+    margin: 0;
+}
+
+body.web-mode .pgs-sent-msg {
+    color: var(--text-secondary, #8bbad4);
+    font-size: 0.9rem;
+    text-align: center;
+    line-height: 1.5;
+    margin: 0;
+}
+
+body.web-mode .pgs-sent-hint {
+    color: var(--text-secondary, #8bbad4);
+    font-size: 0.78rem;
+    text-align: center;
+    opacity: 0.7;
+    margin: 0;
+}
+
+/* Signed-in as */
+body.web-mode .pgs-signed-as {
+    color: var(--text-secondary, #8bbad4);
+    font-size: 0.8rem;
+    text-align: center;
+    margin: 0;
+}
+
+body.web-mode .pgs-user-email {
+    color: #06D6A0;
+    font-weight: 600;
+}
+
+/* Plan cards */
+body.web-mode .pgs-plans {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+    width: 100%;
+}
+
+body.web-mode .pgs-plan {
+    background: rgba(255,255,255,0.04);
+    border: 1.5px solid rgba(255,255,255,0.1);
+    border-radius: 14px;
+    padding: 16px 12px;
+    text-align: center;
+    cursor: pointer;
+    position: relative;
+    transition: border-color 0.2s, background 0.2s;
+}
+
+body.web-mode .pgs-plan:active,
+body.web-mode .pgs-plan.pgs-plan-selected {
+    border-color: #06D6A0;
+    background: rgba(6,214,160,0.08);
+}
+
+body.web-mode .pgs-plan-popular {
+    border-color: #F9C74F;
+    background: rgba(249,199,79,0.06);
+}
+
+body.web-mode .pgs-plan-badge {
+    position: absolute;
+    top: -10px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: linear-gradient(135deg,#F9C74F,#F3722C);
+    color: #0d1520;
+    font-size: 0.62rem;
+    font-weight: 800;
+    padding: 3px 10px;
+    border-radius: 10px;
+    white-space: nowrap;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+}
+
+body.web-mode .pgs-plan-period {
+    color: var(--text-secondary, #8bbad4);
+    font-size: 0.78rem;
+    margin-bottom: 6px;
+}
+
+body.web-mode .pgs-plan-price {
+    color: var(--text-primary, #fff);
+    font-size: 1.3rem;
+    font-weight: 800;
+}
+
+body.web-mode .pgs-plan-saving {
+    color: #06D6A0;
+    font-size: 0.68rem;
+    margin-top: 4px;
+}
+
+body.web-mode .pgs-coming-soon {
+    color: var(--text-secondary, #8bbad4);
+    font-size: 0.8rem;
+    text-align: center;
+    margin: 4px 0 0;
+}
+
+body.web-mode .pgs-sign-out-link {
+    background: none;
+    border: none;
+    color: var(--text-secondary, #8bbad4);
+    font-size: 0.78rem;
+    cursor: pointer;
+    text-decoration: underline;
+    font-family: 'Poppins', sans-serif;
+}
+
+/* Premium active */
+body.web-mode .pgs-premium-icon {
+    font-size: 3rem;
+    color: #F9C74F;
+    text-align: center;
+}
+
+body.web-mode .pgs-premium-title {
+    color: var(--text-primary, #fff);
+    font-size: 1.2rem;
+    font-weight: 800;
+    text-align: center;
+    margin: 0;
+}
+
+body.web-mode .pgs-expiry {
+    color: var(--text-secondary, #8bbad4);
+    font-size: 0.82rem;
+    text-align: center;
+    margin: 0;
+}
+
+/* Android section */
+body.web-mode .pgs-android-msg {
+    text-align: center;
+    color: var(--text-secondary, #8bbad4);
+    font-size: 0.88rem;
+    line-height: 1.5;
+}
+
+body.web-mode .pgs-android-icon {
+    font-size: 2.5rem;
+    color: #3DDC84;
+    display: block;
+    margin-bottom: 10px;
+}
+
+body.web-mode .pgs-play-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    padding: 14px 24px;
+    background: #3DDC84;
+    color: #0d1520;
+    border-radius: 12px;
+    font-weight: 700;
+    font-size: 0.95rem;
+    text-decoration: none;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+/* Free info + back button */
+body.web-mode .pgs-free-info {
+    color: var(--text-secondary, #8bbad4);
+    font-size: 0.75rem;
+    text-align: center;
+    opacity: 0.7;
+    margin-top: auto;
+}
+
+body.web-mode .pgs-back-btn {
+    background: none;
+    border: 1px solid rgba(255,255,255,0.1);
+    border-radius: 12px;
+    color: var(--text-secondary, #8bbad4);
+    font-size: 0.85rem;
+    font-family: 'Poppins', sans-serif;
+    padding: 11px 20px;
+    cursor: pointer;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+}
