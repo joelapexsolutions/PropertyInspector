@@ -668,35 +668,51 @@ function setPropertyProfilePic(propertyId, photoData) {
 }
 
 async function capturePropertyProfilePic(propertyId) {
+    // Helper: shows the selected photo inside the modal
+    function showInModal(dataUrl) {
+        var selector = document.querySelector('.profile-pic-selector');
+        if (!selector) return;
+        var html = '<div class="profile-pic-option selected" onclick="viewProfilePhoto(\'' + dataUrl + '\', -1)" data-photo="' + dataUrl + '">'
+            + '<img src="' + dataUrl + '" alt="New photo" style="width:120px;height:90px;object-fit:cover;border-radius:8px;">'
+            + '</div>';
+        document.querySelectorAll('.profile-pic-option').forEach(function(o) { o.classList.remove('selected'); });
+        selector.insertAdjacentHTML('afterbegin', html);
+    }
+
+    // On PWA/web: use Camera + Gallery bottom-sheet (same as assessment photos)
+    if (typeof window._hbgPickerSheet === 'function') {
+        window._hbgPickerSheet('Profile Picture', function(file) {
+            var reader = new FileReader();
+            reader.onload = function(e) { showInModal(e.target.result); };
+            reader.readAsDataURL(file);
+        });
+        return;
+    }
+
+    // Android WebView path
+    // FIX 1: removed capture='camera' so onShowFileChooser shows camera + gallery
+    // FIX 2: added appendChild - input was never in the DOM before (major bug)
+    // FIX 3: keep input in DOM until file chosen - immediate removal kills picker
     const input = document.createElement('input');
     input.type = 'file';
     input.accept = 'image/*';
-    input.capture = 'camera';
-    
+    input.style.cssText = 'position:fixed;top:0;left:0;width:1px;height:1px;opacity:0;overflow:hidden;pointer-events:none;';
+
     input.onchange = async (event) => {
         const file = event.target.files[0];
+        if (input.parentNode) input.parentNode.removeChild(input);
         if (file) {
             const reader = new FileReader();
-            reader.onload = (e) => {
-                // Add new photo to modal
-                const selector = document.querySelector('.profile-pic-selector');
-                const newPhotoHtml = `
-                    <div class="profile-pic-option selected" onclick="viewProfilePhoto('${e.target.result}', -1)" data-photo="${e.target.result}">
-                        <img src="${e.target.result}" alt="New photo" style="width: 120px; height: 90px; object-fit: cover; border-radius: 8px;">
-                    </div>
-                `;
-                
-                // Remove previous selection
-                document.querySelectorAll('.profile-pic-option').forEach(opt => opt.classList.remove('selected'));
-                
-                // Add new photo at the top
-                selector.insertAdjacentHTML('afterbegin', newPhotoHtml);
-            };
+            reader.onload = (e) => { showInModal(e.target.result); };
             reader.readAsDataURL(file);
         }
     };
-    
+
+    document.body.appendChild(input);
     input.click();
+    setTimeout(function() {
+        if (input.parentNode) input.parentNode.removeChild(input);
+    }, 600000);
 }
 
 // Enhanced property details view
