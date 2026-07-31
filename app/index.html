@@ -30,7 +30,7 @@
 	<!-- Onboarding System -->
 	<link rel="stylesheet" href="onboarding.css">
 	<link rel="stylesheet" href="theme.css">
-	<link rel="stylesheet" href="web-app.css?v=11">
+	<link rel="stylesheet" href="web-app.css?v=12">
 	<script src="onboarding.js"></script>
 	
 	<!-- Google Analytics 4 -->
@@ -57,7 +57,12 @@
 	<script src="help-guide.js"></script>
 	<script src="premium-system.js"></script>
 	<script src="premium-integration.js"></script>
-	<script src="web-app.js?v=11"></script>
+	<!-- Firebase CDN (compat — no npm/build tools needed) -->
+	<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+	<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
+	<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+	<script src="firebase-auth.js"></script>
+	<script src="web-app.js?v=12"></script>
 	<script src="app.js"></script>
 
 </head>
@@ -626,6 +631,112 @@
                    onchange="handleCustomConfigImport(event)">
 
             <div style="height:30px"></div>
+        </div>
+    </div>
+
+    <!-- ═══════════════════════════════════════════════════════
+         PREMIUM GATE SCREEN — sign-in + subscription plans
+    ════════════════════════════════════════════════════════════ -->
+    <div id="premiumGateScreen" class="screen">
+        <div class="pgs-container">
+
+            <div class="pgs-header">
+                <img src="Images/app_banner.png" alt="Home Buyers Guide SA" class="pgs-logo">
+                <div class="pgs-crown"><i class="fas fa-crown"></i> Premium Access</div>
+            </div>
+
+            <p class="pgs-feature-msg" id="pgsFeatureMsg">
+                Unlock full access to Home Buyers Guide SA
+            </p>
+
+            <!-- Android users: redirect to Play Store -->
+            <div id="pgsAndroidSection" style="display:none">
+                <div class="pgs-android-msg">
+                    <i class="fab fa-android pgs-android-icon"></i>
+                    <p>To get Premium on Android, download the app from Google Play.</p>
+                </div>
+                <a href="https://play.google.com/store/apps/details?id=com.joelapexs.propertyinspector"
+                   target="_blank" class="pgs-play-btn">
+                    <i class="fab fa-google-play"></i> Get it on Google Play
+                </a>
+            </div>
+
+            <!-- Email magic link sign-in -->
+            <div id="pgsSignInSection">
+                <p class="pgs-sub">Enter your email — we'll send a sign-in link.<br>No password needed.</p>
+                <input type="email" id="pgsEmailInput" class="pgs-email-input"
+                       placeholder="your@email.com" autocomplete="email">
+                <button class="pgs-btn-primary" onclick="hbgSendMagicLink()">
+                    <i class="fas fa-envelope"></i> Send Sign-in Link
+                </button>
+            </div>
+
+            <!-- Email sent confirmation -->
+            <div id="pgsEmailSentSection" style="display:none">
+                <div class="pgs-sent-icon"><i class="fas fa-envelope-open-text"></i></div>
+                <h3 class="pgs-sent-title">Check your inbox</h3>
+                <p class="pgs-sent-msg">We sent a sign-in link to<br><strong id="pgsSentEmail"></strong></p>
+                <p class="pgs-sent-hint">Tap the link in the email to sign in.<br>Check your spam folder if you don't see it.</p>
+                <button class="pgs-btn-secondary" onclick="pgsShowSignIn()">
+                    <i class="fas fa-arrow-left"></i> Use a different email
+                </button>
+            </div>
+
+            <!-- Subscription plans (shown when signed in, not yet premium) -->
+            <div id="pgsPlanSection" style="display:none">
+                <p class="pgs-signed-as">Signed in as <span id="pgsUserEmail" class="pgs-user-email"></span></p>
+                <div class="pgs-plans">
+                    <div class="pgs-plan" onclick="pgsSelectPlan('1month', 100)">
+                        <div class="pgs-plan-period">1 Month</div>
+                        <div class="pgs-plan-price">R100</div>
+                    </div>
+                    <div class="pgs-plan pgs-plan-popular" onclick="pgsSelectPlan('3month', 250)">
+                        <div class="pgs-plan-badge">Best value</div>
+                        <div class="pgs-plan-period">3 Months</div>
+                        <div class="pgs-plan-price">R250</div>
+                        <div class="pgs-plan-saving">Save R50</div>
+                    </div>
+                    <div class="pgs-plan" onclick="pgsSelectPlan('6month', 450)">
+                        <div class="pgs-plan-period">6 Months</div>
+                        <div class="pgs-plan-price">R450</div>
+                        <div class="pgs-plan-saving">Save R150</div>
+                    </div>
+                    <div class="pgs-plan" onclick="pgsSelectPlan('1year', 850)">
+                        <div class="pgs-plan-period">1 Year</div>
+                        <div class="pgs-plan-price">R850</div>
+                        <div class="pgs-plan-saving">Save R350</div>
+                    </div>
+                </div>
+                <!-- PayPal button loads here in Stage 3 -->
+                <div id="pgsPayPalContainer" style="display:none">
+                    <div id="paypal-button-container"></div>
+                </div>
+                <p class="pgs-coming-soon" id="pgsComingSoon">
+                    <i class="fas fa-lock"></i> Select a plan above — payment launching soon
+                </p>
+                <button class="pgs-sign-out-link" onclick="hbgSignOut()">Sign out</button>
+            </div>
+
+            <!-- Already premium -->
+            <div id="pgsPremiumSection" style="display:none">
+                <div class="pgs-premium-icon"><i class="fas fa-crown"></i></div>
+                <h3 class="pgs-premium-title">You have Premium!</h3>
+                <p class="pgs-expiry" id="pgsExpiryMsg"></p>
+                <button class="pgs-btn-primary" onclick="hidePremiumGate()">
+                    <i class="fas fa-check"></i> Continue
+                </button>
+                <button class="pgs-sign-out-link" onclick="hbgSignOut()">Sign out</button>
+            </div>
+
+            <!-- Free tier reminder -->
+            <div class="pgs-free-info">
+                <i class="fas fa-info-circle"></i>
+                Free plan: up to 2 properties · basic assessment only
+            </div>
+
+            <button class="pgs-back-btn" id="pgsBackBtn" onclick="hidePremiumGate()">
+                <i class="fas fa-arrow-left"></i> Continue with free plan
+            </button>
         </div>
     </div>
 
