@@ -36,77 +36,82 @@
     //    Camera or Gallery. Each button creates its own file input and
     //    calls .click() in THAT button's click handler — preserving the
     //    user-gesture context the browser requires.
+    //
+    //    TWO functions need overriding:
+    //      - window.capturePhoto()        → assessment item photos (photo-manager.js)
+    //      - window.selectProfilePicture() → property profile pic  (app.js)
+    //    Both had the same bugs: display:none + immediate DOM removal on mobile.
     // ----------------------------------------------------------------
+
+    // Shared helper: creates a file input and clicks it inside a user gesture.
+    // withCapture=true → forces straight to camera.
+    // withCapture=false → forces gallery (no capture attr).
+    function _webTriggerInput(withCapture, onFile) {
+        var input = document.createElement('input');
+        input.type   = 'file';
+        input.accept = 'image/*';
+        if (withCapture) input.setAttribute('capture', 'camera');
+        // 1×1 fixed in viewport — display:none or off-screen breaks the picker
+        // on iOS Safari and some Android Chrome builds.
+        input.style.cssText =
+            'position:fixed;top:0;left:0;width:1px;height:1px;' +
+            'opacity:0;overflow:hidden;pointer-events:none;';
+        input.onchange = function (e) {
+            if (input.parentNode) input.parentNode.removeChild(input);
+            var file = e.target.files && e.target.files[0];
+            if (file) onFile(file);
+        };
+        document.body.appendChild(input);
+        input.click();
+        setTimeout(function () {
+            if (input.parentNode) input.parentNode.removeChild(input);
+        }, 600000);
+    }
+
+    // Shared bottom-sheet builder. title = heading; onFile(file, isCamera) = callback.
+    function _showPickerSheet(title, onFile) {
+        var old = document.getElementById('hbgPhotoPicker');
+        if (old) old.remove();
+
+        var overlay = document.createElement('div');
+        overlay.id        = 'hbgPhotoPicker';
+        overlay.className = 'hbg-photo-picker-overlay';
+        overlay.innerHTML =
+            '<div class="hbg-photo-picker-sheet">' +
+                '<p class="hbg-pp-title">' + title + '</p>' +
+                '<button class="hbg-pp-btn" id="hbgPpCamera">' +
+                    '<span class="hbg-pp-icon"><i class="fas fa-camera"></i></span>' +
+                    'Take a Photo' +
+                '</button>' +
+                '<button class="hbg-pp-btn" id="hbgPpGallery">' +
+                    '<span class="hbg-pp-icon"><i class="fas fa-images"></i></span>' +
+                    'Choose from Gallery' +
+                '</button>' +
+                '<button class="hbg-pp-btn hbg-pp-cancel" id="hbgPpCancel">Cancel</button>' +
+            '</div>';
+        document.body.appendChild(overlay);
+
+        function close() { if (overlay.parentNode) overlay.parentNode.removeChild(overlay); }
+        overlay.addEventListener('click', function (e) { if (e.target === overlay) close(); });
+        document.getElementById('hbgPpCancel').addEventListener('click', close);
+
+        document.getElementById('hbgPpCamera').addEventListener('click', function () {
+            close();
+            _webTriggerInput(true, function (file) { onFile(file, true); });
+        });
+        document.getElementById('hbgPpGallery').addEventListener('click', function () {
+            close();
+            _webTriggerInput(false, function (file) { onFile(file, false); });
+        });
+    }
+
     function applyPhotoPatch() {
         var pm = window.photoManager;
         if (!pm || typeof pm.processPhoto !== 'function') return;
 
-        // Creates a file input, optionally with capture="camera", and clicks it.
-        // Must be called synchronously inside a user gesture (button click) to
-        // keep the gesture chain alive for iOS Safari / Android Chrome.
-        function triggerInput(withCapture, onFile) {
-            var input = document.createElement('input');
-            input.type   = 'file';
-            input.accept = 'image/*';
-            if (withCapture) input.setAttribute('capture', 'camera');
-            // 1×1 in viewport — NEVER off-screen or display:none on mobile
-            input.style.cssText =
-                'position:fixed;top:0;left:0;width:1px;height:1px;' +
-                'opacity:0;overflow:hidden;pointer-events:none;';
-            input.onchange = function (e) {
-                if (input.parentNode) input.parentNode.removeChild(input);
-                var file = e.target.files && e.target.files[0];
-                if (file) onFile(file);
-            };
-            document.body.appendChild(input);
-            input.click();
-            // Cleanup if the user closes the picker without choosing
-            setTimeout(function () {
-                if (input.parentNode) input.parentNode.removeChild(input);
-            }, 600000);
-        }
-
-        // Shows the custom bottom-sheet
-        function showPhotoPicker(roomId, itemText) {
-            // Remove any existing picker first
-            var old = document.getElementById('hbgPhotoPicker');
-            if (old) old.remove();
-
-            var overlay = document.createElement('div');
-            overlay.id        = 'hbgPhotoPicker';
-            overlay.className = 'hbg-photo-picker-overlay';
-
-            overlay.innerHTML =
-                '<div class="hbg-photo-picker-sheet">' +
-                    '<p class="hbg-pp-title">Add Photo</p>' +
-                    '<button class="hbg-pp-btn" id="hbgPpCamera">' +
-                        '<span class="hbg-pp-icon"><i class="fas fa-camera"></i></span>' +
-                        'Take a Photo' +
-                    '</button>' +
-                    '<button class="hbg-pp-btn" id="hbgPpGallery">' +
-                        '<span class="hbg-pp-icon"><i class="fas fa-images"></i></span>' +
-                        'Choose from Gallery' +
-                    '</button>' +
-                    '<button class="hbg-pp-btn hbg-pp-cancel" id="hbgPpCancel">' +
-                        'Cancel' +
-                    '</button>' +
-                '</div>';
-
-            document.body.appendChild(overlay);
-
-            function closePicker() {
-                if (overlay.parentNode) overlay.parentNode.removeChild(overlay);
-            }
-
-            // Dismiss on backdrop tap
-            overlay.addEventListener('click', function (e) {
-                if (e.target === overlay) closePicker();
-            });
-
-            document.getElementById('hbgPpCancel').addEventListener('click', closePicker);
-
-            function onFileChosen(file) {
-                closePicker();
+        // ── 1. Assessment item photos ─────────────────────────────────
+        function showAssessmentPicker(roomId, itemText) {
+            _showPickerSheet('Add Photo', function (file) {
                 pm.currentCapture = { roomId: roomId, itemText: itemText };
                 pm.processPhoto(file, roomId, itemText).then(function () {
                     pm.currentCapture = null;
@@ -114,32 +119,31 @@
                     console.error('web-app: photo process error', err);
                     pm.currentCapture = null;
                 });
-            }
-
-            // Camera button — capture="camera" forces straight to camera
-            document.getElementById('hbgPpCamera').addEventListener('click', function () {
-                closePicker();
-                triggerInput(true, onFileChosen);
-            });
-
-            // Gallery button — no capture attribute, browser must show gallery
-            document.getElementById('hbgPpGallery').addEventListener('click', function () {
-                closePicker();
-                triggerInput(false, onFileChosen);
             });
         }
 
-        // Override the global function the HTML buttons call
-        window.capturePhoto = function (roomId, itemText) {
-            showPhotoPicker(roomId, itemText);
+        window.capturePhoto = function (roomId, itemText) { showAssessmentPicker(roomId, itemText); };
+        pm.capturePhoto     = function (roomId, itemText) { showAssessmentPicker(roomId, itemText); };
+
+        // ── 2. Property profile picture ───────────────────────────────
+        //    selectProfilePicture() in app.js uses display:none + immediate
+        //    DOM removal — broken on all mobile browsers. Override it here.
+        window.selectProfilePicture = function (propertyId) {
+            _showPickerSheet('Profile Picture', function (file) {
+                var reader = new FileReader();
+                reader.onload = function (e) {
+                    if (typeof window.handlePropertyProfilePicChange === 'function') {
+                        window.handlePropertyProfilePicChange(propertyId, e.target.result);
+                    }
+                };
+                reader.onerror = function () {
+                    console.error('web-app: profile pic FileReader error');
+                };
+                reader.readAsDataURL(file);
+            });
         };
 
-        // Patch the object method too (belt-and-braces)
-        pm.capturePhoto = function (roomId, itemText) {
-            showPhotoPicker(roomId, itemText);
-        };
-
-        console.log('📷 web-app: custom photo picker active');
+        console.log('📷 web-app: photo + profile pic pickers active');
     }
 
     applyPhotoPatch();
