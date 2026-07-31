@@ -28,71 +28,122 @@
     }
 
     // ----------------------------------------------------------------
-    // 2. PHOTO PICKER — let iOS/Android show Camera AND Photo Library
-    //    photo-manager.js sets input.capture = 'camera', which forces
-    //    HTML photo buttons call window.capturePhoto() → photoManager.capturePhoto().
-    //    This patch overrides BOTH so there's no dependency on object references.
-    //    Key rules for mobile cross-browser compatibility:
-    //      - No `capture` attribute → shows Camera + Gallery + Files picker
-    //      - Input must be 1×1px IN the viewport (not display:none or off-screen)
-    //        because iOS Safari and some Android Chrome builds silently cancel
-    //        the picker when the element is outside the visible area
-    //      - Input must stay in the DOM until the file is selected (not removed
-    //        immediately after .click() as the original code did)
+    // 2. PHOTO PICKER — custom bottom-sheet with explicit Camera / Gallery buttons
+    //    Root cause of the gallery issue: Android Chrome and iOS Safari
+    //    do NOT reliably show a gallery option when input.click() is called
+    //    programmatically, regardless of the `capture` attribute.
+    //    Solution: show our own bottom sheet so the user explicitly chooses
+    //    Camera or Gallery. Each button creates its own file input and
+    //    calls .click() in THAT button's click handler — preserving the
+    //    user-gesture context the browser requires.
     // ----------------------------------------------------------------
     function applyPhotoPatch() {
         var pm = window.photoManager;
         if (!pm || typeof pm.processPhoto !== 'function') return;
 
-        function webCapture(roomId, itemText) {
-            pm.currentCapture = { roomId: roomId, itemText: itemText };
-
+        // Creates a file input, optionally with capture="camera", and clicks it.
+        // Must be called synchronously inside a user gesture (button click) to
+        // keep the gesture chain alive for iOS Safari / Android Chrome.
+        function triggerInput(withCapture, onFile) {
             var input = document.createElement('input');
             input.type   = 'file';
             input.accept = 'image/*';
-            // 1×1 at top-left of viewport — invisible but reachable by the browser
+            if (withCapture) input.setAttribute('capture', 'camera');
+            // 1×1 in viewport — NEVER off-screen or display:none on mobile
             input.style.cssText =
                 'position:fixed;top:0;left:0;width:1px;height:1px;' +
                 'opacity:0;overflow:hidden;pointer-events:none;';
-
-            input.onchange = async function (event) {
-                var file = event.target.files[0];
+            input.onchange = function (e) {
                 if (input.parentNode) input.parentNode.removeChild(input);
-                if (file && pm.currentCapture) {
-                    await pm.processPhoto(
-                        file,
-                        pm.currentCapture.roomId,
-                        pm.currentCapture.itemText
-                    );
-                    pm.currentCapture = null;
-                }
+                var file = e.target.files && e.target.files[0];
+                if (file) onFile(file);
             };
-
             document.body.appendChild(input);
             input.click();
-
-            // Safety cleanup — fires if user closes picker without choosing
+            // Cleanup if the user closes the picker without choosing
             setTimeout(function () {
                 if (input.parentNode) input.parentNode.removeChild(input);
-            }, 600000); // 10 min
+            }, 600000);
         }
 
-        // Override the GLOBAL function — this is what every HTML button calls:
-        // onclick="capturePhoto('...', '...')"
+        // Shows the custom bottom-sheet
+        function showPhotoPicker(roomId, itemText) {
+            // Remove any existing picker first
+            var old = document.getElementById('hbgPhotoPicker');
+            if (old) old.remove();
+
+            var overlay = document.createElement('div');
+            overlay.id        = 'hbgPhotoPicker';
+            overlay.className = 'hbg-photo-picker-overlay';
+
+            overlay.innerHTML =
+                '<div class="hbg-photo-picker-sheet">' +
+                    '<p class="hbg-pp-title">Add Photo</p>' +
+                    '<button class="hbg-pp-btn" id="hbgPpCamera">' +
+                        '<span class="hbg-pp-icon"><i class="fas fa-camera"></i></span>' +
+                        'Take a Photo' +
+                    '</button>' +
+                    '<button class="hbg-pp-btn" id="hbgPpGallery">' +
+                        '<span class="hbg-pp-icon"><i class="fas fa-images"></i></span>' +
+                        'Choose from Gallery' +
+                    '</button>' +
+                    '<button class="hbg-pp-btn hbg-pp-cancel" id="hbgPpCancel">' +
+                        'Cancel' +
+                    '</button>' +
+                '</div>';
+
+            document.body.appendChild(overlay);
+
+            function closePicker() {
+                if (overlay.parentNode) overlay.parentNode.removeChild(overlay);
+            }
+
+            // Dismiss on backdrop tap
+            overlay.addEventListener('click', function (e) {
+                if (e.target === overlay) closePicker();
+            });
+
+            document.getElementById('hbgPpCancel').addEventListener('click', closePicker);
+
+            function onFileChosen(file) {
+                closePicker();
+                pm.currentCapture = { roomId: roomId, itemText: itemText };
+                pm.processPhoto(file, roomId, itemText).then(function () {
+                    pm.currentCapture = null;
+                }).catch(function (err) {
+                    console.error('web-app: photo process error', err);
+                    pm.currentCapture = null;
+                });
+            }
+
+            // Camera button — capture="camera" forces straight to camera
+            document.getElementById('hbgPpCamera').addEventListener('click', function () {
+                closePicker();
+                triggerInput(true, onFileChosen);
+            });
+
+            // Gallery button — no capture attribute, browser must show gallery
+            document.getElementById('hbgPpGallery').addEventListener('click', function () {
+                closePicker();
+                triggerInput(false, onFileChosen);
+            });
+        }
+
+        // Override the global function the HTML buttons call
         window.capturePhoto = function (roomId, itemText) {
-            return webCapture(roomId, itemText);
+            showPhotoPicker(roomId, itemText);
         };
 
-        // Belt-and-braces: also patch the method on the object itself
-        pm.capturePhoto = async function (roomId, itemText) {
-            return webCapture(roomId, itemText);
+        // Patch the object method too (belt-and-braces)
+        pm.capturePhoto = function (roomId, itemText) {
+            showPhotoPicker(roomId, itemText);
         };
 
-        console.log('📷 web-app: photo gallery patch applied');
+        console.log('📷 web-app: custom photo picker active');
     }
 
-    applyPhotoPatch(); // runs immediately (photo-manager.js loads before web-app.js)
-    document.addEventListener('DOMContentLoaded', applyPhotoPatch); // safety net
+    applyPhotoPatch();
+    document.addEventListener('DOMContentLoaded', applyPhotoPatch);
 
     // ----------------------------------------------------------------
     // 3. GUARANTEE SAVES — belt-and-braces persistence
