@@ -126,22 +126,10 @@
         pm.capturePhoto     = function (roomId, itemText) { showAssessmentPicker(roomId, itemText); };
 
         // ── 2. Property profile picture ───────────────────────────────
-        //    selectProfilePicture() in app.js uses display:none + immediate
-        //    DOM removal — broken on all mobile browsers. Override it here.
-        window.selectProfilePicture = function (propertyId) {
-            _showPickerSheet('Profile Picture', function (file) {
-                var reader = new FileReader();
-                reader.onload = function (e) {
-                    if (typeof window.handlePropertyProfilePicChange === 'function') {
-                        window.handlePropertyProfilePicChange(propertyId, e.target.result);
-                    }
-                };
-                reader.onerror = function () {
-                    console.error('web-app: profile pic FileReader error');
-                };
-                reader.readAsDataURL(file);
-            });
-        };
+        //    Exposed as window._hbgPickerSheet so app.js can call it
+        //    directly from selectProfilePicture() — more reliable than
+        //    overriding window.selectProfilePicture which app.js resets.
+        window._hbgPickerSheet = _showPickerSheet;
 
         console.log('📷 web-app: photo + profile pic pickers active');
     }
