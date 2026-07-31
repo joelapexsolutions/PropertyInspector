@@ -1,523 +1,519 @@
-/* ====================================================================
-   WEB-APP.CSS — Web/PWA mode styles for Home Buyers Guide SA
-   Every rule is scoped to body.web-mode, which is only added by
-   web-app.js when running in a browser. Zero effect inside the
-   Android app.
-   ==================================================================== */
+// ====================================================================
+// WEB-APP.JS — Web/PWA mode controller for Home Buyers Guide SA
+// Only activates in a browser (window.Android absent).
+// Never runs inside the Android app, so the Play Store version
+// is completely unaffected.
+// ====================================================================
+(function () {
+    'use strict';
 
-/* --------------------------------------------------------------------
-   1. APP FEEL — make the browser behave like a native app
-   -------------------------------------------------------------------- */
-body.web-mode {
-    -webkit-tap-highlight-color: transparent;   /* no grey tap flash */
-    overscroll-behavior-y: none;                /* no pull-to-refresh bounce */
-}
+    // Inside the Android app? Do absolutely nothing.
+    if (window.Android) return;
 
-body.web-mode button,
-body.web-mode .tile,
-body.web-mode .bottom-nav a,
-body.web-mode .bottom-nav button,
-body.web-mode .nav-item {
-    touch-action: manipulation;                 /* no 300ms delay / double-tap zoom */
-    -webkit-user-select: none;
-    user-select: none;
-}
-
-/* Inputs must remain selectable */
-body.web-mode input,
-body.web-mode textarea,
-body.web-mode select {
-    -webkit-user-select: auto;
-    user-select: auto;
-}
-
-/* Safety net: never show the upgrade strip on web */
-body.web-mode .upgrade-strip {
-    display: none !important;
-}
-
-/* --------------------------------------------------------------------
-   2. INSTALL BANNER
-   -------------------------------------------------------------------- */
-body.web-mode .hbg-install-banner {
-    position: fixed;
-    left: 12px;
-    right: 12px;
-    bottom: calc(78px + env(safe-area-inset-bottom, 0px)); /* above bottom nav */
-    z-index: 9000;
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    padding: 12px 14px;
-    border-radius: 14px;
-    background: var(--nav-bg, #0d1520);
-    border: 1px solid rgba(6, 214, 160, 0.45);
-    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.45);
-    animation: hbgIbSlideUp 0.35s ease;
-}
-
-@keyframes hbgIbSlideUp {
-    from { transform: translateY(20px); opacity: 0; }
-    to   { transform: translateY(0);    opacity: 1; }
-}
-
-body.web-mode .hbg-ib-text {
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-    gap: 2px;
-    min-width: 0;
-}
-
-body.web-mode .hbg-ib-text strong {
-    color: var(--text-primary, #ffffff);
-    font-size: 0.9rem;
-}
-
-body.web-mode .hbg-ib-text span {
-    color: var(--text-secondary, #8bbad4);
-    font-size: 0.78rem;
-    line-height: 1.35;
-}
-
-body.web-mode .hbg-ib-text span i {
-    color: #06D6A0;
-}
-
-body.web-mode .hbg-ib-install {
-    flex-shrink: 0;
-    padding: 9px 16px;
-    border: none;
-    border-radius: 10px;
-    background: #06D6A0;
-    color: #0d1520;
-    font-weight: 700;
-    font-size: 0.85rem;
-    cursor: pointer;
-}
-
-body.web-mode .hbg-ib-close {
-    flex-shrink: 0;
-    width: 30px;
-    height: 30px;
-    border: none;
-    border-radius: 50%;
-    background: rgba(255, 255, 255, 0.08);
-    color: var(--text-secondary, #8bbad4);
-    font-size: 1.1rem;
-    line-height: 1;
-    cursor: pointer;
-}
-
-/* --------------------------------------------------------------------
-   3. LAPTOP / TABLET — centred phone-frame layout
-      On wide screens the app renders as a centred mobile column
-      instead of stretching edge to edge.
-   -------------------------------------------------------------------- */
-@media (min-width: 768px) {
-
-    body.web-mode {
-        background:
-            radial-gradient(1200px 600px at 50% -10%, rgba(6, 214, 160, 0.08), transparent 60%),
-            #080d14;
+    // ----------------------------------------------------------------
+    // 1. FULL PREMIUM ACCESS ON WEB (until PayPal payments are added)
+    //    Written to localStorage BEFORE the premium system initialises
+    //    on DOMContentLoaded, so loadPremiumState() restores it.
+    // ----------------------------------------------------------------
+    var FAR_FUTURE = '2099-12-31T23:59:59.000Z';
+    try {
+        var raw = localStorage.getItem('propertyInspectorPremium');
+        var state = raw ? JSON.parse(raw) : {};
+        state.isPremium = true;
+        state.subscriptionType = 'web-full-access';
+        state.subscriptionEndDate = FAR_FUTURE;
+        localStorage.setItem('propertyInspectorPremium', JSON.stringify(state));
+    } catch (e) {
+        console.warn('web-app: could not pre-set premium state', e);
     }
 
-    body.web-mode .container {
-        max-width: 560px !important;
-        margin: 0 auto !important;
-        min-height: 100vh;
-        background: var(--bg-primary, #0d1520);
-        border-left: 1px solid rgba(255, 255, 255, 0.06);
-        border-right: 1px solid rgba(255, 255, 255, 0.06);
-        box-shadow: 0 0 60px rgba(0, 0, 0, 0.55);
+    // ----------------------------------------------------------------
+    // 2. PHOTO PICKER — custom bottom-sheet with explicit Camera / Gallery buttons
+    //    Root cause of the gallery issue: Android Chrome and iOS Safari
+    //    do NOT reliably show a gallery option when input.click() is called
+    //    programmatically, regardless of the `capture` attribute.
+    //    Solution: show our own bottom sheet so the user explicitly chooses
+    //    Camera or Gallery. Each button creates its own file input and
+    //    calls .click() in THAT button's click handler — preserving the
+    //    user-gesture context the browser requires.
+    //
+    //    TWO functions need overriding:
+    //      - window.capturePhoto()        → assessment item photos (photo-manager.js)
+    //      - window.selectProfilePicture() → property profile pic  (app.js)
+    //    Both had the same bugs: display:none + immediate DOM removal on mobile.
+    // ----------------------------------------------------------------
+
+    // Shared helper: creates a file input and clicks it inside a user gesture.
+    // withCapture=true → forces straight to camera.
+    // withCapture=false → forces gallery (no capture attr).
+    function _webTriggerInput(withCapture, onFile) {
+        var input = document.createElement('input');
+        input.type   = 'file';
+        input.accept = 'image/*';
+        if (withCapture) input.setAttribute('capture', 'camera');
+        // 1×1 fixed in viewport — display:none or off-screen breaks the picker
+        // on iOS Safari and some Android Chrome builds.
+        input.style.cssText =
+            'position:fixed;top:0;left:0;width:1px;height:1px;' +
+            'opacity:0;overflow:hidden;pointer-events:none;';
+        input.onchange = function (e) {
+            if (input.parentNode) input.parentNode.removeChild(input);
+            var file = e.target.files && e.target.files[0];
+            if (file) onFile(file);
+        };
+        document.body.appendChild(input);
+        input.click();
+        setTimeout(function () {
+            if (input.parentNode) input.parentNode.removeChild(input);
+        }, 600000);
     }
 
-    /* Fixed bottom nav follows the frame instead of the full viewport */
-    body.web-mode .bottom-nav {
-        left: 50% !important;
-        right: auto !important;
-        transform: translateX(-50%);
-        width: 100% !important;
-        max-width: 560px;
-        border-left: 1px solid rgba(255, 255, 255, 0.06);
-        border-right: 1px solid rgba(255, 255, 255, 0.06);
+    // Shared bottom-sheet builder. title = heading; onFile(file, isCamera) = callback.
+    function _showPickerSheet(title, onFile) {
+        var old = document.getElementById('hbgPhotoPicker');
+        if (old) old.remove();
+
+        var overlay = document.createElement('div');
+        overlay.id        = 'hbgPhotoPicker';
+        overlay.className = 'hbg-photo-picker-overlay';
+        overlay.innerHTML =
+            '<div class="hbg-photo-picker-sheet">' +
+                '<p class="hbg-pp-title">' + title + '</p>' +
+                '<button class="hbg-pp-btn" id="hbgPpCamera">' +
+                    '<span class="hbg-pp-icon"><i class="fas fa-camera"></i></span>' +
+                    'Take a Photo' +
+                '</button>' +
+                '<button class="hbg-pp-btn" id="hbgPpGallery">' +
+                    '<span class="hbg-pp-icon"><i class="fas fa-images"></i></span>' +
+                    'Choose from Gallery' +
+                '</button>' +
+                '<button class="hbg-pp-btn hbg-pp-cancel" id="hbgPpCancel">Cancel</button>' +
+            '</div>';
+        document.body.appendChild(overlay);
+
+        function close() { if (overlay.parentNode) overlay.parentNode.removeChild(overlay); }
+        overlay.addEventListener('click', function (e) { if (e.target === overlay) close(); });
+        document.getElementById('hbgPpCancel').addEventListener('click', close);
+
+        document.getElementById('hbgPpCamera').addEventListener('click', function () {
+            close();
+            _webTriggerInput(true, function (file) { onFile(file, true); });
+        });
+        document.getElementById('hbgPpGallery').addEventListener('click', function () {
+            close();
+            _webTriggerInput(false, function (file) { onFile(file, false); });
+        });
     }
 
-    /* Fixed top header bar — same treatment as bottom nav. Without this
-       it stays pinned to the real browser edges (left:0/right:0) while
-       .container is centred, so the logo ends up floating off to the
-       left, disconnected from the frame below it. */
-    body.web-mode .app-top-bar {
-        left: 50% !important;
-        right: auto !important;
-        transform: translateX(-50%);
-        width: 100% !important;
-        max-width: 560px !important;
-        border-left: 1px solid rgba(255, 255, 255, 0.06);
-        border-right: 1px solid rgba(255, 255, 255, 0.06);
+    function applyPhotoPatch() {
+        var pm = window.photoManager;
+        if (!pm || typeof pm.processPhoto !== 'function') return;
+
+        // ── 1. Assessment item photos ─────────────────────────────────
+        function showAssessmentPicker(roomId, itemText) {
+            _showPickerSheet('Add Photo', function (file) {
+                pm.currentCapture = { roomId: roomId, itemText: itemText };
+                pm.processPhoto(file, roomId, itemText).then(function () {
+                    pm.currentCapture = null;
+                }).catch(function (err) {
+                    console.error('web-app: photo process error', err);
+                    pm.currentCapture = null;
+                });
+            });
+        }
+
+        window.capturePhoto = function (roomId, itemText) { showAssessmentPicker(roomId, itemText); };
+        pm.capturePhoto     = function (roomId, itemText) { showAssessmentPicker(roomId, itemText); };
+
+        // ── 2. Property profile picture ───────────────────────────────
+        //    Exposed as window._hbgPickerSheet so app.js can call it
+        //    directly from selectProfilePicture() — more reliable than
+        //    overriding window.selectProfilePicture which app.js resets.
+        window._hbgPickerSheet = _showPickerSheet;
+
+        console.log('📷 web-app: photo + profile pic pickers active');
     }
 
-    /* Onboarding "Get Started" welcome card. Its real class is
-       .hbgw-card (onboarding.js renders <div class="hbgw-card">) —
-       .welcome-content is old, unused CSS left over from an earlier
-       version and was never what's on screen, which is why capping
-       it had no visible effect. */
-    body.web-mode .hbgw-card {
-        max-width: 480px !important;
+    applyPhotoPatch();
+    document.addEventListener('DOMContentLoaded', applyPhotoPatch);
+
+    // ----------------------------------------------------------------
+    // 3. GUARANTEE SAVES — belt-and-braces persistence
+    //    The app already auto-saves every 30s and on most actions via
+    //    IndexedDB + localStorage, which work fine in Safari. The real
+    //    web risk is the tab being backgrounded/closed between saves,
+    //    or (rarely) the browser evicting storage under pressure.
+    // ----------------------------------------------------------------
+
+    // Ask the browser not to evict this site's storage under pressure.
+    // (Best-effort — not all browsers grant it, but it never hurts.)
+    if (navigator.storage && navigator.storage.persist) {
+        navigator.storage.persist().then(function (granted) {
+            console.log('🌐 web-app: persistent storage', granted ? 'granted' : 'not granted');
+        }).catch(function () {});
     }
 
-    /* Assessment guidance card — same theme.css `max-width:100%
-       !important` full-bleed pattern as the onboarding card, but
-       this one's class name IS still current/live. */
-    body.web-mode .assessment-guide-content {
-        max-width: 480px !important;
-        width: 100% !important;
-        border-radius: 20px !important;
+    // Force-flush any unsaved state the instant the tab is backgrounded
+    // or closed — iOS Safari can suspend JS execution very quickly once
+    // a tab loses focus, so waiting for the next 30s auto-save isn't
+    // reliable. Looked up lazily so this works even though app.js
+    // (which defines these functions) loads after this file.
+    function flushSave() {
+        try {
+            if (typeof window.saveAppDataSafely === 'function') {
+                window.saveAppDataSafely();
+            } else if (typeof window.saveAppData === 'function') {
+                window.saveAppData();
+            }
+        } catch (e) {
+            console.warn('web-app: flush save failed', e);
+        }
     }
 
-    /* Floating assessment timer badge — anchored with `right: 20px` to
-       the real viewport edge by default, so on desktop it drifts into
-       the empty space beside the frame instead of sitting inside it.
-       Recalculates its offset from the frame's right edge instead
-       (frame half-width 280px + the original 20px inset). */
-    body.web-mode .time-tracker {
-        right: calc(50vw - 260px) !important;
+    document.addEventListener('visibilitychange', function () {
+        if (document.visibilityState === 'hidden') flushSave();
+    });
+    window.addEventListener('pagehide', flushSave);
+
+    // ----------------------------------------------------------------
+    // 4. INSTALL PROMPT
+    // ----------------------------------------------------------------
+    var deferredInstallPrompt = null;
+
+    window.addEventListener('beforeinstallprompt', function (e) {
+        e.preventDefault();
+        deferredInstallPrompt = e;   // Android Chrome / desktop Chrome & Edge
+    });
+
+    // When the app is installed via the browser prompt, permanently record it
+    // so the install banner never appears again (even across sessions).
+    window.addEventListener('appinstalled', function () {
+        try { localStorage.setItem('hbgAppInstalled', '1'); } catch (e) {}
+        dismissInstallBanner();
+        console.log('🌐 web-app: app installed — install banner permanently dismissed');
+    });
+
+    function isStandalone() {
+        return (window.matchMedia && window.matchMedia('(display-mode: standalone)').matches)
+            || window.navigator.standalone === true;
     }
 
-    /* Install banner follows the frame too */
-    body.web-mode .hbg-install-banner {
-        left: 50%;
-        right: auto;
-        transform: translateX(-50%);
-        width: calc(100% - 24px);
-        max-width: 536px;
+    function isIOS() {
+        var ua = navigator.userAgent;
+        return /iPhone|iPad|iPod/.test(ua)
+            || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1); // iPadOS
     }
 
-    body.web-mode .hbg-install-banner {
-        animation: hbgIbSlideUpCentered 0.35s ease;
+    function installBannerDismissed() {
+        // Permanent: app has been installed at some point
+        try { if (localStorage.getItem('hbgAppInstalled')) return true; } catch (e) {}
+        // Temporary: user dismissed within the last 30 days
+        try {
+            var t = localStorage.getItem('hbgInstallDismissed');
+            return t && (Date.now() - parseInt(t, 10)) < 30 * 24 * 60 * 60 * 1000; // 30 days
+        } catch (e) { return false; }
     }
 
-    @keyframes hbgIbSlideUpCentered {
-        from { transform: translate(-50%, 20px); opacity: 0; }
-        to   { transform: translate(-50%, 0);    opacity: 1; }
+    function dismissInstallBanner() {
+        var el = document.getElementById('hbgInstallBanner');
+        if (el) el.remove();
+        try { localStorage.setItem('hbgInstallDismissed', String(Date.now())); } catch (e) {}
     }
-}
 
-/* --------------------------------------------------------------------
-   4. PROPERTY OVERVIEW — button row fixes
-      On desktop the assessment-date-section is a single flex row which
-      squeezes the calendar buttons off-screen. Stack date info above
-      buttons, and put the two calendar buttons side-by-side.
-   -------------------------------------------------------------------- */
-body.web-mode .assessment-date-section {
-    flex-direction: column !important;
-    align-items: stretch !important;
-    gap: 10px !important;
-}
+    function showInstallBanner() {
+        if (isStandalone() || installBannerDismissed()) return;
+        if (document.getElementById('hbgInstallBanner')) return;
 
-body.web-mode .assessment-date-info {
-    width: 100% !important;
-}
+        var banner = document.createElement('div');
+        banner.id = 'hbgInstallBanner';
+        banner.className = 'hbg-install-banner';
 
-body.web-mode .assessment-actions {
-    flex-wrap: wrap !important;
-    width: 100% !important;
-    margin-top: 0 !important;
-}
+        if (isIOS()) {
+            banner.innerHTML =
+                '<div class="hbg-ib-text">' +
+                '  <strong>Install this app</strong>' +
+                '  <span>Tap <i class="fas fa-arrow-up-from-bracket"></i> Share, then ' +
+                '  <strong>Add to Home Screen</strong></span>' +
+                '</div>' +
+                '<button class="hbg-ib-close" aria-label="Dismiss">&times;</button>';
+        } else {
+            banner.innerHTML =
+                '<div class="hbg-ib-text">' +
+                '  <strong>Install this app</strong>' +
+                '  <span>Get the full-screen app experience</span>' +
+                '</div>' +
+                '<button class="hbg-ib-install">Install</button>' +
+                '<button class="hbg-ib-close" aria-label="Dismiss">&times;</button>';
+        }
 
-body.web-mode .cal-btns {
-    display: flex !important;
-    flex-direction: row !important;
-    gap: 8px !important;
-    flex: 1 !important;
-    flex-wrap: wrap !important;
-}
+        document.body.appendChild(banner);
 
-body.web-mode .add-calendar-btn {
-    flex: 1 !important;
-    justify-content: center !important;
-    white-space: nowrap !important;
-}
+        banner.querySelector('.hbg-ib-close').addEventListener('click', dismissInstallBanner);
 
-/* --------------------------------------------------------------------
-   5. CALENDAR POPUP — styles for the Add to Calendar modal
-      app.js builds this with .calendar-modal / .calendar-option-btn
-      but no CSS was ever defined for them. These rules style it to
-      match the rest of the app's dark UI.
-   -------------------------------------------------------------------- */
-body.web-mode .calendar-modal {
-    padding: 4px 0 8px !important;
-}
-
-body.web-mode .calendar-options h4 {
-    font-size: 0.85rem !important;
-    font-weight: 600 !important;
-    color: var(--text-secondary, #8bbad4) !important;
-    margin: 0 0 14px !important;
-}
-
-body.web-mode .calendar-option-btn {
-    display: flex !important;
-    align-items: center !important;
-    gap: 10px !important;
-    width: 100% !important;
-    padding: 13px 16px !important;
-    margin-bottom: 8px !important;
-    border: 1px solid rgba(6, 214, 160, 0.25) !important;
-    border-radius: 12px !important;
-    background: rgba(6, 214, 160, 0.07) !important;
-    color: var(--text-primary, #ffffff) !important;
-    font-size: 0.9rem !important;
-    font-weight: 600 !important;
-    font-family: 'Poppins', sans-serif !important;
-    cursor: pointer !important;
-    transition: background 0.2s ease !important;
-    text-align: left !important;
-}
-
-body.web-mode .calendar-option-btn:hover,
-body.web-mode .calendar-option-btn:active {
-    background: rgba(6, 214, 160, 0.15) !important;
-}
-
-body.web-mode .calendar-option-btn i {
-    font-size: 1rem !important;
-    color: #06D6A0 !important;
-    width: 20px !important;
-    text-align: center !important;
-    flex-shrink: 0 !important;
-}
-
-/* --------------------------------------------------------------------
-   6. FULLSCREEN PROMPT
-   -------------------------------------------------------------------- */
-body.web-mode .hbg-fs-prompt {
-    position: fixed;
-    left: 12px;
-    right: 12px;
-    top: calc(env(safe-area-inset-top, 0px) + 12px);
-    z-index: 9100;
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    padding: 12px 14px;
-    border-radius: 14px;
-    background: var(--nav-bg, #0d1520);
-    border: 1px solid rgba(6, 214, 160, 0.35);
-    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.45);
-    animation: hbgFsSlideDown 0.3s ease;
-}
-
-@keyframes hbgFsSlideDown {
-    from { transform: translateY(-16px); opacity: 0; }
-    to   { transform: translateY(0);     opacity: 1; }
-}
-
-body.web-mode .hbg-fp-icon {
-    width: 36px;
-    height: 36px;
-    border-radius: 10px;
-    background: rgba(6, 214, 160, 0.12);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    flex-shrink: 0;
-    color: #06D6A0;
-    font-size: 1rem;
-}
-
-body.web-mode .hbg-fp-text {
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-    gap: 2px;
-    min-width: 0;
-}
-
-body.web-mode .hbg-fp-text strong {
-    color: var(--text-primary, #ffffff);
-    font-size: 0.88rem;
-}
-
-body.web-mode .hbg-fp-text span {
-    color: var(--text-secondary, #8bbad4);
-    font-size: 0.73rem;
-    line-height: 1.35;
-}
-
-body.web-mode .hbg-fp-yes {
-    flex-shrink: 0;
-    padding: 8px 14px;
-    border: none;
-    border-radius: 10px;
-    background: #06D6A0;
-    color: #0d1520;
-    font-weight: 700;
-    font-size: 0.8rem;
-    font-family: 'Poppins', sans-serif;
-    cursor: pointer;
-    white-space: nowrap;
-}
-
-body.web-mode .hbg-fp-close {
-    flex-shrink: 0;
-    width: 28px;
-    height: 28px;
-    border: none;
-    border-radius: 50%;
-    background: rgba(255, 255, 255, 0.08);
-    color: var(--text-secondary, #8bbad4);
-    font-size: 1.1rem;
-    line-height: 1;
-    cursor: pointer;
-}
-
-@media (min-width: 768px) {
-    body.web-mode .hbg-fs-prompt {
-        left: 50%;
-        right: auto;
-        transform: translateX(-50%);
-        width: calc(100% - 24px);
-        max-width: 536px;
+        var installBtn = banner.querySelector('.hbg-ib-install');
+        if (installBtn) {
+            installBtn.addEventListener('click', function () {
+                if (deferredInstallPrompt) {
+                    deferredInstallPrompt.prompt();
+                    deferredInstallPrompt.userChoice.then(function () {
+                        deferredInstallPrompt = null;
+                        dismissInstallBanner();
+                    });
+                } else {
+                    // Browser without install support — show generic guidance
+                    installBtn.previousElementSibling.innerHTML =
+                        '<strong>Install this app</strong>' +
+                        '<span>Open your browser menu and choose ' +
+                        '<strong>Add to Home screen</strong> / <strong>Install app</strong></span>';
+                    installBtn.remove();
+                }
+            });
+        }
     }
-    body.web-mode .hbg-fs-prompt {
-        animation: hbgFsSlideDownCentered 0.3s ease;
+
+    // ----------------------------------------------------------------
+    // 5. FULLSCREEN PROMPT — "feel like a native app" on first visit
+    //    Shows a small banner asking the user to go full screen.
+    //    Shows a prompt on first visit each session. When the user exits
+    //    fullscreen (e.g. presses Escape or swipes down), a small floating
+    //    button appears so they can re-enter without reloading the page.
+    // ----------------------------------------------------------------
+    function supportsFullscreen() {
+        var el = document.documentElement;
+        return !!(el.requestFullscreen || el.webkitRequestFullscreen || el.mozRequestFullScreen);
     }
-    @keyframes hbgFsSlideDownCentered {
-        from { transform: translate(-50%, -16px); opacity: 0; }
-        to   { transform: translate(-50%, 0);     opacity: 1; }
+
+    function isInFullscreen() {
+        return !!(document.fullscreenElement ||
+                  document.webkitFullscreenElement ||
+                  document.mozFullScreenElement);
     }
-}
 
-/* --------------------------------------------------------------------
-   7. FULLSCREEN RESTORE BUTTON
-      Small floating button that appears when the user exits fullscreen.
-      Positioned just below the app top bar, inside the frame.
-   -------------------------------------------------------------------- */
-body.web-mode .hbg-fs-restore-btn {
-    position: fixed;
-    top: 62px;   /* just below the app top bar */
-    right: 12px;
-    z-index: 8500;
-    width: 34px;
-    height: 34px;
-    padding: 0;
-    border: 1px solid rgba(6, 214, 160, 0.35);
-    border-radius: 50%;
-    background: rgba(13, 21, 32, 0.88);
-    color: #06D6A0;
-    font-size: 0.85rem;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    backdrop-filter: blur(8px);
-    -webkit-backdrop-filter: blur(8px);
-    box-shadow: 0 2px 10px rgba(0,0,0,0.35);
-    transition: background 0.2s ease;
-}
-
-body.web-mode .hbg-fs-restore-btn:hover,
-body.web-mode .hbg-fs-restore-btn:active {
-    background: rgba(6, 214, 160, 0.18);
-}
-
-@media (min-width: 768px) {
-    /* On desktop, pin it inside the right edge of the centred frame */
-    body.web-mode .hbg-fs-restore-btn {
-        right: calc(50vw - 280px + 12px);
+    function enterFullscreen() {
+        var el = document.documentElement;
+        try {
+            if (el.requestFullscreen)            el.requestFullscreen();
+            else if (el.webkitRequestFullscreen) el.webkitRequestFullscreen();
+            else if (el.mozRequestFullScreen)    el.mozRequestFullScreen();
+        } catch (e) {}
+        try { sessionStorage.setItem('hbgWasFullscreen', '1'); } catch (e) {}
     }
-}
 
-/* --------------------------------------------------------------------
-   8. CUSTOM PHOTO PICKER — bottom sheet (Camera vs Gallery)
-   -------------------------------------------------------------------- */
-body.web-mode .hbg-photo-picker-overlay {
-    position: fixed;
-    inset: 0;
-    background: rgba(0, 0, 0, 0.65);
-    z-index: 10000;
-    display: flex;
-    align-items: flex-end;
-    justify-content: center;
-    animation: hbgOverlayFade 0.2s ease;
-}
+    // Small floating button that reappears after the user exits fullscreen
+    function showFullscreenRestoreBtn() {
+        if (isStandalone() || !supportsFullscreen()) return;
+        if (document.getElementById('hbgFsRestoreBtn')) return;
 
-@keyframes hbgOverlayFade {
-    from { opacity: 0; }
-    to   { opacity: 1; }
-}
+        var btn = document.createElement('button');
+        btn.id        = 'hbgFsRestoreBtn';
+        btn.className = 'hbg-fs-restore-btn';
+        btn.setAttribute('aria-label', 'Enter full screen');
+        btn.innerHTML = '<i class="fas fa-expand"></i>';
 
-body.web-mode .hbg-photo-picker-sheet {
-    width: 100%;
-    max-width: 560px;
-    background: #131e2e;
-    border-radius: 22px 22px 0 0;
-    border-top: 1px solid rgba(6, 214, 160, 0.2);
-    padding: 16px 16px calc(16px + env(safe-area-inset-bottom, 0px));
-    animation: hbgSheetSlideUp 0.28s ease;
-}
+        btn.addEventListener('click', function () {
+            enterFullscreen();
+            // onFullscreenChange will remove the button once fullscreen activates
+        });
 
-@keyframes hbgSheetSlideUp {
-    from { transform: translateY(60px); opacity: 0; }
-    to   { transform: translateY(0);    opacity: 1; }
-}
+        document.body.appendChild(btn);
+    }
 
-body.web-mode .hbg-pp-title {
-    text-align: center;
-    color: var(--text-secondary, #8bbad4);
-    font-size: 0.75rem;
-    font-weight: 700;
-    text-transform: uppercase;
-    letter-spacing: 0.08em;
-    margin: 0 0 12px;
-}
+    function removeFullscreenRestoreBtn() {
+        var btn = document.getElementById('hbgFsRestoreBtn');
+        if (btn) btn.remove();
+    }
 
-body.web-mode .hbg-pp-btn {
-    display: flex;
-    align-items: center;
-    gap: 14px;
-    width: 100%;
-    padding: 15px 18px;
-    margin-bottom: 10px;
-    background: rgba(6, 214, 160, 0.07);
-    border: 1px solid rgba(6, 214, 160, 0.18);
-    border-radius: 15px;
-    color: var(--text-primary, #ffffff);
-    font-size: 0.95rem;
-    font-weight: 600;
-    font-family: 'Poppins', sans-serif;
-    cursor: pointer;
-    text-align: left;
-    transition: background 0.15s ease;
-}
+    // Detect fullscreen exit → show restore button; fullscreen enter → hide it
+    function onFullscreenChange() {
+        if (isInFullscreen()) {
+            removeFullscreenRestoreBtn();
+        } else {
+            // Only show restore button if the user entered fullscreen this session
+            try {
+                if (sessionStorage.getItem('hbgWasFullscreen')) {
+                    showFullscreenRestoreBtn();
+                }
+            } catch (e) {}
+        }
+    }
 
-body.web-mode .hbg-pp-btn:active {
-    background: rgba(6, 214, 160, 0.18);
-}
+    document.addEventListener('fullscreenchange',       onFullscreenChange);
+    document.addEventListener('webkitfullscreenchange', onFullscreenChange);
+    document.addEventListener('mozfullscreenchange',    onFullscreenChange);
 
-body.web-mode .hbg-pp-icon {
-    width: 36px;
-    height: 36px;
-    border-radius: 10px;
-    background: rgba(6, 214, 160, 0.12);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    color: #06D6A0;
-    font-size: 1rem;
-    flex-shrink: 0;
-}
+    // First-visit prompt — shown once per browser session
+    function showFullscreenPrompt() {
+        if (isStandalone()) return;
+        if (!supportsFullscreen()) return;
+        if (isInFullscreen()) return;
+        if (document.getElementById('hbgFsPrompt')) return;
+        // Once per session only (cleared when tab/browser closes)
+        try { if (sessionStorage.getItem('hbgFsPromptSeen')) return; } catch (e) {}
 
-body.web-mode .hbg-pp-cancel {
-    justify-content: center;
-    background: transparent;
-    border-color: rgba(255, 255, 255, 0.1);
-    color: var(--text-secondary, #8bbad4);
-    font-weight: 500;
-    margin-bottom: 0;
-}
+        var prompt = document.createElement('div');
+        prompt.id        = 'hbgFsPrompt';
+        prompt.className = 'hbg-fs-prompt';
+        prompt.innerHTML =
+            '<div class="hbg-fp-icon"><i class="fas fa-expand"></i></div>' +
+            '<div class="hbg-fp-text">' +
+                '<strong>Full Screen Mode</strong>' +
+                '<span>Hides browser bars for an app-like experience</span>' +
+            '</div>' +
+            '<button class="hbg-fp-yes">Go Full Screen</button>' +
+            '<button class="hbg-fp-close" aria-label="Dismiss">&times;</button>';
 
-body.web-mode .hbg-pp-cancel:active {
-    background: rgba(255, 255, 255, 0.05);
-}
+        document.body.appendChild(prompt);
+        try { sessionStorage.setItem('hbgFsPromptSeen', '1'); } catch (e) {}
+
+        prompt.querySelector('.hbg-fp-yes').addEventListener('click', function () {
+            enterFullscreen();
+            prompt.remove();
+        });
+
+        // Dismiss just hides the prompt — restore button still shows on exit
+        prompt.querySelector('.hbg-fp-close').addEventListener('click', function () {
+            prompt.remove();
+        });
+
+        // Auto-dismiss after 12 s if ignored
+        setTimeout(function () { if (prompt.parentNode) prompt.remove(); }, 12000);
+    }
+
+    // ----------------------------------------------------------------
+    // 6. WEB SPEECH API — voice notes in the browser
+    //    Android uses the native SpeechRecognizer bridge via
+    //    Android.startVoiceNote(). On web we use the browser's own
+    //    SpeechRecognition API and wire up the same callbacks that
+    //    checklist.js already defines:
+    //      onVoiceNoteListening / onVoiceNotePartial / onVoiceNoteResult / onVoiceNoteError
+    //    A minimal window.Android shim is created so that:
+    //      - isVoiceAvailable() in checklist.js returns true
+    //      - startVoiceInto() can call Android.startVoiceNote()
+    //    Mic buttons will be shown and fully functional on iOS Safari,
+    //    Chrome, Edge, and Firefox (where SpeechRecognition is available).
+    // ----------------------------------------------------------------
+    (function () {
+        var SpeechAPI = window.SpeechRecognition || window.webkitSpeechRecognition;
+        if (!SpeechAPI) return; // browser has no speech support — mic stays hidden
+
+        var _rec = null;
+
+        // Create the minimal Android shim (only adds voice methods).
+        // Guarded so we never overwrite if something else set it first.
+        if (!window.Android) window.Android = {};
+
+        window.Android.isVoiceNoteAvailable = function () { return true; };
+
+        window.Android.startVoiceNote = function () {
+            // Abort any recognition still in progress
+            if (_rec) { try { _rec.abort(); } catch (e) {} }
+
+            _rec = new SpeechAPI();
+            _rec.continuous     = false;  // single utterance per tap
+            _rec.interimResults = true;   // show words appearing as user speaks
+            _rec.lang           = 'en-ZA'; // South African English
+
+            _rec.onstart = function () {
+                if (typeof window.onVoiceNoteListening === 'function') {
+                    window.onVoiceNoteListening();
+                }
+            };
+
+            _rec.onresult = function (event) {
+                var interim = '';
+                var final   = '';
+                for (var i = event.resultIndex; i < event.results.length; i++) {
+                    if (event.results[i].isFinal) {
+                        final += event.results[i][0].transcript;
+                    } else {
+                        interim += event.results[i][0].transcript;
+                    }
+                }
+                if (interim && typeof window.onVoiceNotePartial === 'function') {
+                    window.onVoiceNotePartial(interim);
+                }
+                if (final && typeof window.onVoiceNoteResult === 'function') {
+                    window.onVoiceNoteResult(final);
+                    _rec = null;
+                }
+            };
+
+            _rec.onerror = function (event) {
+                _rec = null;
+                var kind = 'error';
+                if (event.error === 'no-speech') kind = 'no_speech';
+                if (event.error === 'not-allowed' || event.error === 'permission-denied') {
+                    kind = 'permission_denied';
+                }
+                if (typeof window.onVoiceNoteError === 'function') {
+                    window.onVoiceNoteError(kind);
+                }
+            };
+
+            _rec.onend = function () {
+                // Fired after onerror OR after a final result — safe to null here
+                _rec = null;
+            };
+
+            try {
+                _rec.start();
+            } catch (e) {
+                _rec = null;
+                if (typeof window.onVoiceNoteError === 'function') {
+                    window.onVoiceNoteError('error');
+                }
+            }
+        };
+
+        window.Android.stopVoiceNote = function () {
+            if (_rec) {
+                try { _rec.stop(); } catch (e) {}
+                _rec = null;
+            }
+        };
+
+        console.log('🎤 web-app: Web Speech API voice shim active');
+    })();
+
+    // ----------------------------------------------------------------
+    // 7. BOOT (after DOM + premium system are ready)
+    // ----------------------------------------------------------------
+    function boot() {
+        document.body.classList.add('web-mode');
+
+        // Belt and braces: force premium in the live state object too,
+        // in case it initialised before our localStorage write.
+        try {
+            if (window.premiumState) {
+                window.premiumState.isPremium = true;
+                window.premiumState.subscriptionType = 'web-full-access';
+                window.premiumState.subscriptionEndDate = FAR_FUTURE;
+            }
+            if (typeof window.updateUIForPremiumStatus === 'function') {
+                window.updateUIForPremiumStatus();
+            }
+            var strip = document.getElementById('upgradeStrip');
+            if (strip) strip.remove();
+        } catch (e) {
+            console.warn('web-app: premium override issue', e);
+        }
+
+        // Show the fullscreen prompt first (3 s), then the install banner (8 s),
+        // so both can't appear simultaneously.
+        setTimeout(showFullscreenPrompt, 3000);
+        setTimeout(showInstallBanner, 8000);
+
+        console.log('🌐 web-app: web mode active — full access enabled');
+    }
+
+    if (document.readyState === 'loading') {
+        // Run after DOMContentLoaded, and after premium-integration's own
+        // DOMContentLoaded handler (listener order = registration order,
+        // and this file loads after premium-integration.js).
+        document.addEventListener('DOMContentLoaded', function () {
+            setTimeout(boot, 300);
+        });
+    } else {
+        setTimeout(boot, 300);
+    }
+})();
