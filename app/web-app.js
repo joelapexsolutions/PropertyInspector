@@ -11,23 +11,6 @@
     if (window.Android) return;
 
     // ----------------------------------------------------------------
-    // 1. FULL PREMIUM ACCESS ON WEB (until PayPal payments are added)
-    //    Written to localStorage BEFORE the premium system initialises
-    //    on DOMContentLoaded, so loadPremiumState() restores it.
-    // ----------------------------------------------------------------
-    var FAR_FUTURE = '2099-12-31T23:59:59.000Z';
-    try {
-        var raw = localStorage.getItem('propertyInspectorPremium');
-        var state = raw ? JSON.parse(raw) : {};
-        state.isPremium = true;
-        state.subscriptionType = 'web-full-access';
-        state.subscriptionEndDate = FAR_FUTURE;
-        localStorage.setItem('propertyInspectorPremium', JSON.stringify(state));
-    } catch (e) {
-        console.warn('web-app: could not pre-set premium state', e);
-    }
-
-    // ----------------------------------------------------------------
     // 2. PHOTO PICKER — custom bottom-sheet with explicit Camera / Gallery buttons
     //    Root cause of the gallery issue: Android Chrome and iOS Safari
     //    do NOT reliably show a gallery option when input.click() is called
@@ -484,27 +467,159 @@
     })();
 
     // ----------------------------------------------------------------
-    // 7. BOOT (after DOM + premium system are ready)
+    // 7. PREMIUM GATE — sign-in screen + subscription plans
+    //    Shown when a free-tier user hits a premium feature.
+    //    firebase-auth.js handles the actual Firebase/Firestore logic.
+    //    This section owns the UI only.
+    // ----------------------------------------------------------------
+
+    var _isAndroidBrowser = /Android/.test(navigator.userAgent);
+
+    // Show the premium gate screen, optionally with a message about
+    // which feature was blocked (e.g. "PDF reports are a premium feature")
+    window.showPremiumGate = function (featureMsg) {
+        var screen = document.getElementById('premiumGateScreen');
+        if (!screen) return;
+
+        // Set the feature message if provided
+        var msgEl = document.getElementById('pgsFeatureMsg');
+        if (msgEl && featureMsg) msgEl.textContent = featureMsg;
+
+        // Android users → show Play Store redirect, hide sign-in
+        var androidSection = document.getElementById('pgsAndroidSection');
+        var signInSection  = document.getElementById('pgsSignInSection');
+        var backBtn        = document.getElementById('pgsBackBtn');
+
+        if (_isAndroidBrowser) {
+            if (androidSection) androidSection.style.display = 'block';
+            if (signInSection)  signInSection.style.display  = 'none';
+            if (backBtn)        backBtn.style.display         = 'block';
+        } else {
+            if (androidSection) androidSection.style.display = 'none';
+            // Check if already signed in
+            var user = window.hbgAuth && window.hbgAuth.getCurrentUser
+                ? window.hbgAuth.getCurrentUser() : null;
+            if (user) {
+                pgsShowPlansForUser(user);
+            } else {
+                pgsShowSignIn();
+            }
+            if (backBtn) backBtn.style.display = 'block';
+        }
+
+        // Show the screen
+        document.querySelectorAll('.screen').forEach(function (s) {
+            s.classList.remove('active');
+        });
+        screen.classList.add('active');
+    };
+
+    window.hidePremiumGate = function () {
+        var screen = document.getElementById('premiumGateScreen');
+        if (screen) screen.classList.remove('active');
+        // Return to home screen
+        if (typeof window.showScreen === 'function') {
+            window.showScreen('homeScreen');
+        }
+    };
+
+    // Show the email sign-in section
+    window.pgsShowSignIn = function () {
+        _pgShow('pgsSignInSection');
+    };
+
+    // Show plans for a signed-in user
+    function pgsShowPlansForUser(user) {
+        var emailEl = document.getElementById('pgsUserEmail');
+        if (emailEl) emailEl.textContent = user.email || '';
+        _pgShow('pgsPlanSection');
+    }
+
+    // Handle "Send Sign-in Link" button
+    window.hbgSendMagicLink = function () {
+        var input = document.getElementById('pgsEmailInput');
+        if (!input) return;
+        var email = input.value.trim();
+        if (!email || !email.includes('@')) {
+            alert('Please enter a valid email address.');
+            return;
+        }
+        if (!window.hbgAuth) { alert('Auth not ready — please refresh.'); return; }
+
+        window.hbgAuth.sendSignInLink(email)
+            .then(function () {
+                var sentEmail = document.getElementById('pgsSentEmail');
+                if (sentEmail) sentEmail.textContent = email;
+                _pgShow('pgsEmailSentSection');
+            })
+            .catch(function (err) {
+                console.error('Magic link error:', err);
+                alert('Could not send the link. Please try again.');
+            });
+    };
+
+    // Handle plan selection (Stage 3 will attach PayPal here)
+    window.pgsSelectPlan = function (planId, priceRand) {
+        // Highlight selected plan
+        document.querySelectorAll('.pgs-plan').forEach(function (p) {
+            p.classList.remove('pgs-plan-selected');
+        });
+        event.currentTarget.classList.add('pgs-plan-selected');
+        // Stage 3: PayPal button will load here
+        console.log('Plan selected:', planId, 'R' + priceRand);
+        var cs = document.getElementById('pgsComingSoon');
+        if (cs) cs.innerHTML = '<i class="fas fa-check-circle" style="color:#06D6A0"></i> '
+            + planId.replace('month', ' month').replace('1year', '1 year')
+            + ' — R' + priceRand + ' selected. Payment coming soon!';
+    };
+
+    // Handle sign-out
+    window.hbgSignOut = function () {
+        if (window.hbgAuth) {
+            window.hbgAuth.signOut().then(function () {
+                pgsShowSignIn();
+            });
+        }
+    };
+
+    // Auth state changed callback (called by firebase-auth.js)
+    window.onHbgAuthStateChanged = function (user, premiumData) {
+        var screen = document.getElementById('premiumGateScreen');
+        var isVisible = screen && screen.classList.contains('active');
+
+        if (user && premiumData.isPremium) {
+            // Update expiry display
+            var expiryEl = document.getElementById('pgsExpiryMsg');
+            if (expiryEl && premiumData.expiryDate) {
+                var expiry = premiumData.expiryDate.toDate
+                    ? premiumData.expiryDate.toDate()
+                    : new Date(premiumData.expiryDate);
+                expiryEl.textContent = 'Your plan is active until '
+                    + expiry.toLocaleDateString('en-ZA', { year: 'numeric', month: 'long', day: 'numeric' });
+            }
+            if (isVisible) _pgShow('pgsPremiumSection');
+        } else if (user && !premiumData.isPremium) {
+            if (isVisible) pgsShowPlansForUser(user);
+        } else {
+            if (isVisible) pgsShowSignIn();
+        }
+    };
+
+    // Internal helper — hide all pgs sections then show one
+    function _pgShow(sectionId) {
+        var sections = ['pgsSignInSection', 'pgsEmailSentSection',
+                        'pgsPlanSection', 'pgsPremiumSection'];
+        sections.forEach(function (id) {
+            var el = document.getElementById(id);
+            if (el) el.style.display = id === sectionId ? '' : 'none';
+        });
+    }
+
+    // ----------------------------------------------------------------
+    // 8. BOOT (after DOM + premium system are ready)
     // ----------------------------------------------------------------
     function boot() {
         document.body.classList.add('web-mode');
-
-        // Belt and braces: force premium in the live state object too,
-        // in case it initialised before our localStorage write.
-        try {
-            if (window.premiumState) {
-                window.premiumState.isPremium = true;
-                window.premiumState.subscriptionType = 'web-full-access';
-                window.premiumState.subscriptionEndDate = FAR_FUTURE;
-            }
-            if (typeof window.updateUIForPremiumStatus === 'function') {
-                window.updateUIForPremiumStatus();
-            }
-            var strip = document.getElementById('upgradeStrip');
-            if (strip) strip.remove();
-        } catch (e) {
-            console.warn('web-app: premium override issue', e);
-        }
 
         // Show fullscreen restore button if not in fullscreen (always visible)
         setTimeout(showFullscreenRestoreBtn, 2000);
@@ -512,7 +627,7 @@
         setTimeout(showFullscreenPrompt, 3000);
         setTimeout(showInstallBanner, 8000);
 
-        console.log('🌐 web-app: web mode active — full access enabled');
+        console.log('🌐 web-app: web mode active — Firebase auth enabled');
     }
 
     if (document.readyState === 'loading') {
