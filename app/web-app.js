@@ -621,6 +621,23 @@
     function boot() {
         document.body.classList.add('web-mode');
 
+        // Override the Android-style premium modal with our web premium gate.
+        // Must run after premium-system.js has registered window.showPremiumModal,
+        // so we do it inside boot() which fires after DOMContentLoaded.
+        var _reasonMessages = {
+            property_limit:   "You've reached the 2-property free limit. Upgrade for unlimited access.",
+            full_report:      "Full PDF Reports are a Premium feature.",
+            locked_property:  "This property is locked. Upgrade to access unlimited properties.",
+            general:          "Unlock full access to Home Buyers Guide SA."
+        };
+
+        window.showPremiumModal = function (reason) {
+            var msg = _reasonMessages[reason] || _reasonMessages.general;
+            if (typeof window.showPremiumGate === 'function') {
+                window.showPremiumGate(msg);
+            }
+        };
+
         // Show fullscreen restore button if not in fullscreen (always visible)
         setTimeout(showFullscreenRestoreBtn, 2000);
         // Fullscreen prompt for first-time visitors, install banner after
