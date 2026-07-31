@@ -1,1184 +1,753 @@
 <!DOCTYPE html>
-
-<html lang="en" data-theme="light">
-
+<html lang="en">
 <head>
-
     <meta charset="UTF-8">
-
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-
-
-    <!-- SEO Meta Tags -->
-
-    <title>House Viewing Checklist South Africa | Home Buyers Guide SA</title>
-
-    <meta name="description" content="Free house viewing checklist app for South African buyers. Assess properties room-by-room, document red flags, and buy with confidence.">
-
-    <meta name="keywords" content="home buyers guide south africa, home buying checklist south africa, house viewing checklist, what to look for when buying a house, first time home buyer, property viewing guide, house inspection checklist, property red flags, hidden property defects, estate agent tools, property assessment">
-
-
-
-    <!-- Open Graph -->
-
-    <meta property="og:type" content="website">
-
-    <meta property="og:url" content="https://propertyinspector.site/">
-
-    <meta property="og:title" content="Home Buyers Guide SA | Home Buying Checklist South Africa">
-
-    <meta property="og:description" content="Free app that guides South African buyers through property viewings. Learn what to inspect, identify red flags, and avoid costly mistakes.">
-
-    <meta property="og:image" content="https://propertyinspector.site/images/transparent_logo.png">
-
-
-
-    <!-- Twitter -->
-
-    <meta property="twitter:card" content="summary_large_image">
-
-    <meta property="twitter:url" content="https://propertyinspector.site/">
-
-    <meta property="twitter:title" content="Home Buyers Guide SA - Know What to Look For">
-
-    <meta property="twitter:description" content="Essential house viewing guide for South African property buyers. Free app with step-by-step checklists.">
-
-
-
-    <!-- Canonical -->
-
-    <link rel="canonical" href="https://propertyinspector.site/">
-    <link rel="apple-touch-icon" href="images/transparent_logo.png">
-
-
-
-    <!-- Fonts -->
-
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
-
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-
-
-
-    <!-- Styles -->
-
-    <link rel="stylesheet" href="website-styles.css">
-
-
-
-    <!-- Favicon -->
-
-    <link rel="icon" type="image/png" href="images/transparent_logo.png">
-
-
-
-    <!-- Anti-FOUC: apply saved/system theme before paint -->
-
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, user-scalable=yes">
+    <!-- PWA / iOS Home Screen -->
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#0d1520">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="HBG SA">
+    <link rel="apple-touch-icon" href="apple-touch-icon.png">
     <script>
-
-        (function(){
-
-            var t=localStorage.getItem('hbg-theme');
-
-            if(t){document.documentElement.setAttribute('data-theme',t);}
-
-            else if(window.matchMedia&&window.matchMedia('(prefers-color-scheme:dark)').matches){
-
-                document.documentElement.setAttribute('data-theme','dark');
-
-            }
-
-        })();
-
+      if ('serviceWorker' in navigator) {
+        window.addEventListener('load', function() {
+          navigator.serviceWorker.register('sw.js');
+        });
+      }
     </script>
-
-
-
-    <!-- Google Analytics -->
-
-    <script async src="https://www.googletagmanager.com/gtag/js?id=G-2MN5R2QXNC"></script>
-
-    <script>
-
-        window.dataLayer=window.dataLayer||[];
-
-        function gtag(){dataLayer.push(arguments);}
-
-        gtag('js',new Date());
-
-        gtag('config','G-2MN5R2QXNC');
-
-    </script>
-
-
-
-    <!-- Structured Data -->
-
-    <script type="application/ld+json">
-    {
-        "@context":"https://schema.org",
-        "@type":"SoftwareApplication",
-        "name":"Home Buyers Guide SA",
-        "applicationCategory":"BusinessApplication",
-        "operatingSystem":"Android",
-        "offers":{"@type":"Offer","price":"0","priceCurrency":"ZAR"},
-        "description":"House viewing checklist app for South African property buyers, sellers, and estate agents.",
-        "image":"https://propertyinspector.site/images/transparent_logo.png",
-        "downloadUrl":"https://play.google.com/store/apps/details?id=com.joelapexs.propertyinspector"
-    }
-    </script>
-    <script type="application/ld+json">
-    {
-        "@context":"https://schema.org",
-        "@type":"Organization",
-        "name":"Joel Apex Solutions",
-        "alternateName":"Home Buyers Guide SA",
-        "url":"https://propertyinspector.site",
-        "logo":"https://propertyinspector.site/images/transparent_logo.png",
-        "email":"joelapexs@gmail.com",
-        "areaServed":"ZA",
-        "sameAs":["https://www.youtube.com/@HomeBuyersGuideSA","https://www.facebook.com/profile.php?id=61581616425555","https://www.tiktok.com/@homebuyerguidesa"]
-    }
-    </script>
+    <title>Home Buyers Guide SA</title>
+    <link rel="stylesheet" href="styles.css">
+	<link rel="stylesheet" href="assessment-report.css">
+	<link rel="stylesheet" href="calculator.css">
+	<link rel="stylesheet" href="pdf-report.css.css">
+	<link rel="stylesheet" href="premium-styles.css">
+	<link rel="stylesheet" href="help-guide.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" crossorigin="anonymous">
+	<!-- Onboarding System -->
+	<link rel="stylesheet" href="onboarding.css">
+	<link rel="stylesheet" href="theme.css">
+	<link rel="stylesheet" href="web-app.css?v=8">
+	<script src="onboarding.js"></script>
+	
+	<!-- Google Analytics 4 -->
+	<script async src="https://www.googletagmanager.com/gtag/js?id=G-2MN5R2QXNC"></script>
+	<script>
+	  window.dataLayer = window.dataLayer || [];
+	  function gtag(){dataLayer.push(arguments);}
+	  gtag('js', new Date());
+	  gtag('config', 'G-2MN5R2QXNC');
+	</script>
+	
+	<!-- Load jsPDF first -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+	
+	<!-- Load in this specific order -->
+	<script src="scoring.js"></script>
+	<script src="assessment-guidance.js"></script>
+	<script src="property-data.js"></script>
+	<script src="checklist.js"></script>
+	<script src="photo-manager.js"></script>
+	<script src="maps-integration.js"></script>
+	<script src="cost-calculator.js"></script>
+	<script src="pdf-report-generator.js"></script>
+	<script src="help-guide.js"></script>
+	<script src="premium-system.js"></script>
+	<script src="premium-integration.js"></script>
+	<script src="web-app.js?v=8"></script>
+	<script src="app.js"></script>
 
 </head>
+<body id="appBody">
 
-<body>
+<!-- Loading Modal -->
+<div id="loadingModal" class="loading-modal">
+    <div class="loading-modal-content">
+        <div class="loading-logo">
+            <img src="Images/app_banner.png" alt="Home Buyers Guide SA" class="loading-banner-logo">
+        </div>
+        <div class="loading-spinner-container">
+            <div class="loading-spinner"></div>
+        </div>
+    </div>
+</div>
 
+<div class="container">
 
+    <!-- App Top Bar -->
+<div class="app-top-bar">
+    <div class="logo-mark">
+        <img src="Images/app_banner.png" alt="Home Buyers Guide SA - Know Before You Buy" class="app-banner-logo">
+    </div>
 
-    <!-- Navigation -->
+</div>
 
-    <nav class="navbar" id="navbar">
+    <!-- Home Screen -->
+    <div id="homeScreen" class="screen active">
 
-        <div class="container">
+        <!-- Stats strip (inside header colour band) -->
+        <div class="home-stats-strip">
+            <div class="home-stat-chip">
+                <div class="hsc-num" id="statTotalProperties">0</div>
+                <div class="hsc-lbl">Properties</div>
+            </div>
+            <div class="home-stat-chip">
+                <div class="hsc-num" id="statAssessed">0</div>
+                <div class="hsc-lbl">Assessed</div>
+            </div>
+            <div class="home-stat-chip">
+                <div class="hsc-num best" id="statBestScore">--</div>
+                <div class="hsc-lbl">Best score</div>
+            </div>
+            <div class="home-stat-chip">
+                <div class="hsc-num" id="statReports">0</div>
+                <div class="hsc-lbl">Reports</div>
+            </div>
+        </div>
 
-            <div class="nav-content">
+        <div class="home-content">
 
-                <a href="index.html" class="nav-logo">
+            <!-- My Properties section -->
+            <div class="section-label">My Properties</div>
 
-                    <img src="images/transparent_logo.png" alt="Home Buyers Guide SA">
+            <!-- Filter tabs -->
+            <div class="filter-tabs">
+                <button class="filter-tab active" onclick="filterProperties('all', this)">All</button>
+                <button class="filter-tab" onclick="filterProperties('assessed', this)">Assessed</button>
+                <button class="filter-tab" onclick="filterProperties('pending', this)">Pending</button>
+            </div>
 
-                    <span>Home Buyers Guide SA</span>
+            <!-- Property list -->
+            <div id="homePropertyList">
+                <!-- populated by JS -->
+            </div>
 
-                </a>
+            <!-- Add property button -->
+            <button class="add-property-btn" onclick="showScreen('addPropertyScreen')">
+                <i class="fas fa-plus"></i> Add New Property
+            </button>
 
-
-
-                <button class="nav-toggle" id="navToggle" aria-label="Toggle navigation">
-
-                    <i class="fas fa-bars"></i>
-
-                </button>
-
-
-
-                <ul class="nav-menu" id="navMenu">
-
-                    <li><a href="#features" class="nav-link">Features</a></li>
-
-                    <li><a href="home-buyers-journey.html" class="nav-link">Journey</a></li>
-
-                    <li><a href="calculator.html" class="nav-link">Calculator</a></li>
-
-                    <li><a href="blog.html" class="nav-link">Blog</a></li>
-
-                    <li><a href="faq.html" class="nav-link">FAQ</a></li>
-
-                </ul>
-
-
-
-                <div class="nav-right">
-
-                    <button class="theme-toggle" id="themeToggle" aria-label="Switch to dark mode">
-
-                        <i class="fas fa-moon"></i>
-
-                    </button>
-
-                    <a href="https://play.google.com/store/apps/details?id=com.joelapexs.propertyinspector"
-
-                       target="_blank" class="btn-nav-download">
-
-                        <i class="fas fa-download"></i> Download App
-
-                    </a>
-
+            <!-- Tools -->
+            <div class="section-label">Tools</div>
+            <div class="tools-grid">
+                <div class="tool-card" onclick="handleHomeTileClick('costCalculatorScreen', this)">
+                    <i class="fas fa-calculator"></i>
+                    <div class="tc-name">Cost Calculator</div>
+                    <div class="tc-sub">Bond &amp; transfer</div>
                 </div>
-
+                <div class="tool-card" onclick="shareApp()">
+                    <i class="fas fa-share-alt"></i>
+                    <div class="tc-name">Share App</div>
+                    <div class="tc-sub">Tell a friend</div>
+                </div>
+                <div class="tool-card" onclick="handleHomeTileClick('helpScreen', this)">
+                    <i class="fas fa-question-circle"></i>
+                    <div class="tc-name">Help &amp; Guide</div>
+                    <div class="tc-sub">How to use</div>
+                </div>
             </div>
 
         </div>
+    </div>
 
+    <!-- Bottom Navigation -->
+    <nav class="bottom-nav" id="bottomNav">
+        <button class="nav-item active" id="navHome" onclick="navTo('homeScreen', 'navHome')">
+            <i class="fas fa-home"></i><span>Home</span>
+        </button>
+        <button class="nav-item" id="navProperties" onclick="navTo('propertyListScreen', 'navProperties')">
+            <i class="fas fa-clipboard-list"></i><span>Properties</span>
+        </button>
+        <button class="nav-fab" onclick="showScreen('addPropertyScreen')" aria-label="Add property">
+            <i class="fas fa-plus"></i>
+        </button>
+        <button class="nav-item" id="navCalc" onclick="navTo('costCalculatorScreen', 'navCalc')">
+            <i class="fas fa-calculator"></i><span>Calculator</span>
+        </button>
+        <button class="nav-item" id="navSettings" onclick="navTo('settingsScreen', 'navSettings')">
+            <i class="fas fa-cog"></i><span>Settings</span>
+        </button>
     </nav>
 
+    <!-- Property List Screen -->
+    <div id="propertyListScreen" class="screen">
+        <div class="screen-header">
+            <button class="back-button" onclick="showScreen('homeScreen')">
+                <i class="fas fa-arrow-left"></i>
+            </button>
+            <h2>My Properties</h2>
+        </div>
 
+        <div class="empty-state" id="emptyPropertyList">
+            <div class="empty-icon">
+                <i class="fas fa-home"></i>
+            </div>
+            <h3>No Properties Yet</h3>
+            <p>Add your first property to start inspecting!</p>
+            <button class="primary-button" onclick="showScreen('addPropertyScreen')">
+                <i class="fas fa-plus"></i> Add Property
+            </button>
+        </div>
 
-    <!-- Hero Section -->
+        <div class="property-list" id="propertyList" style="display: none;">
+            <!-- Properties will be populated here -->
+        </div>
+    </div>
 
-    <header id="home" class="hero">
+    <!-- Add Property Screen -->
+    <div id="addPropertyScreen" class="screen">
+        <div class="screen-header">
+            <button class="back-button" onclick="showScreen('homeScreen')">
+                <i class="fas fa-arrow-left"></i>
+            </button>
+            <h2>Add New Property</h2>
+        </div>
 
-        <div class="container">
+        <div class="setup-section">
+            <h3>Select Property Type</h3>
+            <div class="property-type-grid">
+				<div class="property-type-card" onclick="selectPropertyType('house')">
+					<div class="property-icon">
+						<i class="fas fa-home"></i>
+					</div>
+					<h4>House</h4>
+					<p>Standalone family home</p>
+				</div>
 
-            <div class="hero-content">
+				<div class="property-type-card" onclick="selectPropertyType('complex')">
+					<div class="property-icon">
+						<i class="fas fa-building"></i>
+					</div>
+					<h4>Complex or Flat</h4>
+					<p>Unit, apartment, townhouse or duplex</p>
+				</div>
+			</div>
+        </div>
+    </div>
 
-                <div class="hero-text">
+    <!-- Property Details Screen -->
+    <div id="propertyDetailsScreen" class="screen">
+        <div class="screen-header">
+            <button class="back-button" onclick="showScreen('addPropertyScreen')">
+                <i class="fas fa-arrow-left"></i>
+            </button>
+            <h2>Property Details</h2>
+        </div>
 
-                    <div class="hero-badge">
+        <div class="property-type-display" id="selectedPropertyType">
+            <i class="fas fa-home"></i> House Selected
+        </div>
 
-                        <i class="fas fa-shield-alt"></i>
+        <div class="property-details-form">
+			<form id="propertyDetailsForm">
+				<div class="form-group" id="complexNameGroup" style="display: none;">
+					<label class="form-label">Complex/Building Name *</label>
+					<input type="text" class="form-input" id="complexName" placeholder="Enter complex or building name">
+				</div>
+				<div class="form-group">
+					<label class="form-label">Property Address *</label>
+					<input type="text" class="form-input" id="propertyAddress" placeholder="Enter full address" required>
+				</div>
+				<div class="form-group">
+					<label class="form-label">Suburb</label>
+					<input type="text" class="form-input" id="propertySuburb" placeholder="Enter suburb">
+				</div>
 
-                        Home Buying Checklist for South Africa
+				<div class="form-row">
+					<div class="form-group">
+						<label class="form-label">Bedrooms</label>
+						<select class="form-select" id="propertyBedrooms">
+							<option value="">Select...</option>
+							<option value="1">1</option>
+							<option value="2">2</option>
+							<option value="3">3</option>
+							<option value="4">4</option>
+							<option value="5">5</option>
+							<option value="6">6+</option>
+						</select>
+					</div>
+					<div class="form-group">
+						<label class="form-label">Bathrooms</label>
+						<select class="form-select" id="propertyBathrooms">
+							<option value="">Select...</option>
+							<option value="1">1</option>
+							<option value="1.5">1.5</option>
+							<option value="2">2</option>
+							<option value="2.5">2.5</option>
+							<option value="3">3</option>
+							<option value="3.5">3.5</option>
+							<option value="4">4+</option>
+						</select>
+					</div>
+				</div>
 
+				<div class="form-row">
+					<div class="form-group">
+						<label class="form-label">Parking</label>
+						<select class="form-select" id="propertyParking">
+							<option value="">Select...</option>
+							<option value="0">None</option>
+							<option value="1">1</option>
+							<option value="2">2</option>
+							<option value="3">3</option>
+							<option value="4">4+</option>
+						</select>
+					</div>
+					<div class="form-group">
+						<label class="form-label">Property Size (m²)</label>
+						<input type="number" class="form-input" id="propertySize" placeholder="e.g. 250">
+					</div>
+				</div>
+
+				<div class="form-group">
+					<label class="form-label">Asking Price (Optional)</label>
+					<input type="text" class="form-input" id="propertyPrice" placeholder="e.g. 1 500 000" oninput="formatPrice(this)">
+				</div>
+
+				<!-- NEW: Assessment Date Field -->
+				<div class="form-group">
+					<label class="form-label">
+						<i class="fas fa-calendar-check"></i>
+						Assessment Date (Optional)
+					</label>
+					<input type="datetime-local" class="form-input" id="assessmentDate" min="">
+					<div class="form-hint">
+						<i class="fas fa-info-circle"></i>
+						Set a reminder for when you plan to assess this property
+					</div>
+				</div>
+
+				<div class="form-group">
+					<label class="form-label">Additional Notes</label>
+					<textarea class="form-textarea" id="propertyNotes" placeholder="Any additional information about the property..."></textarea>
+				</div>
+
+				<div class="form-buttons">
+					<button type="button" class="cancel-button" onclick="showScreen('addPropertyScreen')">
+						<i class="fas fa-times"></i> Cancel
+					</button>
+					<button type="submit" class="save-button">
+						<i class="fas fa-save"></i> Save & Continue
+					</button>
+				</div>
+			</form>
+		</div>
+    </div>
+	
+	<!-- Property Detail View Screen -->
+    <div id="propertyDetailViewScreen" class="screen">
+        <div class="screen-header">
+			<button class="back-button" onclick="showScreen('propertyListScreen')">
+				<i class="fas fa-arrow-left"></i>
+			</button>
+			<h2>Property Overview</h2>
+		</div>
+
+        <div class="property-detail-container" id="propertyDetailContainer">
+            <!-- Content will be populated by renderPropertyDetailView() -->
+        </div>
+    </div>
+
+    <!-- Compare Screen -->
+    <div id="compareScreen" class="screen">
+        <div class="screen-header">
+            <button class="back-button" onclick="showScreen('homeScreen')">
+                <i class="fas fa-arrow-left"></i>
+            </button>
+            <h2>Compare Properties</h2>
+        </div>
+
+        <div class="empty-state">
+            <div class="empty-icon">
+                <i class="fas fa-balance-scale"></i>
+            </div>
+            <h3>No Properties to Compare</h3>
+            <p>Add at least 2 properties to use comparison feature</p>
+            <button class="primary-button" onclick="showScreen('addPropertyScreen')">
+                <i class="fas fa-plus"></i> Add Property
+            </button>
+        </div>
+    </div>
+	
+	<div id="costCalculatorScreen" class="screen">
+        <div class="screen-header">
+            <button class="back-button" onclick="showScreen('homeScreen')">
+                <i class="fas fa-arrow-left"></i>
+            </button>
+            <h2>Property Cost Calculator</h2>
+        </div>
+        
+        <div class="calculator-description">
+            <p>Get instant estimates for bond repayments, transfer costs, and monthly expenses for any property in South Africa.</p>
+        </div>
+        
+        <div id="standaloneCostCalculator"></div>
+    </div>
+
+    <!-- FIXED Help Screen - Using same structure as working screens -->
+    <div id="helpScreen" class="screen">
+        <div class="screen-header">
+            <button class="back-button" onclick="helpScreenBack()">
+                <i class="fas fa-arrow-left"></i>
+            </button>
+            <h2>Help & Guide</h2>
+        </div>
+		
+		<div id="helpContentContainer" class="setup-section">
+			<!-- Content will be populated by help-guide.js -->
+		</div>
+	</div>
+
+    <!-- FIXED Settings Screen - Using same structure as working screens -->
+    <div id="settingsScreen" class="screen">
+        <div class="settings-page">
+
+            <!-- ── App identity strip ── -->
+            <div class="settings-identity">
+                <p class="settings-version">Version 2.0 &nbsp;·&nbsp; Joel Apex Solutions</p>
+            </div>
+
+            <!-- ── Appearance ── -->
+            <div class="stg-section-label">Appearance</div>
+            <div class="stg-card">
+                <div class="stg-row stg-row-theme">
+                    <div class="stg-row-icon"><i class="fas fa-palette"></i></div>
+                    <div class="stg-row-info">
+                        <span class="stg-row-title">Theme</span>
+                        <span class="stg-row-sub" id="themeModeLabel">Dark mode</span>
                     </div>
-
-                    <h1 class="hero-title">House Viewing Checklist That Saves You Thousands</h1>
-
-                    <p class="hero-subtitle">Most buyers miss critical red flags during property viewings that cost thousands to fix (R50,000&ndash;R200,000). Our house viewing checklist teaches you exactly what to inspect, which questions to ask, and when to call professional inspectors.</p>
-
-
-
-                    <div class="hero-stats">
-
-                        <div class="stat-item">
-
-                            <strong>70% of buyers</strong>
-
-                            <span>Find major issues only after moving in</span>
-
-                        </div>
-
-                        <div class="stat-item">
-
-                            <strong>Average R75,000</strong>
-
-                            <span>Spent on unexpected repairs after purchase</span>
-
-                        </div>
-
+                    <div class="theme-segments" id="themeSegments">
+                        <button class="theme-segment" id="segLight" onclick="setTheme('light')">
+                            <i class="fas fa-sun"></i><span>Light</span>
+                        </button>
+                        <button class="theme-segment" id="segDark" onclick="setTheme('dark')">
+                            <i class="fas fa-moon"></i><span>Dark</span>
+                        </button>
                     </div>
-
-
-
-                    <div class="hero-cta">
-
-                        <a href="https://play.google.com/store/apps/details?id=com.joelapexs.propertyinspector"
-
-                           target="_blank" class="btn-download-image"
-
-                           aria-label="Download Home Buyers Guide SA from Google Play">
-
-                            <img src="images/google-play-badge.png" alt="Get it on Google Play" class="play-badge-large">
-
-                        </a>
-
-                        <a href="blog.html" class="btn btn-secondary">
-
-                            <i class="fas fa-exclamation-circle"></i>
-
-                            SA Property Pitfalls
-
-                        </a>
-
-                    </div>
-
                 </div>
+            </div>
 
-
-
-                <div class="hero-image">
-
-                    <div class="app-feature-panel">
-
-                        <div class="app-panel-header">
-
-                            <img src="images/transparent_logo.png" alt="Home Buyers Guide SA">
-
-                            <div class="app-panel-header-text">
-
-                                <h3>Home Buyers Guide SA</h3>
-
-                                <p>&#9733; Know Before You Buy</p>
-
-                            </div>
-
-                        </div>
-
-                        <div class="app-panel-feature">
-
-                            <div class="app-panel-feature-icon"><i class="fas fa-clipboard-check"></i></div>
-
-                            <div>
-
-                                <strong>Room-by-Room Checklist</strong>
-
-                                <span>80+ items across structural, electrical, plumbing &amp; finishes</span>
-
-                            </div>
-
-                        </div>
-
-                        <div class="app-panel-feature">
-
-                            <div class="app-panel-feature-icon"><i class="fas fa-camera"></i></div>
-
-                            <div>
-
-                                <strong>Photo Documentation</strong>
-
-                                <span>Capture and annotate red flags directly in the checklist</span>
-
-                            </div>
-
-                        </div>
-
-                        <div class="app-panel-feature">
-
-                            <div class="app-panel-feature-icon"><i class="fas fa-file-pdf"></i></div>
-
-                            <div>
-
-                                <strong>Instant PDF Reports</strong>
-
-                                <span>Professional reports with scores, photos &amp; negotiation points</span>
-
-                            </div>
-
-                        </div>
-
-                        <div class="app-panel-feature">
-
-                            <div class="app-panel-feature-icon"><i class="fas fa-calculator"></i></div>
-
-                            <div>
-
-                                <strong>Bond &amp; Transfer Calculator</strong>
-
-                                <span>Full cost breakdown including transfer duty &amp; attorney fees</span>
-
-                            </div>
-
-                        </div>
-
-                        <div class="app-panel-score">
-
-                            <span class="app-panel-score-label">Property scored out of</span>
-
-                            <span class="app-panel-score-value">100</span>
-
-                        </div>
-
+            <!-- ── General ── -->
+            <div class="stg-section-label">General</div>
+            <div class="stg-card">
+                <div class="stg-row stg-row-toggle" onclick="toggleNotifications()">
+                    <div class="stg-row-icon"><i class="fas fa-bell"></i></div>
+                    <div class="stg-row-info">
+                        <span class="stg-row-title">Assessment Reminders</span>
+                        <span class="stg-row-sub" id="notifStatusLabel">Get notified at your scheduled assessment time</span>
                     </div>
-
+                    <div class="stg-toggle" id="notifToggle">
+                        <div class="stg-toggle-knob"></div>
+                    </div>
                 </div>
-
-            </div>
-
-        </div>
-
-    </header>
-
-
-
-        <!-- Features Section -->
-    
-
-    <section id="features" class="features">
-
-        <div class="container">
-
-            <div class="section-header centered">
-
-                <h2>Everything You Need to Know What to Look For</h2>
-
-                <p>Professional house viewing checklist, now in your pocket &mdash; <a href="faq.html" class="link-inline-teal-medium">see FAQ</a></p>
-
-            </div>
-
-            <div class="features-grid">
-
-                <article class="feature-card">
-
-                    <div class="feature-icon"><i class="fas fa-clipboard-check"></i></div>
-
-                    <h3>Guided Property Viewing Checklist</h3>
-
-                    <p>One complete checklist covering four categories &mdash; location, exterior, interior, and other features. Add custom items for anything specific to the property, like a pool, solar system, or extra room. Takes 45&ndash;90 minutes and saves automatically as you go.</p>
-
-                </article>
-
-                <article class="feature-card">
-
-                    <div class="feature-icon"><i class="fas fa-lightbulb"></i></div>
-
-                    <h3>Learn What to Look For</h3>
-
-                    <p>Built-in tooltips explain exactly what to inspect &mdash; from identifying serious cracks to spotting covered-up water damage. Learn as you conduct viewings.</p>
-
-                </article>
-
-                <article class="feature-card">
-
-                    <div class="feature-icon"><i class="fas fa-camera"></i></div>
-
-                    <h3>Document Red Flags</h3>
-
-                    <p>Capture and organise photos by room during viewings. Build visual evidence for negotiations, insurance, or professional consultations. Photos are embedded in reports.</p>
-
-                </article>
-
-                <article class="feature-card">
-
-                    <div class="feature-icon"><i class="fas fa-chart-bar"></i></div>
-
-                    <h3>Smart Scoring System</h3>
-
-                    <p>Rate each aspect as Excellent, Good, Fair, or Poor. Intelligent weighting prioritises critical items like structural integrity. Get an overall condition rating and full breakdown.</p>
-
-                </article>
-
-                <article class="feature-card">
-
-                    <div class="feature-icon"><i class="fas fa-file-pdf"></i></div>
-
-                    <h3>Professional PDF Reports</h3>
-
-                    <p>Generate detailed reports with photos, scores, issue summaries, and recommendations. Share with family, contractors, or use for price negotiations.</p>
-
-                </article>
-
-                <article class="feature-card">
-
-                    <div class="feature-icon"><i class="fas fa-calculator"></i></div>
-
-                    <h3>Home Buying Cost Calculator</h3>
-
-                    <p>Calculate accurate monthly costs including bond repayments, transfer duties, attorney fees, rates, and utilities. Budget for the true cost of ownership.</p>
-
-                </article>
-
-                <article class="feature-card">
-
-                    <div class="feature-icon"><i class="fas fa-handshake"></i></div>
-
-                    <h3>Negotiation Power</h3>
-
-                    <p>Get expert negotiation tips based on issues found. Use documented red flags to justify price reductions. Know when to walk away vs. negotiate repairs.</p>
-
-                </article>
-
-                <article class="feature-card">
-
-                    <div class="feature-icon"><i class="fas fa-shield-alt"></i></div>
-
-                    <h3>Complete Privacy</h3>
-
-                    <p>All data stored locally on your device. No cloud storage, no data sharing. Your property viewing information remains completely private and secure.</p>
-
-                </article>
-
-            </div>
-
-        </div>
-
-    </section>
-
-
-
-    <!-- Benefits by User Type -->
-
-    <section id="benefits" class="benefits">
-
-        <div class="container">
-
-            <div class="section-header centered">
-
-                <h2>Tailored for Every Role in Property</h2>
-
-                <p>Whether you&rsquo;re buying your first home or managing a portfolio</p>
-
-            </div>
-
-            <div class="benefits-tabs">
-
-                <div class="tabs-nav">
-
-                    <button class="tab-btn active" data-tab="buyers" aria-label="Benefits for buyers">
-
-                        <i class="fas fa-user"></i> Buyers
-
-                    </button>
-
-                    <button class="tab-btn" data-tab="agents" aria-label="Benefits for estate agents">
-
-                        <i class="fas fa-briefcase"></i> Estate Agents
-
-                    </button>
-
-                    <button class="tab-btn" data-tab="sellers" aria-label="Benefits for sellers">
-
-                        <i class="fas fa-home"></i> Sellers
-
-                    </button>
-
-                    <button class="tab-btn" data-tab="investors" aria-label="Benefits for investors">
-
-                        <i class="fas fa-chart-line"></i> Investors
-
-                    </button>
-
+                <div class="stg-divider"></div>
+                <div class="stg-row" onclick="shareApp()">
+                    <div class="stg-row-icon"><i class="fas fa-share-alt"></i></div>
+                    <div class="stg-row-info">
+                        <span class="stg-row-title">Share App</span>
+                        <span class="stg-row-sub">Tell a friend about Home Buyers Guide SA</span>
+                    </div>
+                    <i class="fas fa-chevron-right stg-chevron"></i>
                 </div>
-
-                <div class="tabs-content tabs-content--flush">
-
-                    <div class="tab-pane active" id="buyers">
-
-                        <div class="benefit-content">
-
-                            <div class="benefit-image">
-
-                                <img src="images/screenshots/assessmentchecklist.jpeg" alt="House viewing checklist">
-
-                            </div>
-
-                            <div class="benefit-text">
-
-                                <h3>Buy with Confidence, Not Regrets</h3>
-
-                                <ul class="benefit-list">
-
-                                    <li>
-
-                                        <i class="fas fa-check"></i>
-
-                                        <div>
-
-                                            <strong>Avoid R50,000&ndash;R200,000 in Hidden Costs</strong>
-
-                                            <p>Know what to look for during viewings to identify structural issues, electrical problems, water damage, and compliance violations before signing.</p>
-
-                                        </div>
-
-                                    </li>
-
-                                    <li>
-
-                                        <i class="fas fa-check"></i>
-
-                                        <div>
-
-                                            <strong>Negotiate Like a Pro</strong>
-
-                                            <p>Use documented issues to negotiate R20,000&ndash;R100,000 off asking price or request repairs before purchase. Back your offer with evidence.</p>
-
-                                        </div>
-
-                                    </li>
-
-                                    <li>
-
-                                        <i class="fas fa-check"></i>
-
-                                        <div>
-
-                                            <strong>Compare Properties Objectively</strong>
-
-                                            <p>Side-by-side scoring of multiple properties helps you evaluate fairly. Make data-driven decisions, not emotional ones.</p>
-
-                                        </div>
-
-                                    </li>
-
-                                    <li>
-
-                                        <i class="fas fa-check"></i>
-
-                                        <div>
-
-                                            <strong>Know When to Get Professional Inspectors</strong>
-
-                                            <p>The app tells you when identified issues require professional inspectors, structural engineers, or electricians before making an offer.</p>
-
-                                        </div>
-
-                                    </li>
-
-                                </ul>
-
-                            </div>
-
-                        </div>
-
+                <div class="stg-divider"></div>
+                <div class="stg-row" onclick="navTo('helpScreen', null)">
+                    <div class="stg-row-icon"><i class="fas fa-question-circle"></i></div>
+                    <div class="stg-row-info">
+                        <span class="stg-row-title">Help &amp; Guide</span>
+                        <span class="stg-row-sub">How to use the app</span>
                     </div>
-
-                    <div class="tab-pane" id="agents">
-
-                        <div class="benefit-content">
-
-                            <div class="benefit-image">
-
-                                <img src="images/screenshots/assessmentresults.jpeg" alt="Professional assessment results">
-
-                            </div>
-
-                            <div class="benefit-text">
-
-                                <h3>Deliver Professional Service That Closes Deals</h3>
-
-                                <ul class="benefit-list">
-
-                                    <li>
-
-                                        <i class="fas fa-check"></i>
-
-                                        <div>
-
-                                            <strong>Instant Professional Reports</strong>
-
-                                            <p>Generate branded PDF reports on-site during viewings. Impress clients with immediate, detailed property assessments.</p>
-
-                                        </div>
-
-                                    </li>
-
-                                    <li>
-
-                                        <i class="fas fa-check"></i>
-
-                                        <div>
-
-                                            <strong>Standardised Viewing Process</strong>
-
-                                            <p>Use a consistent checklist for all properties. Provide clients with objective assessments and build trust through transparency.</p>
-
-                                        </div>
-
-                                    </li>
-
-                                    <li>
-
-                                        <i class="fas fa-check"></i>
-
-                                        <div>
-
-                                            <strong>Justify Pricing Objectively</strong>
-
-                                            <p>Support listing prices with documented property conditions. Challenge unrealistic seller expectations with data, not opinion.</p>
-
-                                        </div>
-
-                                    </li>
-
-                                    <li>
-
-                                        <i class="fas fa-check"></i>
-
-                                        <div>
-
-                                            <strong>Prevent Deal-Breaking Surprises</strong>
-
-                                            <p>Identify issues during initial viewings before they derail sales. Manage client expectations and close deals faster.</p>
-
-                                        </div>
-
-                                    </li>
-
-                                </ul>
-
-                            </div>
-
-                        </div>
-
-                    </div>
-
-                    <div class="tab-pane" id="sellers">
-
-                        <div class="benefit-content">
-
-                            <div class="benefit-image">
-
-                                <img src="images/screenshots/assessment.jpeg" alt="Assessment categories for sellers">
-
-                            </div>
-
-                            <div class="benefit-text">
-
-                                <h3>Sell Faster at the Right Price</h3>
-
-                                <ul class="benefit-list">
-
-                                    <li>
-
-                                        <i class="fas fa-check"></i>
-
-                                        <div>
-
-                                            <strong>Price Accurately From Day One</strong>
-
-                                            <p>Assess your property&rsquo;s true condition to set a realistic asking price. Avoid sitting on the market for months due to overpricing.</p>
-
-                                        </div>
-
-                                    </li>
-
-                                    <li>
-
-                                        <i class="fas fa-check"></i>
-
-                                        <div>
-
-                                            <strong>Prioritise High-ROI Improvements</strong>
-
-                                            <p>Identify which repairs offer the best return before listing. Don&rsquo;t waste money on improvements buyers won&rsquo;t value.</p>
-
-                                        </div>
-
-                                    </li>
-
-                                    <li>
-
-                                        <i class="fas fa-check"></i>
-
-                                        <div>
-
-                                            <strong>Fix Deal-Breakers Before Listing</strong>
-
-                                            <p>Address major issues proactively to avoid last-minute renegotiations or collapsed sales during buyer viewings.</p>
-
-                                        </div>
-
-                                    </li>
-
-                                    <li>
-
-                                        <i class="fas fa-check"></i>
-
-                                        <div>
-
-                                            <strong>Market with Documented Quality</strong>
-
-                                            <p>Highlight property strengths with professional assessment scores. Build buyer confidence from the first viewing.</p>
-
-                                        </div>
-
-                                    </li>
-
-                                </ul>
-
-                            </div>
-
-                        </div>
-
-                    </div>
-
-                    <div class="tab-pane" id="investors">
-
-                        <div class="benefit-content">
-
-                            <div class="benefit-image">
-
-                                <img src="images/screenshots/assessment.jpeg" alt="Property investment assessment">
-
-                            </div>
-
-                            <div class="benefit-text">
-
-                                <h3>Build a Profitable Property Portfolio</h3>
-
-                                <ul class="benefit-list">
-
-                                    <li>
-
-                                        <i class="fas fa-check"></i>
-
-                                        <div>
-
-                                            <strong>Rapid Multi-Property Assessments</strong>
-
-                                            <p>Assess multiple investment properties quickly. Consistent scoring allows objective comparison across your entire pipeline.</p>
-
-                                        </div>
-
-                                    </li>
-
-                                    <li>
-
-                                        <i class="fas fa-check"></i>
-
-                                        <div>
-
-                                            <strong>Manage Portfolio Conditions</strong>
-
-                                            <p>Track maintenance needs across multiple properties. Schedule preventive maintenance before issues escalate and reduce value.</p>
-
-                                        </div>
-
-                                    </li>
-
-                                    <li>
-
-                                        <i class="fas fa-check"></i>
-
-                                        <div>
-
-                                            <strong>Make Data-Driven Investment Decisions</strong>
-
-                                            <p>Compare investment opportunities with objective assessment data. Build profitable portfolios systematically, not on gut feel.</p>
-
-                                        </div>
-
-                                    </li>
-
-                                </ul>
-
-                            </div>
-
-                        </div>
-
-                    </div>
-
+                    <i class="fas fa-chevron-right stg-chevron"></i>
                 </div>
+                <div class="stg-divider"></div>
+                <div class="stg-row" onclick="showWelcomeModalManually()">
+                    <div class="stg-row-icon"><i class="fas fa-play-circle"></i></div>
+                    <div class="stg-row-info">
+                        <span class="stg-row-title">Show Welcome Screen</span>
+                        <span class="stg-row-sub">View the app introduction again</span>
+                    </div>
+                    <i class="fas fa-chevron-right stg-chevron"></i>
+                </div>
+                <div class="stg-divider"></div>
+                <div class="stg-row stg-row-toggle" onclick="toggleAssessmentGuide()">
+                    <div class="stg-row-icon"><i class="fas fa-clipboard-check"></i></div>
+                    <div class="stg-row-info">
+                        <span class="stg-row-title">Assessment Guide</span>
+                        <span class="stg-row-sub" id="assessmentGuideLabel">Shown when you start an assessment</span>
+                    </div>
+                    <div class="stg-toggle" id="assessmentGuideToggle">
+                        <div class="stg-toggle-knob"></div>
+                    </div>
+                </div>
+            </div>
 
+            <!-- ── Customization ── -->
+            <div class="stg-section-label">Customization</div>
+            <div class="stg-card">
+                <div class="stg-row" onclick="openCustomizeAssessment()">
+                    <div class="stg-row-icon" style="background:rgba(29,158,117,0.15)"><i class="fas fa-sliders-h" style="color:var(--brand-green)"></i></div>
+                    <div class="stg-row-info">
+                        <span class="stg-row-title">Customize Assessment <span class="stg-premium-tag" id="customizeAssessmentPremiumTag"><i class="fas fa-crown"></i> Premium</span></span>
+                        <span class="stg-row-sub">Add custom features, items &amp; questions to all assessments</span>
+                    </div>
+                    <i class="fas fa-chevron-right stg-chevron"></i>
+                </div>
+            </div>
+
+            <!-- ── Danger zone ── -->
+            <div class="stg-section-label">Data</div>
+            <div class="stg-card">
+                <div class="stg-row stg-row-danger" onclick="resetApp()">
+                    <div class="stg-row-icon stg-icon-danger"><i class="fas fa-trash-alt"></i></div>
+                    <div class="stg-row-info">
+                        <span class="stg-row-title stg-title-danger">Reset All Data</span>
+                        <span class="stg-row-sub">Permanently delete all properties</span>
+                    </div>
+                    <i class="fas fa-chevron-right stg-chevron"></i>
+                </div>
             </div>
 
         </div>
+    </div>
 
-    </section>
-
-
-
-    <!-- Sample Reports Section -->
-
-    <section id="samples" class="samples-section">
-
-        <div class="container">
-
-            <div class="section-header centered">
-
-                <h2>Professional Reports After Every Viewing</h2>
-
-                <p>See what Home Buyers Guide SA generates from your house viewing checklist</p>
-
-            </div>
-
-            <div class="samples-grid">
-
-                <article class="sample-card featured">
-
-                    <div class="sample-preview">
-
-                        <i class="fas fa-file-pdf"></i>
-
-                        <div class="sample-badge">Complete Property Viewing Report</div>
-
-                    </div>
-
-                    <div class="sample-content">
-
-                        <h3>Professional Property Assessment</h3>
-
-                        <p>Comprehensive evaluation with detailed analysis, professional recommendations, and negotiation strategies based on your house viewing.</p>
-
-                        <ul class="sample-features">
-
-                            <li><i class="fas fa-check"></i> Overall property condition rating from viewing</li>
-
-                            <li><i class="fas fa-check"></i> Executive summary with purchase considerations</li>
-
-                            <li><i class="fas fa-check"></i> Detailed room-by-room assessment results</li>
-
-                            <li><i class="fas fa-check"></i> Photo documentation with annotations</li>
-
-                            <li><i class="fas fa-check"></i> Critical red flags requiring immediate attention</li>
-
-                            <li><i class="fas fa-check"></i> Estimated repair costs and budget guidance</li>
-
-                            <li><i class="fas fa-check"></i> Negotiation strategies and talking points</li>
-
-                            <li><i class="fas fa-check"></i> Complete checklist responses from viewing</li>
-
-                        </ul>
-
-                        <a href="samples/quick-assessment-sample.pdf" download class="btn btn-primary">
-
-                            <i class="fas fa-download"></i> Download Sample Report
-
-                        </a>
-
-                    </div>
-
-                </article>
-
-            </div>
-
+    <!-- ═══════════════════════════════════════════════════════
+         CUSTOMIZE ASSESSMENT SCREEN
+    ════════════════════════════════════════════════════════════ -->
+    <div id="customizeAssessmentScreen" class="screen">
+        <div class="screen-header">
+            <button class="back-button" onclick="navTo('settingsScreen','navSettings')">
+                <i class="fas fa-arrow-left"></i>
+            </button>
+            <h2>Customize Assessment</h2>
         </div>
 
-    </section>
+        <div class="customize-page">
 
+            <!-- HOW THIS WORKS INFO CARD -->
+            <div class="cust-info-card" id="custInfoCard">
+                <div class="cust-info-header" onclick="toggleCustInfo()">
+                    <div class="cust-info-header-left">
+                        <i class="fas fa-book-open"></i>
+                        <span>How This Works</span>
+                    </div>
+                    <i class="fas fa-chevron-down cust-info-chevron" id="custInfoChevron"></i>
+                </div>
+                <div class="cust-info-body" id="custInfoBody">
+                    <p class="cust-info-intro">Add custom features and questions here once — they automatically appear in <strong>every future assessment and PDF report</strong>.</p>
 
+                    <div class="cust-info-row">
+                        <div class="cust-info-icon"><i class="fas fa-comment-alt"></i></div>
+                        <div>
+                            <p class="cust-info-term">Tooltip</p>
+                            <p class="cust-info-desc">During assessment, tapping the ⓘ icon shows your tooltip. Write exactly what the assessor should look for — be specific.<br><em style="color:var(--text-3);font-size:0.72rem">Example: "Check ceiling for water stains, wall cracks wider than 2mm, and damp on floor perimeter."</em></p>
+                        </div>
+                    </div>
 
-    <!-- How It Works -->
+                    <div class="cust-info-row">
+                        <div class="cust-info-icon"><i class="fas fa-weight-hanging"></i></div>
+                        <div>
+                            <p class="cust-info-term">Weight — Impact on Score</p>
+                            <p class="cust-info-desc">Not all items carry the same importance. A cracked tile matters less than a leaking roof. Choose the weight that reflects how seriously a poor rating should affect the overall property score.</p>
+                            <div class="cust-weight-guide" style="margin-top:8px">
+                                <div class="cust-wg-row"><span class="cust-wg-badge wg-low">Low 1</span><span>Minor cosmetic detail. Won't noticeably reduce the score.<br><em style="color:var(--text-3);font-size:0.68rem">E.g. Peeling paint, cracked driveway tile</em></span></div>
+                                <div class="cust-wg-row"><span class="cust-wg-badge wg-mod">Moderate 2</span><span>Standard importance — same as a typical built-in item.<br><em style="color:var(--text-3);font-size:0.68rem">E.g. Garden gate condition, outbuilding window</em></span></div>
+                                <div class="cust-wg-row"><span class="cust-wg-badge wg-high">High 3</span><span>Significant factor. Issues here visibly pull the score down.<br><em style="color:var(--text-3);font-size:0.68rem">E.g. Roof of a granny flat, structural wall cracks</em></span></div>
+                                <div class="cust-wg-row"><span class="cust-wg-badge wg-vhigh">Very High 3.5</span><span>Major consideration. Carries more weight than most items.<br><em style="color:var(--text-3);font-size:0.68rem">E.g. Electrical installation, serious damp damage</em></span></div>
+                                <div class="cust-wg-row"><span class="cust-wg-badge wg-crit">Critical 4</span><span>Deal-breaker level — as serious as foundation issues.<br><em style="color:var(--text-3);font-size:0.68rem">E.g. Structural integrity of a separate dwelling</em></span></div>
+                            </div>
+                        </div>
+                    </div>
 
-    <section class="how-it-works">
+                    <div class="cust-info-row">
+                        <div class="cust-info-icon"><i class="fas fa-clipboard-list"></i></div>
+                        <div>
+                            <p class="cust-info-term">Guidance (Optional)</p>
+                            <p class="cust-info-desc">Pre-write what Excellent, Good, Fair and Poor look like for this item. The right guidance fills into the PDF report automatically based on the rating given. If left blank, you can type your own findings in the report before generating the PDF.</p>
+                        </div>
+                    </div>
 
-        <div class="container">
-
-            <div class="section-header centered">
-
-                <h2>Start Your Next House Viewing Prepared</h2>
-
-                <p>Simple process, professional results</p>
-
+                    <div class="cust-info-row">
+                        <div class="cust-info-icon"><i class="fas fa-ban"></i></div>
+                        <div>
+                            <p class="cust-info-term">Exclude</p>
+                            <p class="cust-info-desc">Temporarily stop a feature from appearing in new assessments — useful for features that only apply to certain property types. Existing assessments are not affected.</p>
+                        </div>
+                    </div>
+                </div>
             </div>
 
-            <div class="steps-container">
-
-                <article class="step">
-
-                    <div class="step-number">1</div>
-
-                    <div class="step-content">
-
-                        <h3>Download &amp; Setup</h3>
-
-                        <p>Install from Google Play Store (100% free, no registration required). Add your first property viewing in seconds with address and basic details.</p>
-
-                    </div>
-
-                </article>
-
-                <article class="step">
-
-                    <div class="step-number">2</div>
-
-                    <div class="step-content">
-
-                        <h3>Follow the Guided Checklist</h3>
-
-                        <p>Work through four categories &mdash; location, exterior, interior, and other features &mdash; at your own pace. Built-in tooltips explain what each item means. Capture photos of red flags as you go.</p>
-
-                    </div>
-
-                </article>
-
-                <article class="step">
-
-                    <div class="step-number">3</div>
-
-                    <div class="step-content">
-
-                        <h3>Get Instant Scoring &amp; Report</h3>
-
-                        <p>Automatic scoring based on your responses. Generate a professional PDF report with photos, issues, recommendations, and negotiation strategies. Share via WhatsApp or email.</p>
-
-                    </div>
-
-                </article>
-
-                <article class="step">
-
-                    <div class="step-number">4</div>
-
-                    <div class="step-content">
-
-                        <h3>Make an Informed Decision</h3>
-
-                        <p>Compare properties side-by-side. Negotiate confidently with documented evidence. Know exactly what you&rsquo;re buying and what it will truly cost. <a href="home-buyers-journey.html" class="link-inline-teal-bold">See the full 10-step journey &rarr;</a></p>
-
-                    </div>
-
-                </article>
-
-            </div>
-
-        </div>
-
-    </section>
-
-
-
-    <!-- Video Section -->
-
-    <section class="video-section">
-
-        <div class="container">
-
-            <div class="section-header centered">
-
-                <h2>See the App in Action</h2>
-
-                <p>Watch how Home Buyers Guide SA guides you through a property viewing</p>
-
-            </div>
-
-
-
-            <!-- Desktop: 16:9 YouTube video (lazy facade — loads on click) -->
-
-            <div class="video-wrap video-desktop yt-facade" data-yt-id="I1wNhRoinkA" data-yt-title="Home Buyers Guide SA — App Demo">
-
-                <img src="https://img.youtube.com/vi/I1wNhRoinkA/hqdefault.jpg" alt="Home Buyers Guide SA App Demo video thumbnail" class="yt-facade-thumb" loading="lazy">
-
-                <button type="button" class="yt-facade-play" aria-label="Play video: Home Buyers Guide SA App Demo">
-
-                    <i class="fas fa-play"></i>
-
+            <!-- CUSTOM FEATURES SECTION -->
+            <div class="cust-section-header">
+                <div class="cust-section-label">
+                    <i class="fas fa-puzzle-piece"></i>
+                    <span>Custom Features</span>
+                </div>
+                <button class="cust-add-btn" onclick="showAddFeatureModal()">
+                    <i class="fas fa-plus"></i> Add Feature
                 </button>
-
             </div>
+            <div id="customFeaturesList" class="cust-list-container"></div>
 
-
-
-            <!-- Mobile: 9:16 YouTube Short (lazy facade — loads on click) -->
-
-            <div class="video-wrap video-mobile yt-facade" data-yt-id="1-U0-4BtE9s" data-yt-title="Home Buyers Guide SA — App Short">
-
-                <img src="https://img.youtube.com/vi/1-U0-4BtE9s/hqdefault.jpg" alt="Home Buyers Guide SA App Short video thumbnail" class="yt-facade-thumb" loading="lazy">
-
-                <button type="button" class="yt-facade-play" aria-label="Play video: Home Buyers Guide SA App Short">
-
-                    <i class="fas fa-play"></i>
-
+            <!-- CUSTOM QUESTIONS SECTION -->
+            <div class="cust-section-header">
+                <div class="cust-section-label">
+                    <i class="fas fa-question-circle"></i>
+                    <span>Custom Questions</span>
+                </div>
+                <button class="cust-add-btn" onclick="showAddQuestionModal()">
+                    <i class="fas fa-plus"></i> Add Question
                 </button>
+            </div>
+            <div id="customQuestionsList" class="cust-list-container"></div>
 
+            <!-- BACKUP & RESTORE SECTION -->
+            <div class="cust-section-header">
+                <div class="cust-section-label">
+                    <i class="fas fa-save"></i>
+                    <span>Backup &amp; Restore</span>
+                </div>
+            </div>
+            <div class="cust-backup-card">
+                <p class="cust-backup-desc">Save your custom configuration to a file on your device. Load it later after reinstalling the app, or share it with colleagues — estate agents and inspectors can share their entire setup with one file.</p>
+                <div class="cust-backup-btns">
+                    <button class="cust-backup-btn cust-export-btn" onclick="exportCustomSettings()">
+                        <i class="fas fa-download"></i> Save to Device
+                    </button>
+                    <button class="cust-backup-btn cust-import-btn" onclick="importCustomSettings()">
+                        <i class="fas fa-upload"></i> Load Settings
+                    </button>
+                </div>
             </div>
 
+            <!-- Hidden file input for import -->
+            <input type="file" id="customConfigImportInput" accept=".json" style="display:none"
+                   onchange="handleCustomConfigImport(event)">
+
+            <div style="height:30px"></div>
+        </div>
+    </div>
+
+    <!-- Success/Loading Animations -->
+    <div class="success-animation" id="successAnimation">
+        <div class="success-icon">
+            <i class="fas fa-check-circle"></i>
+        </div>
+        <p id="successMessage">Success!</p>
+    </div>
+	
+	<!-- FIXED Property Assessment Screen - Using consistent structure -->
+    <div id="propertyAssessmentScreen" class="screen">
+        <div class="screen-header">
+            <button class="back-button" onclick="showScreen('propertyListScreen')">
+                <i class="fas fa-arrow-left"></i>
+            </button>
+            <h2>Property Assessment</h2>
         </div>
 
-    </section>
+        <!-- FIXED: Changed from .assessment-header to .setup-section for consistency -->
+        <div class="setup-section">
+            <div class="property-summary">
+				<h3 id="assessmentPropertyAddress">Loading...</h3>
+				<p id="assessmentPropertyType">Property Type</p>
+				<div class="assessment-progress">
+					<div class="progress-fill" id="assessmentProgress"></div>
+				</div>
+				<div class="progress-text" id="progressText">0% Complete</div>
+				
+				<div id="assessmentResultsButtonContainer" class="assessment-results-button-container" style="display: none;">
+					<button id="assessmentResultsButton" class="assessment-results-btn" onclick="viewCurrentAssessmentResults()">
+						<i class="fas fa-chart-line"></i> View Results
+					</button>
+				</div>
+				
+				<!-- Assessment auto-saves on every change. Clear wipes it after confirmation. -->
+				<div class="assessment-controls">
+					<button class="clear-assessment-btn" onclick="clearCurrentAssessment()">
+						<i class="fas fa-trash-alt"></i> Clear Assessment
+					</button>
+				</div>
+			</div>
+        </div>
 
+        <div class="room-navigation" id="roomNavigation">
+            <!-- Categorized room navigation will be populated here -->
+        </div>
 
+        <div class="assessment-form" id="assessmentForm">
+            <!-- Current room assessment form will be populated here -->
+        </div>
+    </div>
 
-    <!-- Download Section -->
+    <!-- Assessment Results Screen -->
+    <div id="assessmentResultsScreen" class="screen">
+        <div class="screen-header">
+            <button class="back-button" onclick="showScreen('propertyListScreen')">
+                <i class="fas fa-arrow-left"></i>
+            </button>
+            <div>
+                <h2>Assessment Results</h2>
+                <p id="resultsPropertyInfo">Property assessment results and reports</p>
+            </div>
+        </div>
 
-    <section id="download" class="download-section">
+        <!-- Assessment Type Selection -->
+        <div id="assessmentTypeSelection" class="assessment-type-selection">
+            <div class="type-selection-header">
+                <h3>Select Report Type</h3>
+                <p>Choose which assessment report to view or generate</p>
+            </div>
+            <div id="assessmentTypeOptions" class="assessment-type-options">
+                <!-- Options will be populated by JavaScript -->
+            </div>
+        </div>
 
-        <div class="container">
+        <!-- Assessment Report Container -->
+        <div id="assessmentReportContainer" class="assessment-report-container hidden">
+            <!-- Report content will be populated by JavaScript -->
+        </div>
 
-            <div class="download-content">
-
-                <div class="download-text">
-
-                    <h2>Never Walk Into a House Viewing Unprepared Again</h2>
-
-                    <p>Professional house viewing checklist designed for South African buyers, sellers, and estate agents</p>
-
-                    <div class="download-features">
-
-                        <div class="download-feature">
-
-                            <i class="fas fa-check-circle"></i>
-
-                            <span>Free to start &mdash; assess up to 2 properties</span>
-
+        <!-- Report Options Modal -->
+        <div id="reportOptionsModal" class="modal hidden">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h3>Report Options</h3>
+                    <button class="modal-close-btn" onclick="hideReportOptionsModal()">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="report-options">
+                        <div class="option-group">
+                            <label class="option-label">
+                                <input type="checkbox" id="includePhotosOption" checked>
+                                <span class="checkmark"></span>
+                                Include Photos in Report
+                            </label>
+                            <p class="option-description">Include assessment photos in the generated report</p>
                         </div>
-
-                        <div class="download-feature">
-
-                            <i class="fas fa-check-circle"></i>
-
-                            <span>No account required &mdash; start immediately</span>
-
+                        
+                        <div class="option-group">
+                            <label class="option-label">Company Logo</label>
+                            <input type="file" id="companyLogoInput" accept="image/*" class="form-input">
+                            <p class="option-description">Optional company logo for report header</p>
                         </div>
-
-                        <div class="download-feature">
-
-                            <i class="fas fa-check-circle"></i>
-
-                            <span>Complete privacy &mdash; all data stays on your device</span>
-
+                        
+                        <div class="option-group">
+                            <label class="option-label">Report Title</label>
+                            <input type="text" id="reportTitleInput" class="form-input" 
+                                   value="Property Assessment Report" 
+                                   placeholder="Enter custom report title">
                         </div>
-
-                        <div class="download-feature">
-
-                            <i class="fas fa-check-circle"></i>
-
-                            <span>Upgrade for unlimited viewings &amp; PDF reports</span>
-
-                        </div>
-
                     </div>
-
-                    <a href="https://play.google.com/store/apps/details?id=com.joelapexs.propertyinspector"
-
-                       target="_blank" class="btn-download-image"
-
-                       aria-label="Download Home Buyers Guide SA from Google Play">
-
-                        <img src="images/google-play-badge.png" alt="Get it on Google Play" class="play-badge-large">
-
-                    </a>
-
-                    <p class="download-note">Available for Android devices running Android 5.0+ &nbsp;&middot;&nbsp; <a href="blog.html" class="link-inline-muted-small">Read SA Property Pitfalls &rarr;</a></p>
-
                 </div>
-
-                <div class="download-image">
-
-                    <img src="images/transparent_logo.png" alt="Home Buyers Guide SA" class="download-image-logo">
-
-                    <img src="images/app_banner.png" alt="Home Buyers Guide SA App" class="download-image-banner">
-
+                <div class="modal-footer">
+                    <button class="cancel-button" onclick="hideReportOptionsModal()">Cancel</button>
+                    <button class="save-button" onclick="generateReportWithOptions()">Generate Report</button>
                 </div>
-
             </div>
-
         </div>
-
-    </section>
-
-
-
-    <!-- Footer -->
-
-    <footer class="footer">
-
-        <div class="container">
-
-            <div class="footer-strip">
-
-                <div class="footer-logo">
-
-                    <img src="images/transparent_logo.png" alt="Home Buyers Guide SA">
-
-                    <span>Home Buyers Guide SA</span>
-
-                </div>
-
-                <nav class="footer-nav" aria-label="Footer navigation">
-
-                    <a href="privacy.html">Privacy Policy</a>
-
-                    <a href="mailto:joelapexs@gmail.com">Contact</a>
-
-                    <a href="https://www.youtube.com/@HomeBuyersGuideSA" target="_blank">YouTube</a>
-
-                    <a href="https://www.facebook.com/profile.php?id=61581616425555" target="_blank">Facebook</a>
-
-                    <a href="https://www.tiktok.com/@homebuyerguidesa" target="_blank">TikTok</a>
-
-                    <a href="https://play.google.com/store/apps/details?id=com.joelapexs.propertyinspector" target="_blank">Google Play</a>
-
-                </nav>
-
-                <p class="footer-copy">&copy; 2026 Joel Apex Solutions. All rights reserved.</p>
-
-            </div>
-
-        </div>
-
-    </footer>
-
-
-
-    <!-- JavaScript -->
-
-    <script src="website-main.js"></script>
-
+    </div>
 </body>
-
 </html>
