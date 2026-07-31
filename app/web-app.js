@@ -30,48 +30,69 @@
     // ----------------------------------------------------------------
     // 2. PHOTO PICKER — let iOS/Android show Camera AND Photo Library
     //    photo-manager.js sets input.capture = 'camera', which forces
-    //    Safari straight into the camera with no gallery option. This
-    //    overrides capturePhoto() (web only) to drop that attribute,
-    //    which makes iOS/Android show their full picker action sheet
-    //    instead. Runs immediately — photo-manager.js loads earlier in
-    //    index.html, so window.photoManager already exists here.
+    //    HTML photo buttons call window.capturePhoto() → photoManager.capturePhoto().
+    //    This patch overrides BOTH so there's no dependency on object references.
+    //    Key rules for mobile cross-browser compatibility:
+    //      - No `capture` attribute → shows Camera + Gallery + Files picker
+    //      - Input must be 1×1px IN the viewport (not display:none or off-screen)
+    //        because iOS Safari and some Android Chrome builds silently cancel
+    //        the picker when the element is outside the visible area
+    //      - Input must stay in the DOM until the file is selected (not removed
+    //        immediately after .click() as the original code did)
     // ----------------------------------------------------------------
-    if (window.photoManager && typeof window.photoManager.capturePhoto === 'function') {
-        window.photoManager.capturePhoto = async function (roomId, itemText) {
-            this.currentCapture = { roomId: roomId, itemText: itemText };
+    function applyPhotoPatch() {
+        var pm = window.photoManager;
+        if (!pm || typeof pm.processPhoto !== 'function') return;
+
+        function webCapture(roomId, itemText) {
+            pm.currentCapture = { roomId: roomId, itemText: itemText };
 
             var input = document.createElement('input');
-            input.type = 'file';
+            input.type   = 'file';
             input.accept = 'image/*';
-            // No `capture` attribute — lets the browser show Camera + Gallery + Files.
-            // Use off-screen positioning (not display:none) so iOS/Android browsers
-            // keep the picker open — some mobile browsers silently cancel the picker
-            // if the input is hidden or removed before the user selects a file.
-            input.style.position = 'fixed';
-            input.style.left    = '-9999px';
-            input.style.top     = '-9999px';
-            input.style.opacity = '0';
+            // 1×1 at top-left of viewport — invisible but reachable by the browser
+            input.style.cssText =
+                'position:fixed;top:0;left:0;width:1px;height:1px;' +
+                'opacity:0;overflow:hidden;pointer-events:none;';
 
-            var self = this;
             input.onchange = async function (event) {
                 var file = event.target.files[0];
-                // Remove input only AFTER file is captured
                 if (input.parentNode) input.parentNode.removeChild(input);
-                if (file && self.currentCapture) {
-                    await self.processPhoto(file, self.currentCapture.roomId, self.currentCapture.itemText);
-                    self.currentCapture = null;
+                if (file && pm.currentCapture) {
+                    await pm.processPhoto(
+                        file,
+                        pm.currentCapture.roomId,
+                        pm.currentCapture.itemText
+                    );
+                    pm.currentCapture = null;
                 }
             };
 
             document.body.appendChild(input);
             input.click();
 
-            // Safety cleanup if user cancels the picker (no change event fires)
+            // Safety cleanup — fires if user closes picker without choosing
             setTimeout(function () {
                 if (input.parentNode) input.parentNode.removeChild(input);
-            }, 600000); // 10 minutes
+            }, 600000); // 10 min
+        }
+
+        // Override the GLOBAL function — this is what every HTML button calls:
+        // onclick="capturePhoto('...', '...')"
+        window.capturePhoto = function (roomId, itemText) {
+            return webCapture(roomId, itemText);
         };
+
+        // Belt-and-braces: also patch the method on the object itself
+        pm.capturePhoto = async function (roomId, itemText) {
+            return webCapture(roomId, itemText);
+        };
+
+        console.log('📷 web-app: photo gallery patch applied');
     }
+
+    applyPhotoPatch(); // runs immediately (photo-manager.js loads before web-app.js)
+    document.addEventListener('DOMContentLoaded', applyPhotoPatch); // safety net
 
     // ----------------------------------------------------------------
     // 3. GUARANTEE SAVES — belt-and-braces persistence
@@ -210,29 +231,81 @@
     // ----------------------------------------------------------------
     // 5. FULLSCREEN PROMPT — "feel like a native app" on first visit
     //    Shows a small banner asking the user to go full screen.
-    //    Only shows in a browser (not when already in standalone mode).
-    //    Dismissed permanently on either button.
+    //    Shows a prompt on first visit each session. When the user exits
+    //    fullscreen (e.g. presses Escape or swipes down), a small floating
+    //    button appears so they can re-enter without reloading the page.
     // ----------------------------------------------------------------
     function supportsFullscreen() {
         var el = document.documentElement;
         return !!(el.requestFullscreen || el.webkitRequestFullscreen || el.mozRequestFullScreen);
     }
 
+    function isInFullscreen() {
+        return !!(document.fullscreenElement ||
+                  document.webkitFullscreenElement ||
+                  document.mozFullScreenElement);
+    }
+
     function enterFullscreen() {
         var el = document.documentElement;
         try {
-            if (el.requestFullscreen)       el.requestFullscreen();
+            if (el.requestFullscreen)            el.requestFullscreen();
             else if (el.webkitRequestFullscreen) el.webkitRequestFullscreen();
             else if (el.mozRequestFullScreen)    el.mozRequestFullScreen();
         } catch (e) {}
-        try { localStorage.setItem('hbgFullscreenDismissed', '1'); } catch (e) {}
+        try { sessionStorage.setItem('hbgWasFullscreen', '1'); } catch (e) {}
     }
 
+    // Small floating button that reappears after the user exits fullscreen
+    function showFullscreenRestoreBtn() {
+        if (isStandalone() || !supportsFullscreen()) return;
+        if (document.getElementById('hbgFsRestoreBtn')) return;
+
+        var btn = document.createElement('button');
+        btn.id        = 'hbgFsRestoreBtn';
+        btn.className = 'hbg-fs-restore-btn';
+        btn.setAttribute('aria-label', 'Enter full screen');
+        btn.innerHTML = '<i class="fas fa-expand"></i>';
+
+        btn.addEventListener('click', function () {
+            enterFullscreen();
+            // onFullscreenChange will remove the button once fullscreen activates
+        });
+
+        document.body.appendChild(btn);
+    }
+
+    function removeFullscreenRestoreBtn() {
+        var btn = document.getElementById('hbgFsRestoreBtn');
+        if (btn) btn.remove();
+    }
+
+    // Detect fullscreen exit → show restore button; fullscreen enter → hide it
+    function onFullscreenChange() {
+        if (isInFullscreen()) {
+            removeFullscreenRestoreBtn();
+        } else {
+            // Only show restore button if the user entered fullscreen this session
+            try {
+                if (sessionStorage.getItem('hbgWasFullscreen')) {
+                    showFullscreenRestoreBtn();
+                }
+            } catch (e) {}
+        }
+    }
+
+    document.addEventListener('fullscreenchange',       onFullscreenChange);
+    document.addEventListener('webkitfullscreenchange', onFullscreenChange);
+    document.addEventListener('mozfullscreenchange',    onFullscreenChange);
+
+    // First-visit prompt — shown once per browser session
     function showFullscreenPrompt() {
-        if (isStandalone()) return;                           // already standalone
-        if (!supportsFullscreen()) return;                    // browser can't do it
-        if (document.getElementById('hbgFsPrompt')) return;  // already showing
-        try { if (localStorage.getItem('hbgFullscreenDismissed')) return; } catch (e) {}
+        if (isStandalone()) return;
+        if (!supportsFullscreen()) return;
+        if (isInFullscreen()) return;
+        if (document.getElementById('hbgFsPrompt')) return;
+        // Once per session only (cleared when tab/browser closes)
+        try { if (sessionStorage.getItem('hbgFsPromptSeen')) return; } catch (e) {}
 
         var prompt = document.createElement('div');
         prompt.id        = 'hbgFsPrompt';
@@ -241,24 +314,26 @@
             '<div class="hbg-fp-icon"><i class="fas fa-expand"></i></div>' +
             '<div class="hbg-fp-text">' +
                 '<strong>Full Screen Mode</strong>' +
-                '<span>Tap to hide browser bars for an app-like experience</span>' +
+                '<span>Hides browser bars for an app-like experience</span>' +
             '</div>' +
             '<button class="hbg-fp-yes">Go Full Screen</button>' +
             '<button class="hbg-fp-close" aria-label="Dismiss">&times;</button>';
 
         document.body.appendChild(prompt);
+        try { sessionStorage.setItem('hbgFsPromptSeen', '1'); } catch (e) {}
 
         prompt.querySelector('.hbg-fp-yes').addEventListener('click', function () {
             enterFullscreen();
             prompt.remove();
         });
+
+        // Dismiss just hides the prompt — restore button still shows on exit
         prompt.querySelector('.hbg-fp-close').addEventListener('click', function () {
-            try { localStorage.setItem('hbgFullscreenDismissed', '1'); } catch (e) {}
             prompt.remove();
         });
 
-        // Auto-dismiss after 15 seconds if ignored
-        setTimeout(function () { if (prompt.parentNode) prompt.remove(); }, 15000);
+        // Auto-dismiss after 12 s if ignored
+        setTimeout(function () { if (prompt.parentNode) prompt.remove(); }, 12000);
     }
 
     // ----------------------------------------------------------------
