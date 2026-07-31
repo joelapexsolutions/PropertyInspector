@@ -5805,19 +5805,68 @@ function addToCalendar(propertyId) {
     
     const googleCalendarUrl = `https://calendar.google.com/calendar/render?action=TEMPLATE&text=${encodeURIComponent(title)}&dates=${startTime}/${endTime}&details=${encodeURIComponent(details)}&location=${encodeURIComponent(property.address)}`;
     
+    // Platform-aware calendar options
+    const ua = navigator.userAgent;
+    const isIOSDevice = /iPhone|iPad|iPod/.test(ua) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+    const isAndroidDevice = /Android/.test(ua);
+
+    let calendarBtn1, calendarBtn2;
+    if (isIOSDevice) {
+        calendarBtn1 = `<button class="calendar-option-btn" onclick="openPhoneCalendar('${propertyId}'); hideModal();"><i class="fas fa-calendar-check"></i> Apple Calendar</button>`;
+        calendarBtn2 = `<button class="calendar-option-btn" onclick="window.open('${googleCalendarUrl}', '_blank'); hideModal();"><i class="fab fa-google"></i> Google Calendar</button>`;
+    } else if (isAndroidDevice) {
+        calendarBtn1 = `<button class="calendar-option-btn" onclick="openPhoneCalendar('${propertyId}'); hideModal();"><i class="fas fa-calendar-check"></i> Phone Calendar</button>`;
+        calendarBtn2 = `<button class="calendar-option-btn" onclick="window.open('${googleCalendarUrl}', '_blank'); hideModal();"><i class="fab fa-google"></i> Google Calendar</button>`;
+    } else {
+        calendarBtn1 = `<button class="calendar-option-btn" onclick="window.open('${googleCalendarUrl}', '_blank'); hideModal();"><i class="fab fa-google"></i> Google Calendar</button>`;
+        calendarBtn2 = `<button class="calendar-option-btn" onclick="downloadICSFile('${propertyId}'); hideModal();"><i class="fas fa-calendar-alt"></i> Other Calendar App (.ics)</button>`;
+    }
+
     showModal('Add to Calendar', `
         <div class="calendar-modal">
             <div class="calendar-options">
                 <h4>Choose your calendar app:</h4>
-                <button class="calendar-option-btn" onclick="window.open('${googleCalendarUrl}', '_blank'); hideModal();">
-                    <i class="fab fa-google"></i> Google Calendar
-                </button>
-                <button class="calendar-option-btn" onclick="downloadICSFile('${propertyId}'); hideModal();">
-                    <i class="fas fa-download"></i> Download .ics file
-                </button>
+                ${calendarBtn1}
+                ${calendarBtn2}
             </div>
         </div>
     `, null, null, null, 'Cancel');
+}
+
+// Opens native calendar app via ICS blob link (no download).
+// iOS: triggers the system calendar open prompt.
+// Android: opens default calendar app.
+function openPhoneCalendar(propertyId) {
+    const property = getProperty(propertyId);
+    if (!property || !property.assessmentDate) return;
+    const d = new Date(property.assessmentDate);
+    const fmt = t => t.toISOString().replace(/[-:]/g, '').split('.')[0] + 'Z';
+    const startTime = fmt(d);
+    const endTime = fmt(new Date(d.getTime() + 60 * 60 * 1000));
+    const loc = property.address + (property.suburb ? ', ' + property.suburb : '');
+    const ics = [
+        'BEGIN:VCALENDAR',
+        'VERSION:2.0',
+        'PRODID:-//Home Buyers Guide SA//Property Assessment//EN',
+        'BEGIN:VEVENT',
+        'UID:' + property.id + '-' + Date.now() + '@propertyinspector.app',
+        'DTSTART:' + startTime,
+        'DTEND:' + endTime,
+        'SUMMARY:Property Assessment: ' + property.address,
+        'DESCRIPTION:Assessment for ' + (property.type || 'Property') + ' at ' + loc,
+        'LOCATION:' + loc,
+        'END:VEVENT',
+        'END:VCALENDAR'
+    ].join('\r\n');
+    const blob = new Blob([ics], { type: 'text/calendar;charset=utf-8' });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = url;
+    // NO download attribute - tells mobile browser to open in calendar app
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    setTimeout(function() { URL.revokeObjectURL(url); }, 30000);
 }
 
 // Schedule an in-app push notification for the assessment date
@@ -5896,6 +5945,7 @@ END:VCALENDAR`;
 // Export the new functions
 window.addToCalendar = addToCalendar;
 window.downloadICSFile = downloadICSFile;
+window.openPhoneCalendar = openPhoneCalendar;
 
 
 // Share App Function
