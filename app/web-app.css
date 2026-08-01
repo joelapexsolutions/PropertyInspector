@@ -694,7 +694,28 @@ body.web-mode .pgs-plan {
 body.web-mode .pgs-plan:active,
 body.web-mode .pgs-plan.pgs-plan-selected {
     border-color: #06D6A0;
-    background: rgba(6,214,160,0.08);
+    background: rgba(6, 214, 160, 0.15);
+    box-shadow: 0 0 0 2px #06D6A0;
+    transform: scale(1.03);
+}
+
+body.web-mode .pgs-plan.pgs-plan-selected .pgs-plan-period {
+    color: #06D6A0;
+    font-weight: 700;
+}
+
+body.web-mode .pgs-plan.pgs-plan-selected .pgs-plan-price {
+    color: #06D6A0;
+}
+
+body.web-mode .pgs-plan.pgs-plan-selected::after {
+    content: '✓';
+    position: absolute;
+    top: 6px;
+    right: 8px;
+    color: #06D6A0;
+    font-size: 0.9rem;
+    font-weight: 900;
 }
 
 body.web-mode .pgs-plan-popular {
