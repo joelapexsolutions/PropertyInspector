@@ -558,19 +558,19 @@
             });
     };
 
-    // Handle plan selection (Stage 3 will attach PayPal here)
+    // Handle plan selection — render PayPal buttons for the chosen plan
     window.pgsSelectPlan = function (planId, priceRand) {
-        // Highlight selected plan
+        // Highlight selected plan card
         document.querySelectorAll('.pgs-plan').forEach(function (p) {
             p.classList.remove('pgs-plan-selected');
         });
-        event.currentTarget.classList.add('pgs-plan-selected');
-        // Stage 3: PayPal button will load here
-        console.log('Plan selected:', planId, 'R' + priceRand);
-        var cs = document.getElementById('pgsComingSoon');
-        if (cs) cs.innerHTML = '<i class="fas fa-check-circle" style="color:#06D6A0"></i> '
-            + planId.replace('month', ' month').replace('1year', '1 year')
-            + ' — R' + priceRand + ' selected. Payment coming soon!';
+        if (event && event.currentTarget) {
+            event.currentTarget.classList.add('pgs-plan-selected');
+        }
+        // Load and render PayPal buttons for this plan
+        if (window.hbgPayPal && window.hbgPayPal.renderButtons) {
+            window.hbgPayPal.renderButtons(planId);
+        }
     };
 
     // Handle sign-out
