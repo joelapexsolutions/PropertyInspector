@@ -180,13 +180,33 @@
     });
 
     // ----------------------------------------------------------------
-    // Google Sign-In
+    // Google Sign-In — uses popup so the user stays on the premium gate
+    // screen. No page reload, no redirect confusion. If the popup is
+    // blocked by the browser, falls back to redirect automatically.
     // ----------------------------------------------------------------
     function signInWithGoogle() {
         var provider = new firebase.auth.GoogleAuthProvider();
         provider.setCustomParameters({ prompt: 'select_account' });
-        // Redirect works reliably on all mobile browsers including Safari iOS
-        return auth.signInWithRedirect(provider);
+
+        return auth.signInWithPopup(provider)
+            .then(function (result) {
+                console.log('hbg-auth: Google sign-in complete', result.user.email);
+                // onAuthStateChanged fires automatically — no extra code needed
+            })
+            .catch(function (err) {
+                // User closed the popup — silent, no error
+                if (err.code === 'auth/popup-closed-by-user' ||
+                    err.code === 'auth/cancelled-popup-request') {
+                    return;
+                }
+                // Popup blocked (some mobile browsers) → fall back to redirect
+                if (err.code === 'auth/popup-blocked') {
+                    console.log('hbg-auth: popup blocked, falling back to redirect');
+                    return auth.signInWithRedirect(provider);
+                }
+                console.error('hbg-auth: Google sign-in error', err.code, err.message);
+                throw err;
+            });
     }
 
     // ----------------------------------------------------------------
