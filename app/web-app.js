@@ -617,8 +617,8 @@
                     '<p class="pgs-payment-error">' +
                     '<i class="fas fa-exclamation-triangle"></i> ' +
                     'Payment not loading. Please hard-refresh the page (Ctrl+Shift+R) ' +
-                    'or contact <a href="mailto:joelapexs@gmail.com" ' +
-                    'style="color:#06D6A0">joelapexs@gmail.com</a> to subscribe.' +
+                    'or contact <a href="mailto:homebuyersguidesa@gmail.com" ' +
+                    'style="color:#06D6A0">homebuyersguidesa@gmail.com</a> to subscribe.' +
                     '</p>';
             }
             var cs = document.getElementById('pgsComingSoon');
