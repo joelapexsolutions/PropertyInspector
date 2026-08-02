@@ -1,8 +1,6 @@
 // ====================================================================
 // PAYPAL-CHECKOUT.JS — Recurring subscription payments
 // Home Buyers Guide SA PWA
-// Uses PayPal Subscriptions API — auto-renews until user cancels,
-// exactly like Google Play subscriptions.
 // ====================================================================
 (function () {
     'use strict';
@@ -10,7 +8,6 @@
     var PAYPAL_CLIENT_ID = 'BAAwUsXDGy5cJfkh0AkE8c-5qiUlafv5LODMyEP8p' +
                            'SzCxLUVozIWMyD9Q_crnEW63qG1ZUYkB35lxlfq6E';
 
-    // Live PayPal Plan IDs — created in PayPal Business Dashboard
     var PLAN_IDS = {
         '1month': 'P-3X13709968877904VNJXVTPI',
         '3month': 'P-2VU09087LE26726O6NJXVU5I',
@@ -18,31 +15,38 @@
         '1year':  'P-2A3O5111WW754613DNJXVV4Y'
     };
 
-    var PLAN_LABELS = {
-        '1month': '1 Month Premium — Home Buyers Guide SA',
-        '3month': '3 Months Premium — Home Buyers Guide SA',
-        '6month': '6 Months Premium — Home Buyers Guide SA',
-        '1year':  '1 Year Premium — Home Buyers Guide SA'
+    // Trial info — only 1 month plan has a free trial
+    var TRIAL_DAYS = { '1month': 3 };
+
+    var PLAN_BILLING = {
+        '1month': 'After your 3-day free trial, R100/month is charged automatically.',
+        '3month': 'R250 is charged every 3 months automatically.',
+        '6month': 'R450 is charged every 6 months automatically.',
+        '1year':  'R850 is charged once a year automatically.'
     };
 
     var _currentPlanId  = null;
     var _paypalInstance = null;
-    var _sdkLoaded      = false;
+    var _renderCount    = 0; // forces fresh container on every render
 
     // ----------------------------------------------------------------
-    // Load PayPal SDK with subscription intent
+    // Load PayPal SDK — disable card button, use subscription intent
+    // card payments go through PayPal's own checkout, not a separate modal
     // ----------------------------------------------------------------
     function loadSDK(callback) {
-        if (_sdkLoaded && window.paypal) { callback(); return; }
+        if (window.paypal) { callback(); return; }
+
+        // Remove any existing SDK script to force fresh load
         var existing = document.getElementById('paypal-sdk');
-        if (existing) { existing.onload = callback; return; }
+        if (existing) existing.parentNode.removeChild(existing);
 
         var script    = document.createElement('script');
         script.id     = 'paypal-sdk';
         script.src    = 'https://www.paypal.com/sdk/js?client-id='
                       + PAYPAL_CLIENT_ID
-                      + '&vault=true&intent=subscription';
-        script.onload = function () { _sdkLoaded = true; callback(); };
+                      + '&vault=true&intent=subscription'
+                      + '&disable-funding=card,paylater,venmo';
+        script.onload = callback;
         script.onerror = function () {
             showError('Could not load PayPal. Check your connection and try again.');
         };
@@ -50,30 +54,51 @@
     }
 
     // ----------------------------------------------------------------
-    // Render PayPal subscription buttons for the selected plan
+    // Show billing info for selected plan
+    // ----------------------------------------------------------------
+    function showBillingInfo(planId) {
+        var infoEl = document.getElementById('pgsBillingInfo');
+        if (!infoEl) return;
+        infoEl.textContent = PLAN_BILLING[planId] || '';
+        infoEl.style.display = '';
+    }
+
+    // ----------------------------------------------------------------
+    // Render PayPal subscription buttons
+    // Uses a fresh container div every time to avoid SDK caching issues
     // ----------------------------------------------------------------
     function renderButtons(planId) {
         if (!PLAN_IDS[planId]) return;
         _currentPlanId = planId;
+        _renderCount++;
 
-        var container = document.getElementById('pgsPayPalContainer');
-        var btnDiv    = document.getElementById('paypal-button-container');
-        if (!container || !btnDiv) return;
+        var btnDiv = document.getElementById('paypal-button-container');
+        if (!btnDiv) return;
 
-        // Destroy previous buttons
+        // Close previous instance
         if (_paypalInstance) {
             try { _paypalInstance.close(); } catch (e) {}
             _paypalInstance = null;
         }
-        btnDiv.innerHTML = '<div class="pgs-paypal-loading">'
-            + '<i class="fas fa-spinner fa-spin"></i> Loading payment...</div>';
-        container.style.display = 'block';
+
+        // Force fresh container — prevents PayPal SDK re-render errors
+        var freshId = 'ppbtn-' + _renderCount;
+        btnDiv.innerHTML = '<div id="' + freshId + '"></div>'
+            + '<div class="pgs-paypal-loading" id="pgsPayPalLoading">'
+            + '<i class="fas fa-spinner fa-spin"></i> Loading PayPal...</div>';
 
         var cs = document.getElementById('pgsComingSoon');
         if (cs) cs.style.display = 'none';
 
+        showBillingInfo(planId);
+
+        // Always reload PayPal SDK fresh to avoid stale state
+        // (fixes "payment error" when switching between plans)
+        delete window.paypal;
+
         loadSDK(function () {
-            btnDiv.innerHTML = '';
+            var loading = document.getElementById('pgsPayPalLoading');
+            if (loading) loading.remove();
 
             _paypalInstance = window.paypal.Buttons({
                 style: {
@@ -84,37 +109,52 @@
                     height: 50
                 },
 
-                // Create subscription using the plan ID
                 createSubscription: function (data, actions) {
                     return actions.subscription.create({
                         plan_id: PLAN_IDS[_currentPlanId]
                     });
                 },
 
-                // Subscription approved — verify with Cloud Function
                 onApprove: function (data) {
                     onSubscriptionApproved(data.subscriptionID, _currentPlanId);
                 },
 
                 onError: function (err) {
                     console.error('PayPal error:', err);
-                    showError('Payment error. Please try again.');
+                    showError('Payment error. Please try again or contact homebuyersguidesa@gmail.com');
                 },
 
                 onCancel: function () {
-                    console.log('PayPal subscription cancelled by user');
+                    // User closed PayPal — reset so they can try again cleanly
+                    var loadingDiv = document.getElementById('pgsPayPalLoading');
+                    if (!loadingDiv) {
+                        var info = document.createElement('p');
+                        info.className = 'pgs-payment-error';
+                        info.style.color = '#8bbad4';
+                        info.innerHTML = '<i class="fas fa-info-circle"></i> Payment cancelled. Select a plan to try again.';
+                        var bd = document.getElementById(freshId);
+                        if (bd) bd.insertAdjacentElement('afterend', info);
+                    }
                 }
             });
 
-            _paypalInstance.render('#paypal-button-container');
+            var target = document.getElementById(freshId);
+            if (target) {
+                _paypalInstance.render('#' + freshId);
+            }
         });
     }
 
     // ----------------------------------------------------------------
-    // Subscription approved — call Cloud Function to verify and activate
+    // Subscription approved
     // ----------------------------------------------------------------
     function onSubscriptionApproved(subscriptionId, planId) {
-        showProcessing();
+        var container = document.getElementById('pgsPayPalContainer');
+        if (container) {
+            container.innerHTML = '<div class="pgs-paypal-loading">'
+                + '<i class="fas fa-spinner fa-spin"></i>'
+                + ' Activating your subscription…</div>';
+        }
 
         var verifyFn = firebase.functions().httpsCallable('verifyPayPalSubscription');
         verifyFn({ subscriptionId: subscriptionId, planId: planId })
@@ -127,44 +167,29 @@
             })
             .catch(function (err) {
                 console.error('Cloud Function error:', err);
-                showError('Could not verify payment. Email homebuyersguidesa@gmail.com with your receipt.');
+                showError('Could not verify. Email homebuyersguidesa@gmail.com with your PayPal receipt.');
             });
     }
 
     // ----------------------------------------------------------------
-    // Subscription activated — show confirmation
+    // Show success screen
     // ----------------------------------------------------------------
     function onActivated(planId, nextBillingDate) {
         var expiry = nextBillingDate ? new Date(nextBillingDate) : null;
-        var expiryLabel = expiry
-            ? expiry.toLocaleDateString('en-ZA', { day: 'numeric', month: 'long', year: 'numeric' })
-            : 'active';
-
         var expiryEl = document.getElementById('pgsExpiryMsg');
         if (expiryEl) {
-            expiryEl.textContent = 'Next billing date: ' + expiryLabel
-                + ' · Cancel anytime from Settings';
+            expiryEl.textContent = expiry
+                ? 'Next billing date: '
+                  + expiry.toLocaleDateString('en-ZA', { day: 'numeric', month: 'long', year: 'numeric' })
+                  + ' · Cancel anytime from Settings'
+                : 'Subscription active · Cancel anytime from Settings';
         }
-
-        ['pgsSignInSection', 'pgsEmailSentSection', 'pgsPlanSection']
-            .forEach(function (id) {
-                var el = document.getElementById(id);
-                if (el) el.style.display = 'none';
-            });
-
+        ['pgsSignInSection','pgsEmailSentSection','pgsPlanSection'].forEach(function (id) {
+            var el = document.getElementById(id);
+            if (el) el.style.display = 'none';
+        });
         var premiumSection = document.getElementById('pgsPremiumSection');
         if (premiumSection) premiumSection.style.display = '';
-
-        console.log('✅ Subscription activated:', planId);
-    }
-
-    function showProcessing() {
-        var container = document.getElementById('pgsPayPalContainer');
-        if (container) {
-            container.innerHTML = '<div class="pgs-paypal-loading">'
-                + '<i class="fas fa-spinner fa-spin"></i>'
-                + ' Activating your subscription…</div>';
-        }
     }
 
     function showError(msg) {
@@ -175,12 +200,6 @@
         }
     }
 
-    // ----------------------------------------------------------------
-    // Public API
-    // ----------------------------------------------------------------
-    window.hbgPayPal = {
-        renderButtons: renderButtons
-    };
-
+    window.hbgPayPal = { renderButtons: renderButtons };
     console.log('💳 hbg-paypal: Subscription checkout ready');
 })();
