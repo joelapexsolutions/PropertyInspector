@@ -803,3 +803,38 @@ body.web-mode .pgs-payment-error {
     margin: 4px 0;
     line-height: 1.4;
 }
+
+/* ====================================================================
+   11. PAYFAST CHECKOUT BUTTON
+   ==================================================================== */
+body.web-mode .pgs-payfast-pay-btn {
+    width: 100%;
+    padding: 15px;
+    background: #06D6A0;
+    color: #0d1520;
+    border: none;
+    border-radius: 12px;
+    font-size: 1rem;
+    font-weight: 800;
+    font-family: 'Poppins', sans-serif;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    transition: opacity 0.2s;
+}
+body.web-mode .pgs-payfast-pay-btn:disabled {
+    opacity: 0.7;
+    cursor: not-allowed;
+}
+body.web-mode .pgs-payfast-methods {
+    text-align: center;
+    color: #8bbad4;
+    font-size: 0.72rem;
+    margin: 8px 0 0;
+}
+body.web-mode .pgs-payfast-methods i {
+    color: #06D6A0;
+    margin-right: 3px;
+}
