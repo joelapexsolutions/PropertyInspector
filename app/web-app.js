@@ -467,92 +467,93 @@
     })();
 
     // ----------------------------------------------------------------
-    // 7. PREMIUM GATE — sign-in screen + subscription plans
-    //    Shown when a free-tier user hits a premium feature.
-    //    firebase-auth.js handles the actual Firebase/Firestore logic.
-    //    This section owns the UI only.
+    // 7. PREMIUM GATE — reuses the existing Android-style #premiumModal
+    //    from premium-system.js. We override processPurchase() to inject
+    //    sign-in + PayPal directly into the existing modal sheet instead
+    //    of opening Google Play.
     // ----------------------------------------------------------------
 
-    window.showPremiumGate = function (featureMsg) {
-        var screen = document.getElementById('premiumGateScreen');
-        if (!screen) return;
-        var msgEl = document.getElementById('pgsFeatureMsg');
-        if (msgEl && featureMsg) msgEl.textContent = featureMsg;
-        // Reset — hide sign-in and PayPal overlays, show plan list
-        _pgHide('pgsSignInSection');
-        _pgHide('pgsEmailSentSection');
-        _pgHide('pgsPayPalContainer');
-        _pgHide('pgsPremiumSection');
-        document.querySelectorAll('.screen').forEach(function (s) { s.classList.remove('active'); });
-        screen.classList.add('active');
+    // Map premium-system plan names → PayPal plan IDs
+    var PLAN_ID_MAP = {
+        'monthly':    '1month',
+        'threemonth': '3month',
+        'sixmonth':   '6month',
+        'annual':     '1year'
     };
 
-    window.hidePremiumGate = function () {
-        var screen = document.getElementById('premiumGateScreen');
-        if (screen) screen.classList.remove('active');
-        if (typeof window.showScreen === 'function') window.showScreen('homeScreen');
-    };
-
-    // Called when user taps Subscribe on a plan card
-    window.handleSubscribeClick = function (planId) {
-        window._pendingPlanId = planId;
-        var user = window.hbgAuth && window.hbgAuth.getCurrentUser
-            ? window.hbgAuth.getCurrentUser() : null;
-        if (!user) {
-            _pgShow('pgsSignInSection');
-        } else {
-            var emailEl = document.getElementById('pgsUserEmail');
-            if (emailEl) emailEl.textContent = user.email || '';
-            _pgShow('pgsPayPalContainer');
-            if (window.hbgPayPal) window.hbgPayPal.renderButtons(planId);
-        }
-    };
-
-    window.pgsShowSignIn = function () {
-        _pgHide('pgsEmailSentSection');
-        _pgShow('pgsSignInSection');
-    };
-
-    function pgsShowPlansForUser(user) {
-        var emailEl = document.getElementById('pgsUserEmail');
-        if (emailEl) emailEl.textContent = user.email || '';
-        if (window._pendingPlanId) {
-            var planId = window._pendingPlanId;
-            window._pendingPlanId = null;
-            _pgHide('pgsSignInSection');
-            _pgHide('pgsEmailSentSection');
-            _pgShow('pgsPayPalContainer');
-            if (window.hbgPayPal) window.hbgPayPal.renderButtons(planId);
-        }
+    // Inject sign-in form into the existing modal sheet
+    function injectSignInIntoModal() {
+        removeModalInjections();
+        var sheet = document.querySelector('.pm-sheet');
+        if (!sheet) return;
+        var html = '<div id="pmWebSignIn" class="pm-web-section">' +
+            '<p class="pm-web-title">Sign in to subscribe</p>' +
+            '<button class="pgs-google-btn" onclick="hbgGoogleSignIn()">' +
+            '<svg class="pgs-google-icon" viewBox="0 0 24 24">' +
+            '<path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>' +
+            '<path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>' +
+            '<path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l3.66-2.84z"/>' +
+            '<path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/>' +
+            '</svg>Continue with Google</button>' +
+            '<div class="pgs-divider"><span>or use email</span></div>' +
+            '<input type="email" id="pmWebEmail" class="pgs-email-input" placeholder="your@email.com" autocomplete="email">' +
+            '<button class="pgs-btn-primary" onclick="pmSendMagicLink()">' +
+            '<i class="fas fa-envelope"></i> Send Sign-in Link</button>' +
+            '</div>';
+        sheet.insertAdjacentHTML('beforeend', html);
+        sheet.scrollTo({ top: sheet.scrollHeight, behavior: 'smooth' });
     }
 
-    function _pgShow(id) { var el = document.getElementById(id); if (el) el.style.display = ''; }
-    function _pgHide(id) { var el = document.getElementById(id); if (el) el.style.display = 'none'; }
+    // Inject PayPal button into the existing modal sheet
+    function injectPayPalIntoModal(planId) {
+        removeModalInjections();
+        var sheet = document.querySelector('.pm-sheet');
+        if (!sheet) return;
+        var user = window.hbgAuth && window.hbgAuth.getCurrentUser
+            ? window.hbgAuth.getCurrentUser() : null;
+        var email = user ? (user.email || '') : '';
+        var html = '<div id="pmWebPayPal" class="pm-web-section">' +
+            '<div class="pm-web-signed"><span>Signed in as <strong>' + email + '</strong></span>' +
+            '<button onclick="hbgSignOut()" class="pgs-sign-out-link">Sign out</button></div>' +
+            '<div id="paypal-button-container"></div>' +
+            '<p id="pgsBillingInfo" class="pgs-billing-info" style="display:none"></p>' +
+            '</div>';
+        sheet.insertAdjacentHTML('beforeend', html);
+        sheet.scrollTo({ top: sheet.scrollHeight, behavior: 'smooth' });
+        if (window.hbgPayPal) window.hbgPayPal.renderButtons(planId);
+    }
 
-    // Handle "Send Sign-in Link" button
-    window.hbgSendMagicLink = function () {
-        var input = document.getElementById('pgsEmailInput');
+    function removeModalInjections() {
+        ['pmWebSignIn', 'pmWebPayPal'].forEach(function (id) {
+            var el = document.getElementById(id);
+            if (el) el.remove();
+        });
+        // Restore plan row opacity
+        document.querySelectorAll('.pm-plan-row').forEach(function (r) {
+            r.style.opacity = '1';
+        });
+    }
+
+    // Send magic link from the injected sign-in form
+    window.pmSendMagicLink = function () {
+        var input = document.getElementById('pmWebEmail');
         if (!input) return;
         var email = input.value.trim();
-        if (!email || !email.includes('@')) {
-            alert('Please enter a valid email address.');
-            return;
-        }
-        if (!window.hbgAuth) { alert('Auth not ready — please refresh.'); return; }
-
+        if (!email || !email.includes('@')) { alert('Please enter a valid email address.'); return; }
+        if (!window.hbgAuth) return;
         window.hbgAuth.sendSignInLink(email)
             .then(function () {
-                var sentEmail = document.getElementById('pgsSentEmail');
-                if (sentEmail) sentEmail.textContent = email;
-                _pgShow('pgsEmailSentSection');
+                var signIn = document.getElementById('pmWebSignIn');
+                if (signIn) signIn.innerHTML =
+                    '<div class="pgs-sent-icon"><i class="fas fa-envelope-open-text"></i></div>' +
+                    '<p class="pm-web-title">Check your inbox</p>' +
+                    '<p class="pgs-sent-msg">We sent a sign-in link to <strong>' + email + '</strong></p>' +
+                    '<p class="pgs-sent-hint">Check spam if you don't see it.</p>';
             })
-            .catch(function (err) {
-                console.error('Magic link error:', err);
-                alert('Could not send the link. Please try again.');
-            });
+            .catch(function () { alert('Could not send link. Please try again.'); });
     };
 
-    // Handle Google Sign-In button
+    // Google Sign-In
     window.hbgGoogleSignIn = function () {
         if (!window.hbgAuth || !window.hbgAuth.signInWithGoogle) {
             alert('Google Sign-In is loading. Please try again in a moment.');
@@ -564,158 +565,114 @@
         });
     };
 
-    // Install app — works even after the PWA was previously uninstalled
+    // Sign out
+    window.hbgSignOut = function () {
+        if (window.hbgAuth) {
+            window.hbgAuth.signOut().then(function () {
+                removeModalInjections();
+                injectSignInIntoModal();
+            });
+        }
+    };
+
+    // Install app
     window.hbgInstallApp = function () {
-        // If native prompt is available (Chrome/Edge before install)
         if (deferredInstallPrompt) {
             deferredInstallPrompt.prompt();
-            deferredInstallPrompt.userChoice.then(function () {
-                deferredInstallPrompt = null;
-            });
+            deferredInstallPrompt.userChoice.then(function () { deferredInstallPrompt = null; });
             return;
         }
-        // Already installed (standalone) — let them know
-        if (isStandalone()) {
-            alert('The app is already installed on your device!');
-            return;
-        }
-        // Manual instructions for when browser prompt is unavailable
+        if (isStandalone()) { alert('The app is already installed on your device!'); return; }
         var ua = navigator.userAgent;
         var msg;
         if (/iPhone|iPad|iPod/.test(ua) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1)) {
-            msg = 'To install on iOS:\n1. Tap the Share button (box with arrow) at the bottom of your browser\n2. Scroll down and tap "Add to Home Screen"\n3. Tap "Add"';
+            msg = 'To install on iOS:\n1. Tap the Share button at the bottom\n2. Tap "Add to Home Screen"\n3. Tap "Add"';
         } else if (/Android/.test(ua)) {
-            msg = 'To install on Android:\n1. Tap the 3-dot menu (⋮) in the top-right of your browser\n2. Tap "Add to Home Screen" or "Install App"\n3. Tap "Add"';
+            msg = 'To install on Android:\n1. Tap the 3-dot menu (⋮) in your browser\n2. Tap "Add to Home Screen"\n3. Tap "Add"';
         } else {
-            msg = 'To install on desktop:\n1. Look for the install icon (⊕) in your browser address bar\n2. Click it and select "Install"\n\nOr use Chrome/Edge for the best install experience.';
+            msg = 'To install:\n1. Look for the install icon in your browser address bar\n2. Click "Install"';
         }
         alert(msg);
     };
 
-    // Handle plan selection — render PayPal buttons for the chosen plan
-    window.pgsSelectPlan = function (planId, priceRand) {
-        // Highlight selected plan card
-        document.querySelectorAll('.pgs-plan').forEach(function (p) {
-            p.classList.remove('pgs-plan-selected');
-        });
-        if (event && event.currentTarget) {
-            event.currentTarget.classList.add('pgs-plan-selected');
-        }
-
-        // Show PayPal buttons
-        if (window.hbgPayPal && window.hbgPayPal.renderButtons) {
-            window.hbgPayPal.renderButtons(planId);
-        } else {
-            // paypal-checkout.js not loaded — show fallback
-            var container = document.getElementById('pgsPayPalContainer');
-            if (container) {
-                container.style.display = 'block';
-                container.innerHTML =
-                    '<p class="pgs-payment-error">' +
-                    '<i class="fas fa-exclamation-triangle"></i> ' +
-                    'Payment not loading. Please hard-refresh the page (Ctrl+Shift+R) ' +
-                    'or contact <a href="mailto:homebuyersguidesa@gmail.com" ' +
-                    'style="color:#06D6A0">homebuyersguidesa@gmail.com</a> to subscribe.' +
-                    '</p>';
-            }
-            var cs = document.getElementById('pgsComingSoon');
-            if (cs) cs.style.display = 'none';
-        }
-    };
-
-    // Handle sign-out
-    window.hbgSignOut = function () {
-        if (window.hbgAuth) {
-            window.hbgAuth.signOut().then(function () {
-                pgsShowSignIn();
-            });
-        }
-    };
-
     // ----------------------------------------------------------------
-    // Update the Subscription section in Settings based on current state
+    // Update Settings subscription section
     // ----------------------------------------------------------------
     function updateSubscriptionUI(user, premiumData) {
-        var planLabel    = document.getElementById('subscriptionPlanLabel');
-        var expiryLabel  = document.getElementById('subscriptionExpiryLabel');
-        var badge        = document.getElementById('subscriptionBadge');
-        var upgradeRow   = document.getElementById('subscriptionUpgradeRow');
-        var refundRow    = document.getElementById('subscriptionRefundRow');
-        var iconEl       = document.querySelector('#subscriptionStatusRow .stg-row-icon i');
-
-        if (!planLabel) return; // settings screen not yet in DOM
+        var planLabel   = document.getElementById('subscriptionPlanLabel');
+        var expiryLabel = document.getElementById('subscriptionExpiryLabel');
+        var badge       = document.getElementById('subscriptionBadge');
+        var upgradeRow  = document.getElementById('subscriptionUpgradeRow');
+        var refundRow   = document.getElementById('subscriptionRefundRow');
+        var iconEl      = document.querySelector('#subscriptionStatusRow .stg-row-icon i');
+        if (!planLabel) return;
 
         var PLAN_NAMES = {
-            '1month':  '1 Month Plan',
-            '3month':  '3 Month Plan',
-            '6month':  '6 Month Plan',
-            '1year':   '1 Year Plan',
-            'web-paypal': 'Premium Plan',
-            'free':    'Free Plan'
+            '1month': '1 Month Plan', '3month': '3 Month Plan',
+            '6month': '6 Month Plan', '1year': '1 Year Plan',
+            'monthly': '1 Month Plan', 'threemonth': '3 Month Plan',
+            'sixmonth': '6 Month Plan', 'annual': '1 Year Plan',
+            'web-paypal': 'Premium Plan', 'free': 'Free Plan'
         };
 
         if (user && premiumData && premiumData.isPremium) {
-            var planName = PLAN_NAMES[premiumData.plan] || 'Premium Plan';
-            planLabel.textContent = planName;
-
-            if (premiumData.expiryDate) {
-                var expiry = premiumData.expiryDate.toDate
-                    ? premiumData.expiryDate.toDate()
-                    : new Date(premiumData.expiryDate);
-                expiryLabel.textContent = 'Active until '
-                    + expiry.toLocaleDateString('en-ZA', {
-                        day: 'numeric', month: 'long', year: 'numeric'
-                    });
+            planLabel.textContent = PLAN_NAMES[premiumData.plan] || 'Premium Plan';
+            if (premiumData.nextBillingDate || premiumData.expiryDate) {
+                var d = premiumData.nextBillingDate || premiumData.expiryDate;
+                var date = d.toDate ? d.toDate() : new Date(d);
+                expiryLabel.textContent = 'Next billing: '
+                    + date.toLocaleDateString('en-ZA', { day: 'numeric', month: 'long', year: 'numeric' });
             } else {
                 expiryLabel.textContent = 'Premium access active';
             }
-
             if (iconEl) { iconEl.className = 'fas fa-crown'; iconEl.style.color = '#F9C74F'; }
-            if (badge)      { badge.style.display = ''; }
-            if (upgradeRow) { upgradeRow.style.display = 'none'; }
-            if (refundRow)  { refundRow.style.display = ''; }
-
+            if (badge)      badge.style.display = '';
+            if (upgradeRow) upgradeRow.style.display = 'none';
+            if (refundRow)  refundRow.style.display = '';
         } else {
-            planLabel.textContent    = 'Free Plan';
-            expiryLabel.textContent  = 'Up to 2 properties · basic assessment';
+            planLabel.textContent   = 'Free Plan';
+            expiryLabel.textContent = 'Up to 2 properties · basic assessment';
             if (iconEl) { iconEl.className = 'fas fa-lock'; iconEl.style.color = '#8bbad4'; }
-            if (badge)      { badge.style.display = 'none'; }
-            if (upgradeRow) { upgradeRow.style.display = ''; }
-            if (refundRow)  { refundRow.style.display = 'none'; }
+            if (badge)      badge.style.display = 'none';
+            if (upgradeRow) upgradeRow.style.display = '';
+            if (refundRow)  refundRow.style.display = 'none';
         }
     }
 
-    // Auth state changed callback (called by firebase-auth.js)
+    // Auth state changed — called by firebase-auth.js
     window.onHbgAuthStateChanged = function (user, premiumData) {
-        var screen = document.getElementById('premiumGateScreen');
-        var isVisible = screen && screen.classList.contains('active');
-
-        // Always update the Settings subscription section
         updateSubscriptionUI(user, premiumData);
 
-        if (user && premiumData.isPremium) {
-            var expiryEl = document.getElementById('pgsExpiryMsg');
-            if (expiryEl && premiumData.expiryDate) {
-                var expiry = premiumData.expiryDate.toDate
-                    ? premiumData.expiryDate.toDate()
-                    : new Date(premiumData.expiryDate);
-                expiryEl.textContent = 'Next billing: '
-                    + expiry.toLocaleDateString('en-ZA', { day: 'numeric', month: 'long', year: 'numeric' })
-                    + ' · Cancel anytime from Settings';
+        var modal = document.getElementById('premiumModal');
+        var isOpen = modal && modal.classList.contains('show');
+
+        if (user && premiumData && premiumData.isPremium) {
+            // Premium confirmed — close modal and show welcome
+            if (isOpen && typeof window.hidePremiumModal === 'function') {
+                window.hidePremiumModal();
+                if (typeof window.showPremiumWelcome === 'function') window.showPremiumWelcome();
             }
-            if (isVisible) {
-                _pgHide('pgsSignInSection'); _pgHide('pgsEmailSentSection');
-                _pgHide('pgsPayPalContainer'); _pgShow('pgsPremiumSection');
-            }
+            // Clear any pending plan
+            window._pendingPlanId = null;
+            try { sessionStorage.removeItem('hbgPendingPlan'); } catch(e) {}
+
         } else if (user && !premiumData.isPremium) {
-            if (isVisible) pgsShowPlansForUser(user);
-        } else {
-            if (isVisible) { _pgHide('pgsPayPalContainer'); _pgShow('pgsSignInSection'); }
+            // Signed in but not premium — check for pending plan
+            var pending = window._pendingPlanId;
+            if (!pending) { try { pending = sessionStorage.getItem('hbgPendingPlan'); } catch(e) {} }
+            if (pending) {
+                window._pendingPlanId = null;
+                try { sessionStorage.removeItem('hbgPendingPlan'); } catch(e) {}
+                // Re-open modal if closed, then show PayPal
+                if (!isOpen && typeof window.showPremiumModal === 'function') {
+                    window.showPremiumModal('property_limit');
+                    setTimeout(function() { injectPayPalIntoModal(pending); }, 300);
+                } else {
+                    injectPayPalIntoModal(pending);
+                }
+            }
         }
     };
-
-    // Internal helper — hide all pgs sections then show one
-
 
     // ----------------------------------------------------------------
     // 8. BOOT (after DOM + premium system are ready)
@@ -723,21 +680,63 @@
     function boot() {
         document.body.classList.add('web-mode');
 
-        // Override the Android-style premium modal with our web premium gate.
-        // Must run after premium-system.js has registered window.showPremiumModal,
-        // so we do it inside boot() which fires after DOMContentLoaded.
-        var _reasonMessages = {
-            property_limit:   "You've reached the 2-property free limit. Upgrade for unlimited access.",
-            full_report:      "Full PDF Reports are a Premium feature.",
-            locked_property:  "This property is locked. Upgrade to access unlimited properties.",
-            general:          "Unlock full access to Home Buyers Guide SA."
+        // Set web prices in the existing pricingConfig from premium-system.js
+        // This makes getDisplayPrice() and calculateSavings() use web pricing
+        if (window.pricingConfig) {
+            window.pricingConfig.fallback.monthly    = { price: 100, formatted: 'R100' };
+            window.pricingConfig.fallback.threemonth = { price: 250, formatted: 'R250' };
+            window.pricingConfig.fallback.sixmonth   = { price: 450, formatted: 'R450' };
+            window.pricingConfig.fallback.annual     = { price: 850, formatted: 'R850' };
+        }
+
+        // Override processPurchase — intercepts Subscribe button clicks for web payment
+        // Instead of launching Google Play, we inject sign-in + PayPal into the existing modal
+        window.processPurchase = function (plan) {
+            var planId = PLAN_ID_MAP[plan];
+            if (!planId) return;
+
+            // Visual feedback — dim other rows
+            document.querySelectorAll('.pm-plan-row').forEach(function(r) { r.style.opacity = '0.6'; });
+            if (window.event && window.event.currentTarget) {
+                window.event.currentTarget.style.opacity = '1';
+            }
+
+            window._pendingPlanId = planId;
+            try { sessionStorage.setItem('hbgPendingPlan', planId); } catch(e) {}
+
+            var user = window.hbgAuth && window.hbgAuth.getCurrentUser
+                ? window.hbgAuth.getCurrentUser() : null;
+
+            if (!user) {
+                injectSignInIntoModal();
+            } else {
+                injectPayPalIntoModal(planId);
+            }
         };
 
+        // Wrap the original showPremiumModal to:
+        // - update trial ribbon text (3-day not 7-day)
+        // - hide the Google Play voucher row
+        // - update the legal text for web
+        // - clean up any previous injections
+        var _origShow = window.showPremiumModal;
         window.showPremiumModal = function (reason) {
-            var msg = _reasonMessages[reason] || _reasonMessages.general;
-            if (typeof window.showPremiumGate === 'function') {
-                window.showPremiumGate(msg);
-            }
+            if (typeof _origShow === 'function') _origShow(reason);
+            setTimeout(function () {
+                var ribbon = document.getElementById('monthlyTrialRibbon');
+                if (ribbon) ribbon.textContent = '3-DAY FREE TRIAL';
+                var subPeriod = document.getElementById('monthlySubPeriod');
+                if (subPeriod) subPeriod.textContent = 'for 3 days';
+                var trialThen = document.getElementById('monthlyTrialPeriod');
+                if (trialThen) trialThen.innerHTML = 'then <span id="monthlyPrice">'
+                    + (window.pricingConfig ? window.pricingConfig.fallback.monthly.formatted : 'R100')
+                    + '</span>/mo';
+                var voucher = document.querySelector('.pm-voucher-row');
+                if (voucher) voucher.style.display = 'none';
+                var legal = document.querySelector('.pm-legal');
+                if (legal) legal.textContent = 'Subscriptions renew automatically via PayPal. Cancel anytime from Settings.';
+                removeModalInjections();
+            }, 0);
         };
 
         // Show fullscreen restore button if not in fullscreen (always visible)
@@ -746,7 +745,7 @@
         setTimeout(showFullscreenPrompt, 3000);
         setTimeout(showInstallBanner, 8000);
 
-        console.log('🌐 web-app: web mode active — Firebase auth enabled');
+        console.log('🌐 web-app: web mode active — using existing premium modal');
     }
 
     if (document.readyState === 'loading') {
