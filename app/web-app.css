@@ -522,188 +522,6 @@ body.web-mode .hbg-pp-cancel:active {
     background: rgba(255, 255, 255, 0.05);
 }
 
-/* --------------------------------------------------------------------
-   10. PAYPAL PAYMENT STYLES
-   -------------------------------------------------------------------- */
-body.web-mode .pgs-paypal-loading {
-    text-align: center;
-    color: var(--text-secondary, #8bbad4);
-    font-size: 0.88rem;
-    padding: 16px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 8px;
-}
-
-body.web-mode .pgs-payment-error {
-    color: #FF6B6B;
-    font-size: 0.82rem;
-    text-align: center;
-    padding: 12px;
-    background: rgba(255, 107, 107, 0.08);
-    border: 1px solid rgba(255, 107, 107, 0.2);
-    border-radius: 10px;
-    margin: 8px 0;
-}
-
-body.web-mode #paypal-button-container {
-    width: 100%;
-    min-height: 50px;
-}
-
-body.web-mode .pgs-usd-note {
-    color: var(--text-secondary, #8bbad4);
-    font-size: 0.72rem;
-    text-align: center;
-    opacity: 0.7;
-    margin: 4px 0 0;
-}
-
-/* --------------------------------------------------------------------
-   11. GOOGLE SIGN-IN BUTTON + DIVIDER
-   -------------------------------------------------------------------- */
-body.web-mode .pgs-gate-title {
-    color: var(--text-primary, #fff);
-    font-size: 1.05rem;
-    font-weight: 700;
-    text-align: center;
-    margin: 0 0 4px;
-}
-
-body.web-mode .pgs-gate-title i {
-    color: #F9C74F;
-    margin-right: 6px;
-}
-
-body.web-mode .pgs-google-btn {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 10px;
-    width: 100%;
-    padding: 13px 16px;
-    background: #fff;
-    border: none;
-    border-radius: 12px;
-    color: #1f1f1f;
-    font-size: 0.95rem;
-    font-weight: 600;
-    font-family: 'Poppins', sans-serif;
-    cursor: pointer;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.25);
-    margin-bottom: 4px;
-    transition: box-shadow 0.2s;
-}
-
-body.web-mode .pgs-google-btn:active {
-    box-shadow: 0 1px 4px rgba(0,0,0,0.2);
-}
-
-body.web-mode .pgs-google-icon {
-    width: 20px;
-    height: 20px;
-    flex-shrink: 0;
-}
-
-body.web-mode .pgs-divider {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    margin: 10px 0;
-}
-
-body.web-mode .pgs-divider::before,
-body.web-mode .pgs-divider::after {
-    content: '';
-    flex: 1;
-    height: 1px;
-    background: rgba(255,255,255,0.12);
-}
-
-body.web-mode .pgs-divider span {
-    color: var(--text-secondary, #8bbad4);
-    font-size: 0.75rem;
-    white-space: nowrap;
-}
-
-/* --------------------------------------------------------------------
-   12. PREMIUM GATE LAYOUT FIXES — spacing cleanup
-   -------------------------------------------------------------------- */
-body.web-mode #pgsPlanSection {
-    display: flex;
-    flex-direction: column;
-    gap: 14px;
-    width: 100%;
-}
-
-body.web-mode .pgs-signed-as {
-    font-size: 0.78rem;
-    color: var(--text-secondary, #8bbad4);
-    text-align: center;
-    padding: 8px 16px;
-    background: rgba(255,255,255,0.04);
-    border-radius: 10px;
-    border: 1px solid rgba(255,255,255,0.08);
-    margin: 0;
-}
-
-body.web-mode .pgs-user-email {
-    color: #06D6A0;
-    font-weight: 700;
-    word-break: break-all;
-}
-
-body.web-mode .pgs-plans {
-    gap: 12px;
-}
-
-body.web-mode #pgsSignInSection {
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-    width: 100%;
-}
-
-body.web-mode .pgs-sub {
-    margin: 0;
-}
-
-body.web-mode .pgs-email-input {
-    margin-bottom: 0;
-}
-
-body.web-mode .pgs-coming-soon {
-    margin: 0;
-}
-
-/* --------------------------------------------------------------------
-   13. TRIAL BADGE + BILLING INFO
-   -------------------------------------------------------------------- */
-body.web-mode .pgs-trial-badge {
-    background: linear-gradient(135deg, #06D6A0, #1DB88A) !important;
-    color: #0d1520 !important;
-    font-size: 0.62rem !important;
-    font-weight: 800 !important;
-    text-transform: uppercase !important;
-    letter-spacing: 0.05em !important;
-}
-
-body.web-mode .pgs-plan-has-trial {
-    border-color: rgba(6, 214, 160, 0.3);
-}
-
-body.web-mode .pgs-billing-info {
-    font-size: 0.75rem;
-    color: var(--text-secondary, #8bbad4);
-    text-align: center;
-    margin: 6px 0 0;
-    line-height: 1.5;
-    padding: 8px 12px;
-    background: rgba(255,255,255,0.04);
-    border-radius: 8px;
-}
-
 /* ====================================================================
    9. PREMIUM GATE SCREEN — matches Android modal styling
    ==================================================================== */
@@ -842,4 +660,145 @@ body.web-mode .pgs-payment-error {
 @media (min-width: 768px) {
     body.web-mode .pgs-screen { align-items: center; }
     body.web-mode .pgs-sheet { border-radius: 22px; max-height: 88vh; }
+}
+
+/* ====================================================================
+   10. PREMIUM GATE — sign-in elements + plan selection state
+   ==================================================================== */
+
+/* Plan row selected state */
+body.web-mode .pgs-plan-row.pgs-selected {
+    border-color: #06D6A0 !important;
+    background: rgba(6,214,160,0.1) !important;
+    box-shadow: 0 0 0 2px rgba(6,214,160,0.25);
+}
+
+/* Google Sign-In button */
+body.web-mode .pgs-google-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    width: 100%;
+    padding: 13px 16px;
+    background: #fff;
+    border: none;
+    border-radius: 12px;
+    color: #1f1f1f;
+    font-size: 0.9rem;
+    font-weight: 700;
+    font-family: 'Poppins', sans-serif;
+    cursor: pointer;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.25);
+}
+body.web-mode .pgs-google-btn:active { box-shadow: 0 1px 3px rgba(0,0,0,0.2); }
+body.web-mode .pgs-google-icon { width: 20px; height: 20px; flex-shrink: 0; }
+
+/* Divider between Google and email */
+body.web-mode .pgs-divider {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+body.web-mode .pgs-divider::before,
+body.web-mode .pgs-divider::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: rgba(255,255,255,0.1);
+}
+body.web-mode .pgs-divider span {
+    color: #8bbad4;
+    font-size: 0.72rem;
+    white-space: nowrap;
+}
+
+/* Email input */
+body.web-mode .pgs-email-input {
+    width: 100%;
+    padding: 12px 14px;
+    background: rgba(255,255,255,0.06);
+    border: 1.5px solid rgba(255,255,255,0.15);
+    border-radius: 10px;
+    color: #fff;
+    font-size: 0.9rem;
+    font-family: 'Poppins', sans-serif;
+    box-sizing: border-box;
+}
+body.web-mode .pgs-email-input::placeholder { color: rgba(255,255,255,0.3); }
+body.web-mode .pgs-email-input:focus {
+    outline: none;
+    border-color: #06D6A0;
+    background: rgba(6,214,160,0.05);
+}
+
+/* Send Sign-in Link button */
+body.web-mode .pgs-btn-primary {
+    width: 100%;
+    padding: 13px;
+    background: linear-gradient(135deg,#06D6A0,#1DB88A);
+    color: #0d1520;
+    border: none;
+    border-radius: 10px;
+    font-size: 0.9rem;
+    font-weight: 700;
+    font-family: 'Poppins', sans-serif;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+}
+
+/* Secondary button (Use different email) */
+body.web-mode .pgs-btn-secondary {
+    width: 100%;
+    padding: 11px;
+    background: transparent;
+    border: 1px solid rgba(255,255,255,0.12);
+    border-radius: 10px;
+    color: #8bbad4;
+    font-size: 0.82rem;
+    font-family: 'Poppins', sans-serif;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+}
+
+/* Sign out link */
+body.web-mode .pgs-sign-out-link {
+    background: none;
+    border: none;
+    color: #8bbad4;
+    font-size: 0.72rem;
+    cursor: pointer;
+    text-decoration: underline;
+    font-family: 'Poppins', sans-serif;
+    padding: 0;
+}
+
+/* PayPal loading */
+body.web-mode .pgs-paypal-loading {
+    text-align: center;
+    color: #8bbad4;
+    font-size: 0.85rem;
+    padding: 14px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+}
+
+/* Payment error */
+body.web-mode .pgs-payment-error {
+    color: #FF6B6B;
+    font-size: 0.8rem;
+    text-align: center;
+    padding: 10px 12px;
+    background: rgba(255,107,107,0.08);
+    border-radius: 10px;
+    margin: 4px 0;
+    line-height: 1.4;
 }
