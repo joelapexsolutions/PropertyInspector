@@ -523,336 +523,6 @@ body.web-mode .hbg-pp-cancel:active {
 }
 
 /* --------------------------------------------------------------------
-   9. PREMIUM GATE SCREEN — sign-in + subscription plans
-   -------------------------------------------------------------------- */
-body.web-mode #premiumGateScreen {
-    overflow-y: auto;
-}
-
-body.web-mode .pgs-container {
-    max-width: 480px;
-    margin: 0 auto;
-    padding: 24px 20px calc(40px + env(safe-area-inset-bottom, 0px));
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 18px;
-    min-height: 100%;
-}
-
-body.web-mode .pgs-header {
-    text-align: center;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 10px;
-}
-
-body.web-mode .pgs-logo {
-    height: 48px;
-    object-fit: contain;
-}
-
-body.web-mode .pgs-crown {
-    background: linear-gradient(135deg, #F9C74F, #F3722C);
-    color: #0d1520;
-    font-weight: 800;
-    font-size: 0.82rem;
-    padding: 5px 14px;
-    border-radius: 20px;
-    letter-spacing: 0.04em;
-}
-
-body.web-mode .pgs-feature-msg {
-    color: var(--text-primary, #fff);
-    font-size: 1rem;
-    font-weight: 700;
-    text-align: center;
-    line-height: 1.4;
-    margin: 0;
-}
-
-/* Sign-in section */
-body.web-mode .pgs-sub {
-    color: var(--text-secondary, #8bbad4);
-    font-size: 0.85rem;
-    text-align: center;
-    line-height: 1.5;
-    margin: 0;
-}
-
-body.web-mode .pgs-email-input {
-    width: 100%;
-    padding: 13px 16px;
-    background: rgba(255,255,255,0.06);
-    border: 1px solid rgba(255,255,255,0.15);
-    border-radius: 12px;
-    color: var(--text-primary, #fff);
-    font-size: 1rem;
-    font-family: 'Poppins', sans-serif;
-    margin-bottom: 10px;
-    box-sizing: border-box;
-}
-
-body.web-mode .pgs-email-input:focus {
-    outline: none;
-    border-color: #06D6A0;
-}
-
-body.web-mode .pgs-btn-primary {
-    width: 100%;
-    padding: 14px;
-    background: var(--gradient-success, linear-gradient(135deg,#06D6A0,#1DB88A));
-    color: #0d1520;
-    border: none;
-    border-radius: 12px;
-    font-size: 0.95rem;
-    font-weight: 700;
-    font-family: 'Poppins', sans-serif;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 8px;
-}
-
-body.web-mode .pgs-btn-secondary {
-    width: 100%;
-    padding: 12px;
-    background: transparent;
-    border: 1px solid rgba(255,255,255,0.15);
-    border-radius: 12px;
-    color: var(--text-secondary, #8bbad4);
-    font-size: 0.88rem;
-    font-family: 'Poppins', sans-serif;
-    cursor: pointer;
-}
-
-/* Email sent */
-body.web-mode .pgs-sent-icon {
-    font-size: 2.5rem;
-    color: #06D6A0;
-    text-align: center;
-}
-
-body.web-mode .pgs-sent-title {
-    color: var(--text-primary, #fff);
-    font-size: 1.1rem;
-    font-weight: 700;
-    text-align: center;
-    margin: 0;
-}
-
-body.web-mode .pgs-sent-msg {
-    color: var(--text-secondary, #8bbad4);
-    font-size: 0.9rem;
-    text-align: center;
-    line-height: 1.5;
-    margin: 0;
-}
-
-body.web-mode .pgs-sent-hint {
-    color: var(--text-secondary, #8bbad4);
-    font-size: 0.78rem;
-    text-align: center;
-    opacity: 0.7;
-    margin: 0;
-}
-
-/* Signed-in as */
-body.web-mode .pgs-signed-as {
-    color: var(--text-secondary, #8bbad4);
-    font-size: 0.8rem;
-    text-align: center;
-    margin: 0;
-}
-
-body.web-mode .pgs-user-email {
-    color: #06D6A0;
-    font-weight: 600;
-}
-
-/* Plan cards */
-body.web-mode .pgs-plans {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 10px;
-    width: 100%;
-}
-
-body.web-mode .pgs-plan {
-    background: rgba(255,255,255,0.04);
-    border: 1.5px solid rgba(255,255,255,0.1);
-    border-radius: 14px;
-    padding: 16px 12px;
-    text-align: center;
-    cursor: pointer;
-    position: relative;
-    transition: border-color 0.2s, background 0.2s;
-}
-
-body.web-mode .pgs-plan:active,
-body.web-mode .pgs-plan.pgs-plan-selected {
-    border-color: #06D6A0;
-    background: rgba(6, 214, 160, 0.15);
-    box-shadow: 0 0 0 2px #06D6A0;
-    transform: scale(1.03);
-}
-
-body.web-mode .pgs-plan.pgs-plan-selected .pgs-plan-period {
-    color: #06D6A0;
-    font-weight: 700;
-}
-
-body.web-mode .pgs-plan.pgs-plan-selected .pgs-plan-price {
-    color: #06D6A0;
-}
-
-body.web-mode .pgs-plan.pgs-plan-selected::after {
-    content: '✓';
-    position: absolute;
-    top: 6px;
-    right: 8px;
-    color: #06D6A0;
-    font-size: 0.9rem;
-    font-weight: 900;
-}
-
-body.web-mode .pgs-plan-popular {
-    border-color: #F9C74F;
-    background: rgba(249,199,79,0.06);
-}
-
-body.web-mode .pgs-plan-badge {
-    position: absolute;
-    top: -10px;
-    left: 50%;
-    transform: translateX(-50%);
-    background: linear-gradient(135deg,#F9C74F,#F3722C);
-    color: #0d1520;
-    font-size: 0.62rem;
-    font-weight: 800;
-    padding: 3px 10px;
-    border-radius: 10px;
-    white-space: nowrap;
-    text-transform: uppercase;
-    letter-spacing: 0.04em;
-}
-
-body.web-mode .pgs-plan-period {
-    color: var(--text-secondary, #8bbad4);
-    font-size: 0.78rem;
-    margin-bottom: 6px;
-}
-
-body.web-mode .pgs-plan-price {
-    color: var(--text-primary, #fff);
-    font-size: 1.3rem;
-    font-weight: 800;
-}
-
-body.web-mode .pgs-plan-saving {
-    color: #06D6A0;
-    font-size: 0.68rem;
-    margin-top: 4px;
-}
-
-body.web-mode .pgs-coming-soon {
-    color: var(--text-secondary, #8bbad4);
-    font-size: 0.8rem;
-    text-align: center;
-    margin: 4px 0 0;
-}
-
-body.web-mode .pgs-sign-out-link {
-    background: none;
-    border: none;
-    color: var(--text-secondary, #8bbad4);
-    font-size: 0.78rem;
-    cursor: pointer;
-    text-decoration: underline;
-    font-family: 'Poppins', sans-serif;
-}
-
-/* Premium active */
-body.web-mode .pgs-premium-icon {
-    font-size: 3rem;
-    color: #F9C74F;
-    text-align: center;
-}
-
-body.web-mode .pgs-premium-title {
-    color: var(--text-primary, #fff);
-    font-size: 1.2rem;
-    font-weight: 800;
-    text-align: center;
-    margin: 0;
-}
-
-body.web-mode .pgs-expiry {
-    color: var(--text-secondary, #8bbad4);
-    font-size: 0.82rem;
-    text-align: center;
-    margin: 0;
-}
-
-/* Android section */
-body.web-mode .pgs-android-msg {
-    text-align: center;
-    color: var(--text-secondary, #8bbad4);
-    font-size: 0.88rem;
-    line-height: 1.5;
-}
-
-body.web-mode .pgs-android-icon {
-    font-size: 2.5rem;
-    color: #3DDC84;
-    display: block;
-    margin-bottom: 10px;
-}
-
-body.web-mode .pgs-play-btn {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 10px;
-    padding: 14px 24px;
-    background: #3DDC84;
-    color: #0d1520;
-    border-radius: 12px;
-    font-weight: 700;
-    font-size: 0.95rem;
-    text-decoration: none;
-    width: 100%;
-    box-sizing: border-box;
-}
-
-/* Free info + back button */
-body.web-mode .pgs-free-info {
-    color: var(--text-secondary, #8bbad4);
-    font-size: 0.75rem;
-    text-align: center;
-    opacity: 0.7;
-    margin-top: auto;
-}
-
-body.web-mode .pgs-back-btn {
-    background: none;
-    border: 1px solid rgba(255,255,255,0.1);
-    border-radius: 12px;
-    color: var(--text-secondary, #8bbad4);
-    font-size: 0.85rem;
-    font-family: 'Poppins', sans-serif;
-    padding: 11px 20px;
-    cursor: pointer;
-    width: 100%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 8px;
-}
-
-/* --------------------------------------------------------------------
    10. PAYPAL PAYMENT STYLES
    -------------------------------------------------------------------- */
 body.web-mode .pgs-paypal-loading {
@@ -1005,4 +675,362 @@ body.web-mode .pgs-email-input {
 
 body.web-mode .pgs-coming-soon {
     margin: 0;
+}
+
+/* --------------------------------------------------------------------
+   13. TRIAL BADGE + BILLING INFO
+   -------------------------------------------------------------------- */
+body.web-mode .pgs-trial-badge {
+    background: linear-gradient(135deg, #06D6A0, #1DB88A) !important;
+    color: #0d1520 !important;
+    font-size: 0.62rem !important;
+    font-weight: 800 !important;
+    text-transform: uppercase !important;
+    letter-spacing: 0.05em !important;
+}
+
+body.web-mode .pgs-plan-has-trial {
+    border-color: rgba(6, 214, 160, 0.3);
+}
+
+body.web-mode .pgs-billing-info {
+    font-size: 0.75rem;
+    color: var(--text-secondary, #8bbad4);
+    text-align: center;
+    margin: 6px 0 0;
+    line-height: 1.5;
+    padding: 8px 12px;
+    background: rgba(255,255,255,0.04);
+    border-radius: 8px;
+}
+
+/* ====================================================================
+   9. PREMIUM GATE — Android-style bottom sheet modal
+   ==================================================================== */
+
+/* Full-screen overlay behind the sheet */
+body.web-mode #premiumGateScreen {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.6);
+    z-index: 9000;
+    align-items: flex-end;
+    justify-content: center;
+    overflow: hidden;
+}
+
+body.web-mode #premiumGateScreen.active {
+    display: flex;
+}
+
+/* The sheet itself — slides up from bottom */
+body.web-mode .pgs-sheet {
+    width: 100%;
+    max-width: 540px;
+    max-height: 92vh;
+    overflow-y: auto;
+    background: #131e2e;
+    border-radius: 22px 22px 0 0;
+    border-top: 1px solid rgba(255,255,255,0.08);
+    padding: 20px 20px calc(24px + env(safe-area-inset-bottom, 0px));
+    position: relative;
+    animation: pgsSheetUp 0.3s ease;
+}
+
+@keyframes pgsSheetUp {
+    from { transform: translateY(60px); opacity: 0; }
+    to   { transform: translateY(0);    opacity: 1; }
+}
+
+/* Close X button */
+body.web-mode .pgs-x-btn {
+    position: absolute;
+    top: 14px;
+    right: 16px;
+    width: 32px;
+    height: 32px;
+    border: none;
+    border-radius: 50%;
+    background: rgba(255,255,255,0.1);
+    color: #fff;
+    font-size: 0.9rem;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* Header */
+body.web-mode .pgs-top {
+    text-align: center;
+    margin-bottom: 16px;
+    padding-top: 4px;
+}
+
+body.web-mode .pgs-crown-circle {
+    width: 56px;
+    height: 56px;
+    border-radius: 50%;
+    background: rgba(6,214,160,0.15);
+    border: 2px solid rgba(6,214,160,0.3);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 10px;
+    font-size: 1.4rem;
+    color: #06D6A0;
+}
+
+body.web-mode .pgs-title {
+    color: #fff;
+    font-size: 1.15rem;
+    font-weight: 800;
+    margin: 0 0 4px;
+}
+
+body.web-mode .pgs-subtitle {
+    color: var(--text-secondary, #8bbad4);
+    font-size: 0.82rem;
+    margin: 0;
+    line-height: 1.4;
+}
+
+/* Feature list */
+body.web-mode .pgs-features {
+    margin-bottom: 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+body.web-mode .pgs-feat {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    font-size: 0.85rem;
+    color: var(--text-primary, #fff);
+    line-height: 1.4;
+}
+
+body.web-mode .pgs-feat i {
+    color: #06D6A0;
+    font-size: 1rem;
+    flex-shrink: 0;
+    margin-top: 1px;
+}
+
+/* Plan list — horizontal rows like Android */
+body.web-mode .pgs-plan-list {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin-bottom: 14px;
+}
+
+body.web-mode .pgs-plan-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    padding: 12px 14px;
+    background: rgba(255,255,255,0.04);
+    border: 1.5px solid rgba(255,255,255,0.08);
+    border-radius: 14px;
+    cursor: pointer;
+    position: relative;
+    transition: border-color 0.15s, background 0.15s;
+}
+
+body.web-mode .pgs-plan-row:active {
+    background: rgba(6,214,160,0.08);
+    border-color: rgba(6,214,160,0.3);
+}
+
+body.web-mode .pgs-plan-left {
+    flex: 1;
+    min-width: 0;
+}
+
+body.web-mode .pgs-plan-name {
+    color: #fff;
+    font-size: 0.88rem;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    flex-wrap: wrap;
+}
+
+body.web-mode .pgs-plan-per {
+    color: var(--text-secondary, #8bbad4);
+    font-size: 0.72rem;
+    margin-top: 2px;
+}
+
+body.web-mode .pgs-plan-right {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-shrink: 0;
+}
+
+body.web-mode .pgs-plan-price {
+    color: #fff;
+    font-size: 1rem;
+    font-weight: 800;
+}
+
+body.web-mode .pgs-plan-save {
+    color: #06D6A0;
+    font-size: 0.68rem;
+    font-weight: 700;
+    background: rgba(6,214,160,0.12);
+    padding: 2px 6px;
+    border-radius: 6px;
+}
+
+body.web-mode .pgs-sub-btn {
+    background: rgba(255,255,255,0.1);
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    padding: 7px 14px;
+    font-size: 0.8rem;
+    font-weight: 700;
+    font-family: 'Poppins', sans-serif;
+    cursor: pointer;
+    white-space: nowrap;
+    pointer-events: none; /* click handled by parent row */
+}
+
+/* Most Popular row */
+body.web-mode .pgs-plan-popular-row {
+    border-color: #06D6A0;
+    background: rgba(6,214,160,0.06);
+}
+
+body.web-mode .pgs-popular-badge {
+    position: absolute;
+    top: -10px;
+    left: 12px;
+    background: #06D6A0;
+    color: #0d1520;
+    font-size: 0.6rem;
+    font-weight: 900;
+    padding: 3px 8px;
+    border-radius: 8px;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+}
+
+body.web-mode .pgs-pop-name { color: #06D6A0; }
+body.web-mode .pgs-pop-price { color: #06D6A0; }
+
+body.web-mode .pgs-sub-btn-pop {
+    background: #06D6A0;
+    color: #0d1520;
+}
+
+/* Trial and Best Value pills */
+body.web-mode .pgs-trial-pill {
+    background: linear-gradient(135deg,#06D6A0,#1DB88A);
+    color: #0d1520;
+    font-size: 0.58rem;
+    font-weight: 800;
+    padding: 2px 7px;
+    border-radius: 8px;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    white-space: nowrap;
+}
+
+body.web-mode .pgs-best-pill {
+    background: linear-gradient(135deg,#F9C74F,#F3722C);
+    color: #0d1520;
+    font-size: 0.58rem;
+    font-weight: 800;
+    padding: 2px 7px;
+    border-radius: 8px;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    white-space: nowrap;
+}
+
+/* Signed-in bar above PayPal */
+body.web-mode .pgs-signed-bar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    font-size: 0.75rem;
+    color: var(--text-secondary, #8bbad4);
+    margin-bottom: 10px;
+    padding: 8px 12px;
+    background: rgba(255,255,255,0.04);
+    border-radius: 8px;
+}
+
+/* Sign-in section */
+body.web-mode #pgsSignInSection {
+    border-top: 1px solid rgba(255,255,255,0.08);
+    padding-top: 14px;
+    margin-top: 4px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+body.web-mode .pgs-signin-prompt {
+    color: var(--text-secondary, #8bbad4);
+    font-size: 0.82rem;
+    text-align: center;
+    margin: 0;
+}
+
+/* Email sent */
+body.web-mode .pgs-sent-icon { font-size: 2rem; color: #06D6A0; text-align: center; }
+body.web-mode .pgs-sent-title { color: #fff; font-size: 1rem; font-weight: 700; text-align: center; margin: 4px 0; }
+body.web-mode .pgs-sent-msg { color: var(--text-secondary, #8bbad4); font-size: 0.85rem; text-align: center; margin: 0; }
+body.web-mode .pgs-sent-hint { color: var(--text-secondary, #8bbad4); font-size: 0.74rem; text-align: center; opacity: 0.7; margin: 0; }
+
+/* Premium section */
+body.web-mode .pgs-premium-icon { font-size: 2.5rem; color: #F9C74F; text-align: center; }
+body.web-mode .pgs-premium-title { color: #fff; font-size: 1.1rem; font-weight: 800; text-align: center; margin: 6px 0; }
+body.web-mode .pgs-expiry { color: var(--text-secondary, #8bbad4); font-size: 0.78rem; text-align: center; margin: 0; }
+
+/* Billing info */
+body.web-mode .pgs-billing-info {
+    font-size: 0.74rem;
+    color: var(--text-secondary, #8bbad4);
+    text-align: center;
+    padding: 8px;
+    background: rgba(255,255,255,0.04);
+    border-radius: 8px;
+    margin: 6px 0 0;
+}
+
+/* Free plan button at bottom */
+body.web-mode .pgs-free-btn {
+    width: 100%;
+    background: transparent;
+    border: 1px solid rgba(255,255,255,0.12);
+    border-radius: 12px;
+    color: var(--text-secondary, #8bbad4);
+    font-size: 0.85rem;
+    font-family: 'Poppins', sans-serif;
+    padding: 12px;
+    cursor: pointer;
+    margin-top: 12px;
+}
+
+/* Desktop — centre the sheet */
+@media (min-width: 768px) {
+    body.web-mode #premiumGateScreen {
+        align-items: center;
+    }
+    body.web-mode .pgs-sheet {
+        border-radius: 22px;
+        max-height: 88vh;
+        margin-bottom: 0;
+    }
 }
