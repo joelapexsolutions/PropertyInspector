@@ -173,12 +173,12 @@
                 if (result.data && result.data.success) {
                     onSubscriptionActivated(planId, result.data.expiryDate);
                 } else {
-                    showError('Verification failed. Email joelapexs@gmail.com with your receipt.');
+                    showError('Verification failed. Email homebuyersguidesa@gmail.com with your receipt.');
                 }
             })
             .catch(function (err) {
                 console.error('Cloud Function error:', err);
-                showError('Could not verify payment. Email joelapexs@gmail.com with your receipt.');
+                showError('Could not verify payment. Email homebuyersguidesa@gmail.com with your receipt.');
             });
     }
 
