@@ -705,26 +705,20 @@ body.web-mode .pgs-billing-info {
 }
 
 /* ====================================================================
-   9. PREMIUM GATE — Android-style bottom sheet modal
+   9. PREMIUM GATE SCREEN — matches Android modal styling
    ==================================================================== */
-
-/* Full-screen overlay behind the sheet */
-body.web-mode #premiumGateScreen {
+body.web-mode .pgs-screen {
     display: none;
     position: fixed;
     inset: 0;
-    background: rgba(0,0,0,0.6);
+    background: rgba(0,0,0,0.65);
     z-index: 9000;
     align-items: flex-end;
     justify-content: center;
     overflow: hidden;
 }
+body.web-mode .pgs-screen.active { display: flex; }
 
-body.web-mode #premiumGateScreen.active {
-    display: flex;
-}
-
-/* The sheet itself — slides up from bottom */
 body.web-mode .pgs-sheet {
     width: 100%;
     max-width: 540px;
@@ -733,336 +727,119 @@ body.web-mode .pgs-sheet {
     background: #131e2e;
     border-radius: 22px 22px 0 0;
     border-top: 1px solid rgba(255,255,255,0.08);
-    padding: 20px 20px calc(24px + env(safe-area-inset-bottom, 0px));
+    padding: 20px 20px calc(20px + env(safe-area-inset-bottom,0px));
     position: relative;
-    animation: pgsSheetUp 0.3s ease;
+    animation: pgsUp 0.3s ease;
 }
-
-@keyframes pgsSheetUp {
-    from { transform: translateY(60px); opacity: 0; }
+@keyframes pgsUp {
+    from { transform: translateY(50px); opacity: 0; }
     to   { transform: translateY(0);    opacity: 1; }
 }
-
-/* Close X button */
 body.web-mode .pgs-x-btn {
-    position: absolute;
-    top: 14px;
-    right: 16px;
-    width: 32px;
-    height: 32px;
-    border: none;
-    border-radius: 50%;
-    background: rgba(255,255,255,0.1);
-    color: #fff;
-    font-size: 0.9rem;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: center;
+    position: absolute; top: 14px; right: 16px;
+    width: 30px; height: 30px; border: none; border-radius: 50%;
+    background: rgba(255,255,255,0.1); color: #fff; font-size: 0.85rem;
+    cursor: pointer; display: flex; align-items: center; justify-content: center;
 }
-
-/* Header */
-body.web-mode .pgs-top {
-    text-align: center;
-    margin-bottom: 16px;
-    padding-top: 4px;
-}
-
+body.web-mode .pgs-top { text-align: center; margin-bottom: 14px; padding-top: 4px; }
 body.web-mode .pgs-crown-circle {
-    width: 56px;
-    height: 56px;
-    border-radius: 50%;
-    background: rgba(6,214,160,0.15);
-    border: 2px solid rgba(6,214,160,0.3);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    margin: 0 auto 10px;
-    font-size: 1.4rem;
-    color: #06D6A0;
+    width: 54px; height: 54px; border-radius: 50%;
+    background: rgba(6,214,160,0.12); border: 2px solid rgba(6,214,160,0.3);
+    display: flex; align-items: center; justify-content: center;
+    margin: 0 auto 10px; font-size: 1.3rem; color: #06D6A0;
 }
-
-body.web-mode .pgs-title {
-    color: #fff;
-    font-size: 1.15rem;
-    font-weight: 800;
-    margin: 0 0 4px;
+body.web-mode .pgs-title { color: #fff; font-size: 1.1rem; font-weight: 800; margin: 0 0 3px; }
+body.web-mode .pgs-subtitle { color: #8bbad4; font-size: 0.8rem; margin: 0; line-height: 1.4; }
+body.web-mode .pgs-benefits {
+    list-style: none; padding: 0; margin: 0 0 14px;
+    display: flex; flex-direction: column; gap: 8px;
 }
-
-body.web-mode .pgs-subtitle {
-    color: var(--text-secondary, #8bbad4);
-    font-size: 0.82rem;
-    margin: 0;
-    line-height: 1.4;
+body.web-mode .pgs-benefits li {
+    display: flex; align-items: flex-start; gap: 10px;
+    font-size: 0.84rem; color: #fff; line-height: 1.4;
 }
-
-/* Feature list */
-body.web-mode .pgs-features {
-    margin-bottom: 16px;
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
-}
-
-body.web-mode .pgs-feat {
-    display: flex;
-    align-items: flex-start;
-    gap: 10px;
-    font-size: 0.85rem;
-    color: var(--text-primary, #fff);
-    line-height: 1.4;
-}
-
-body.web-mode .pgs-feat i {
-    color: #06D6A0;
-    font-size: 1rem;
-    flex-shrink: 0;
-    margin-top: 1px;
-}
-
-/* Plan list — horizontal rows like Android */
-body.web-mode .pgs-plan-list {
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
-    margin-bottom: 14px;
-}
-
+body.web-mode .pgs-benefits li i { color: #06D6A0; flex-shrink: 0; margin-top: 2px; }
+body.web-mode .pgs-plans { display: flex; flex-direction: column; gap: 8px; margin-bottom: 14px; }
 body.web-mode .pgs-plan-row {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 10px;
-    padding: 12px 14px;
-    background: rgba(255,255,255,0.04);
-    border: 1.5px solid rgba(255,255,255,0.08);
-    border-radius: 14px;
-    cursor: pointer;
-    position: relative;
-    transition: border-color 0.15s, background 0.15s;
+    display: flex; align-items: center; gap: 10px;
+    padding: 11px 14px; border-radius: 12px;
+    background: rgba(255,255,255,0.04); border: 1.5px solid rgba(255,255,255,0.08);
+    cursor: pointer; position: relative; transition: border-color 0.15s;
 }
-
-body.web-mode .pgs-plan-row:active {
-    background: rgba(6,214,160,0.08);
-    border-color: rgba(6,214,160,0.3);
-}
-
-body.web-mode .pgs-plan-left {
-    flex: 1;
-    min-width: 0;
-}
-
-body.web-mode .pgs-plan-name {
-    color: #fff;
-    font-size: 0.88rem;
-    font-weight: 700;
-    display: flex;
-    align-items: center;
-    gap: 6px;
-    flex-wrap: wrap;
-}
-
-body.web-mode .pgs-plan-per {
-    color: var(--text-secondary, #8bbad4);
-    font-size: 0.72rem;
-    margin-top: 2px;
-}
-
-body.web-mode .pgs-plan-right {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    flex-shrink: 0;
-}
-
-body.web-mode .pgs-plan-price {
-    color: #fff;
-    font-size: 1rem;
-    font-weight: 800;
-}
-
-body.web-mode .pgs-plan-save {
-    color: #06D6A0;
-    font-size: 0.68rem;
-    font-weight: 700;
-    background: rgba(6,214,160,0.12);
-    padding: 2px 6px;
-    border-radius: 6px;
-}
-
-body.web-mode .pgs-sub-btn {
-    background: rgba(255,255,255,0.1);
-    color: #fff;
-    border: none;
-    border-radius: 8px;
-    padding: 7px 14px;
-    font-size: 0.8rem;
-    font-weight: 700;
-    font-family: 'Poppins', sans-serif;
-    cursor: pointer;
-    white-space: nowrap;
-    pointer-events: none; /* click handled by parent row */
-}
-
-/* Most Popular row */
-body.web-mode .pgs-plan-popular-row {
-    border-color: #06D6A0;
-    background: rgba(6,214,160,0.06);
-}
-
-body.web-mode .pgs-popular-badge {
-    position: absolute;
-    top: -10px;
-    left: 12px;
-    background: #06D6A0;
-    color: #0d1520;
-    font-size: 0.6rem;
-    font-weight: 900;
-    padding: 3px 8px;
-    border-radius: 8px;
-    letter-spacing: 0.06em;
-    text-transform: uppercase;
-}
-
-body.web-mode .pgs-pop-name { color: #06D6A0; }
-body.web-mode .pgs-pop-price { color: #06D6A0; }
-
-body.web-mode .pgs-sub-btn-pop {
-    background: #06D6A0;
-    color: #0d1520;
-}
-
-/* Trial and Best Value pills */
-body.web-mode .pgs-trial-pill {
+body.web-mode .pgs-plan-row:active { border-color: #06D6A0; background: rgba(6,214,160,0.06); }
+body.web-mode .pgs-trial-ribbon {
+    position: absolute; top: -9px; left: 12px;
     background: linear-gradient(135deg,#06D6A0,#1DB88A);
-    color: #0d1520;
-    font-size: 0.58rem;
-    font-weight: 800;
-    padding: 2px 7px;
-    border-radius: 8px;
-    text-transform: uppercase;
-    letter-spacing: 0.05em;
-    white-space: nowrap;
+    color: #0d1520; font-size: 0.58rem; font-weight: 900;
+    padding: 2px 8px; border-radius: 8px; text-transform: uppercase; letter-spacing: 0.05em;
 }
-
-body.web-mode .pgs-best-pill {
+body.web-mode .pgs-plan-info { flex: 1; }
+body.web-mode .pgs-plan-label { color: #fff; font-size: 0.86rem; font-weight: 700; display: flex; align-items: center; gap: 6px; }
+body.web-mode .pgs-plan-period { color: #8bbad4; font-size: 0.7rem; margin-top: 1px; }
+body.web-mode .pgs-plan-pricing { text-align: right; min-width: 60px; }
+body.web-mode .pgs-plan-price { color: #fff; font-size: 1rem; font-weight: 800; }
+body.web-mode .pgs-price-free { color: #06D6A0; }
+body.web-mode .pgs-plan-sub { color: #8bbad4; font-size: 0.68rem; }
+body.web-mode .pgs-plan-save { color: #06D6A0; font-size: 0.68rem; font-weight: 700; }
+body.web-mode .pgs-save-gold { color: #F9C74F; }
+body.web-mode .pgs-sub-btn {
+    flex-shrink: 0; padding: 7px 13px; border: none; border-radius: 8px;
+    background: rgba(255,255,255,0.1); color: #fff;
+    font-size: 0.78rem; font-weight: 700; font-family: 'Poppins',sans-serif;
+    cursor: pointer; white-space: nowrap; pointer-events: none;
+}
+body.web-mode .pgs-btn-trial { background: #06D6A0; color: #0d1520; }
+body.web-mode .pgs-plan-featured {
+    border-color: #06D6A0; background: rgba(6,214,160,0.06);
+    margin-top: 10px;
+}
+body.web-mode .pgs-featured-badge {
+    position: absolute; top: -10px; left: 12px;
+    background: #06D6A0; color: #0d1520;
+    font-size: 0.58rem; font-weight: 900; padding: 3px 8px;
+    border-radius: 8px; text-transform: uppercase; letter-spacing: 0.05em;
+}
+body.web-mode .pgs-label-featured { color: #06D6A0; }
+body.web-mode .pgs-price-featured { color: #06D6A0; }
+body.web-mode .pgs-btn-featured { background: #06D6A0; color: #0d1520; }
+body.web-mode .pgs-best-tag {
     background: linear-gradient(135deg,#F9C74F,#F3722C);
-    color: #0d1520;
-    font-size: 0.58rem;
-    font-weight: 800;
-    padding: 2px 7px;
-    border-radius: 8px;
-    text-transform: uppercase;
-    letter-spacing: 0.05em;
-    white-space: nowrap;
+    color: #0d1520; font-size: 0.55rem; font-weight: 900;
+    padding: 2px 6px; border-radius: 6px; text-transform: uppercase;
 }
-
-/* Signed-in bar above PayPal */
+body.web-mode .pgs-signin-section {
+    border-top: 1px solid rgba(255,255,255,0.08);
+    padding-top: 14px; margin-top: 4px;
+    display: flex; flex-direction: column; gap: 10px;
+}
+body.web-mode .pgs-signin-title { color: #8bbad4; font-size: 0.82rem; text-align: center; margin: 0; }
 body.web-mode .pgs-signed-bar {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    font-size: 0.75rem;
-    color: var(--text-secondary, #8bbad4);
-    margin-bottom: 10px;
-    padding: 8px 12px;
-    background: rgba(255,255,255,0.04);
-    border-radius: 8px;
+    display: flex; align-items: center; justify-content: space-between;
+    font-size: 0.75rem; color: #8bbad4;
+    padding: 8px 12px; background: rgba(255,255,255,0.04); border-radius: 8px;
 }
-
-/* Sign-in section */
-body.web-mode #pgsSignInSection {
-    border-top: 1px solid rgba(255,255,255,0.08);
-    padding-top: 14px;
-    margin-top: 4px;
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-}
-
-body.web-mode .pgs-signin-prompt {
-    color: var(--text-secondary, #8bbad4);
-    font-size: 0.82rem;
-    text-align: center;
-    margin: 0;
-}
-
-/* Email sent */
-body.web-mode .pgs-sent-icon { font-size: 2rem; color: #06D6A0; text-align: center; }
-body.web-mode .pgs-sent-title { color: #fff; font-size: 1rem; font-weight: 700; text-align: center; margin: 4px 0; }
-body.web-mode .pgs-sent-msg { color: var(--text-secondary, #8bbad4); font-size: 0.85rem; text-align: center; margin: 0; }
-body.web-mode .pgs-sent-hint { color: var(--text-secondary, #8bbad4); font-size: 0.74rem; text-align: center; opacity: 0.7; margin: 0; }
-
-/* Premium section */
-body.web-mode .pgs-premium-icon { font-size: 2.5rem; color: #F9C74F; text-align: center; }
-body.web-mode .pgs-premium-title { color: #fff; font-size: 1.1rem; font-weight: 800; text-align: center; margin: 6px 0; }
-body.web-mode .pgs-expiry { color: var(--text-secondary, #8bbad4); font-size: 0.78rem; text-align: center; margin: 0; }
-
-/* Billing info */
 body.web-mode .pgs-billing-info {
-    font-size: 0.74rem;
-    color: var(--text-secondary, #8bbad4);
-    text-align: center;
-    padding: 8px;
-    background: rgba(255,255,255,0.04);
-    border-radius: 8px;
-    margin: 6px 0 0;
+    font-size: 0.74rem; color: #8bbad4; text-align: center;
+    padding: 8px; background: rgba(255,255,255,0.04); border-radius: 8px; margin: 4px 0 0;
 }
-
-/* Free plan button at bottom */
+body.web-mode .pgs-legal {
+    color: #8bbad4; font-size: 0.7rem; text-align: center; margin: 14px 0 8px; line-height: 1.4;
+}
 body.web-mode .pgs-free-btn {
-    width: 100%;
-    background: transparent;
-    border: 1px solid rgba(255,255,255,0.12);
-    border-radius: 12px;
-    color: var(--text-secondary, #8bbad4);
-    font-size: 0.85rem;
-    font-family: 'Poppins', sans-serif;
-    padding: 12px;
-    cursor: pointer;
-    margin-top: 12px;
+    width: 100%; background: transparent;
+    border: 1px solid rgba(255,255,255,0.12); border-radius: 10px;
+    color: #8bbad4; font-size: 0.84rem; font-family: 'Poppins',sans-serif;
+    padding: 11px; cursor: pointer;
 }
-
-/* Desktop — centre the sheet */
+body.web-mode .pgs-paypal-loading {
+    text-align: center; color: #8bbad4; font-size: 0.88rem;
+    padding: 14px; display: flex; align-items: center; justify-content: center; gap: 8px;
+}
+body.web-mode .pgs-payment-error {
+    color: #FF6B6B; font-size: 0.82rem; text-align: center; padding: 10px;
+    background: rgba(255,107,107,0.08); border-radius: 10px; margin: 6px 0;
+}
 @media (min-width: 768px) {
-    body.web-mode #premiumGateScreen {
-        align-items: center;
-    }
-    body.web-mode .pgs-sheet {
-        border-radius: 22px;
-        max-height: 88vh;
-        margin-bottom: 0;
-    }
-}
-
-/* ====================================================================
-   14. WEB PAYMENT INJECTION — styles for sign-in + PayPal injected
-       into the existing #premiumModal pm-sheet from premium-system.js
-   ==================================================================== */
-body.web-mode .pm-web-section {
-    border-top: 1px solid rgba(255,255,255,0.08);
-    padding-top: 14px;
-    margin-top: 12px;
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-}
-
-body.web-mode .pm-web-title {
-    color: var(--text-secondary, #8bbad4);
-    font-size: 0.82rem;
-    text-align: center;
-    margin: 0;
-    font-weight: 600;
-}
-
-body.web-mode .pm-web-signed {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    font-size: 0.75rem;
-    color: var(--text-secondary, #8bbad4);
-    padding: 8px 12px;
-    background: rgba(255,255,255,0.04);
-    border-radius: 8px;
+    body.web-mode .pgs-screen { align-items: center; }
+    body.web-mode .pgs-sheet { border-radius: 22px; max-height: 88vh; }
 }
