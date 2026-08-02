@@ -9,7 +9,7 @@
    caching (this service worker, the browser's HTTP cache, GitHub
    Pages' CDN) treats it as a brand new file and fetches it fresh. */
 
-const CACHE_VERSION = 'hbg-sa-v13';
+const CACHE_VERSION = 'hbg-sa-v14';
 
 const APP_SHELL = [
   './',
@@ -27,7 +27,7 @@ const APP_SHELL = [
   './help-guide.css',
   './onboarding.css',
   './theme.css',
-  './web-app.css?v=13',
+  './web-app.css?v=14',
   // JS (exact filenames referenced by index.html)
   './onboarding.js',
   './app.js',
@@ -44,7 +44,7 @@ const APP_SHELL = [
   './paypal-checkout.js',
   './property-data.js',
   './scoring.js',
-  './web-app.js?v=13',
+  './web-app.js?v=14',
   // Images
   './Images/app_banner.png',
   // External CDN libraries
