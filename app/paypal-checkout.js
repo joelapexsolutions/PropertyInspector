@@ -22,25 +22,65 @@
         '1year':  850
     };
 
-    // Fetch live ZAR→USD rate and return the correct USD amount.
-    // Uses open.er-api.com free tier (no API key needed).
-    // Falls back to a conservative rate if the API is unavailable.
+    // Three-tier exchange rate strategy:
+    //   1. Live API  — always tried first (most accurate)
+    //   2. Cached    — last known good rate stored in localStorage
+    //   3. Hardcoded — absolute last resort (first-time user, API down, no cache)
+    // Nobody is blocked from paying regardless of API availability.
+    var _RATE_CACHE_KEY      = 'hbgZarUsdRate';
+    var _RATE_CACHE_MAX_AGE  = 24 * 60 * 60 * 1000; // 24 hours in ms
+    // Tier 3 hardcoded fallback amounts (USD) — update these if the rate
+    // drifts significantly. Used ONLY when both API and cache are unavailable.
+    var _HARDCODED_USD = {
+        '1month': '6.04',   // R100
+        '3month': '15.10',  // R250
+        '6month': '27.18',  // R450
+        '1year':  '51.34'   // R850
+    };
+
+    function _saveRate(rate) {
+        try {
+            localStorage.setItem(_RATE_CACHE_KEY, JSON.stringify({
+                rate:      rate,
+                savedAt:   Date.now()
+            }));
+        } catch (e) {}
+    }
+
+    function _getCachedRate() {
+        try {
+            var cached = JSON.parse(localStorage.getItem(_RATE_CACHE_KEY));
+            if (!cached || !cached.rate) return null;
+            var age = Date.now() - cached.savedAt;
+            if (age > _RATE_CACHE_MAX_AGE) return null; // older than 24h
+            return cached.rate;
+        } catch (e) { return null; }
+    }
+
     function getUSDAmount(zarAmount) {
         return fetch('https://open.er-api.com/v6/latest/ZAR')
             .then(function (r) { return r.json(); })
             .then(function (data) {
-                var zarToUsd = data.rates && data.rates.USD;
-                if (!zarToUsd) throw new Error('Rate not found');
-                var usd = (zarAmount * zarToUsd).toFixed(2);
-                console.log('💱 Exchange rate: R1 = $' + zarToUsd.toFixed(4)
-                    + ' | R' + zarAmount + ' = $' + usd);
+                var rate = data.rates && data.rates.USD;
+                if (!rate || rate <= 0) throw new Error('Invalid rate from API');
+                _saveRate(rate); // cache for future fallback
+                var usd = (zarAmount * rate).toFixed(2);
+                console.log('💱 Live rate: R1 = $' + rate.toFixed(4)
+                    + ' → R' + zarAmount + ' = $' + usd);
                 return usd;
             })
             .catch(function () {
-                // Fallback: approximate rate (updated manually if needed)
-                var fallbackRate = 0.0604; // ~R16.56 per $1 (update if rate drifts significantly)
-                var usd = (zarAmount * fallbackRate).toFixed(2);
-                console.warn('💱 Using fallback rate — live rate unavailable');
+                // Tier 2: use cached rate if available and fresh
+                var cached = _getCachedRate();
+                if (cached) {
+                    var usd = (zarAmount * cached).toFixed(2);
+                    console.warn('💱 API unavailable — using cached rate: R1 = $'
+                        + cached.toFixed(4) + ' → R' + zarAmount + ' = $' + usd);
+                    return usd;
+                }
+                // Tier 3: hardcoded fallback (first-time user, no cache)
+                var usd = _HARDCODED_USD[_currentPlanId] || '6.04';
+                console.warn('💱 No cache — using hardcoded amount: $' + usd);
                 return usd;
             });
     }
