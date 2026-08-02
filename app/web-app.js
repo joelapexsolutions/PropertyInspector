@@ -487,7 +487,13 @@
         if (typeof window.showScreen === 'function') window.showScreen('homeScreen');
     };
 
-    window.handleSubscribeClick = function (planId) {
+    window.handleSubscribeClick = function (planId, rowEl) {
+        // Highlight the selected plan row (rowEl = this from onclick)
+        document.querySelectorAll('.pgs-plan-row').forEach(function(r) {
+            r.classList.remove('pgs-selected');
+        });
+        if (rowEl) rowEl.classList.add('pgs-selected');
+
         window._pendingPlanId = planId;
         var user = window.hbgAuth && window.hbgAuth.getCurrentUser ? window.hbgAuth.getCurrentUser() : null;
         if (!user) {
@@ -628,12 +634,11 @@
             }
         } else if (user && !(premiumData && premiumData.isPremium)) {
             if (isVisible) pgsShowPlansForUser(user);
-        } else {
-            if (isVisible) {
-                _pgHide('pgsPayPalContainer');
-                _pgShow('pgsSignInSection');
-            }
         }
+        // Note: sign-in section is NOT shown automatically.
+        // It only appears when the user clicks Subscribe on a plan.
+        // This prevents the sign-in form from showing before the user
+        // has expressed intent to subscribe.
     };
 
     // ----------------------------------------------------------------
