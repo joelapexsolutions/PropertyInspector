@@ -10,13 +10,13 @@
     var PAYPAL_CLIENT_ID = 'BAAwUsXDGy5cJfkh0AkE8c-5qiUlafv5LODMyEP8p' +
                            'SzCxLUVozIWMyD9Q_crnEW63qG1ZUYkB35lxlfq6E';
 
-    // PayPal requires USD — these are the USD equivalents of your ZAR prices.
-    // PayPal converts to ZAR when it reaches your bank account.
-    var PLAN_USD = {
-        '1month': '5.49',
-        '3month': '13.49',
-        '6month': '24.49',
-        '1year':  '45.49'
+    // Charging in ZAR directly — exact rand amounts, no conversion confusion.
+    // PayPal converts to USD when funds reach your PayPal account.
+    var PLAN_ZAR = {
+        '1month': '100.00',
+        '3month': '250.00',
+        '6month': '450.00',
+        '1year':  '850.00'
     };
 
     var PLAN_LABELS = {
@@ -41,7 +41,7 @@
         var script    = document.createElement('script');
         script.id     = 'paypal-sdk';
         script.src    = 'https://www.paypal.com/sdk/js?client-id='
-                      + PAYPAL_CLIENT_ID + '&currency=USD&intent=capture';
+                      + PAYPAL_CLIENT_ID + '&currency=ZAR&intent=capture';
         script.onload = function () { _sdkLoaded = true; callback(); };
         script.onerror = function () {
             showError('Could not load PayPal. Check your connection and try again.');
@@ -91,8 +91,8 @@
                         purchase_units: [{
                             description: PLAN_LABELS[_currentPlanId],
                             amount: {
-                                currency_code: 'USD',
-                                value:         PLAN_USD[_currentPlanId]
+                                currency_code: 'ZAR',
+                                value:         PLAN_ZAR[_currentPlanId]
                             }
                         }]
                     });
