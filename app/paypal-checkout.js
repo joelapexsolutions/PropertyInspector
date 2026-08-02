@@ -53,7 +53,7 @@
     // Render PayPal buttons for the selected plan
     // ----------------------------------------------------------------
     function renderButtons(planId) {
-        if (!PLAN_USD[planId]) return;
+        if (!PLAN_ZAR[planId]) return;
         _currentPlanId = planId;
 
         var container = document.getElementById('pgsPayPalContainer');
