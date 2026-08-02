@@ -12,14 +12,38 @@
 
     // PayPal SA accounts process in USD. These are the USD equivalents.
     // The plan cards show ZAR prices — PayPal button shows the USD charge.
-    // Charging in ZAR directly — exact rand amounts, no exchange rate needed.
-    // PayPal converts to USD when funds reach your PayPal account.
-    var PLAN_ZAR = {
-        '1month': '100.00',
-        '3month': '250.00',
-        '6month': '450.00',
-        '1year':  '850.00'
+    // ZAR amounts your customers see on the plan cards.
+    // At checkout, the live USD equivalent is fetched from an exchange rate API
+    // so the amount is always accurate — no hardcoded rates.
+    var PLAN_ZAR_AMOUNTS = {
+        '1month': 100,
+        '3month': 250,
+        '6month': 450,
+        '1year':  850
     };
+
+    // Fetch live ZAR→USD rate and return the correct USD amount.
+    // Uses open.er-api.com free tier (no API key needed).
+    // Falls back to a conservative rate if the API is unavailable.
+    function getUSDAmount(zarAmount) {
+        return fetch('https://open.er-api.com/v6/latest/ZAR')
+            .then(function (r) { return r.json(); })
+            .then(function (data) {
+                var zarToUsd = data.rates && data.rates.USD;
+                if (!zarToUsd) throw new Error('Rate not found');
+                var usd = (zarAmount * zarToUsd).toFixed(2);
+                console.log('💱 Exchange rate: R1 = $' + zarToUsd.toFixed(4)
+                    + ' | R' + zarAmount + ' = $' + usd);
+                return usd;
+            })
+            .catch(function () {
+                // Fallback: approximate rate (updated manually if needed)
+                var fallbackRate = 0.0604; // ~R16.56 per $1 (update if rate drifts significantly)
+                var usd = (zarAmount * fallbackRate).toFixed(2);
+                console.warn('💱 Using fallback rate — live rate unavailable');
+                return usd;
+            });
+    }
 
     var PLAN_LABELS = {
         '1month': '1 Month Premium — Home Buyers Guide SA',
@@ -43,7 +67,7 @@
         var script    = document.createElement('script');
         script.id     = 'paypal-sdk';
         script.src    = 'https://www.paypal.com/sdk/js?client-id='
-                      + PAYPAL_CLIENT_ID + '&currency=ZAR&intent=capture';
+                      + PAYPAL_CLIENT_ID + '&currency=USD&intent=capture';
         script.onload = function () { _sdkLoaded = true; callback(); };
         script.onerror = function () {
             showError('Could not load PayPal. Check your connection and try again.');
@@ -55,7 +79,7 @@
     // Render PayPal buttons for the selected plan
     // ----------------------------------------------------------------
     function renderButtons(planId) {
-        if (!PLAN_ZAR[planId]) return;
+        if (!PLAN_ZAR_AMOUNTS[planId]) return;
         _currentPlanId = planId;
 
         var container = document.getElementById('pgsPayPalContainer');
@@ -89,14 +113,18 @@
 
                 // Step 1 — create the order on PayPal
                 createOrder: function (data, actions) {
-                    return actions.order.create({
-                        purchase_units: [{
-                            description: PLAN_LABELS[_currentPlanId],
-                            amount: {
-                                currency_code: 'ZAR',
-                                value:         PLAN_ZAR[_currentPlanId]
-                            }
-                        }]
+                    var zarAmount = PLAN_ZAR_AMOUNTS[_currentPlanId];
+                    return getUSDAmount(zarAmount).then(function (usdAmount) {
+                        return actions.order.create({
+                            purchase_units: [{
+                                description: PLAN_LABELS[_currentPlanId]
+                                    + ' (R' + zarAmount + ' ZAR)',
+                                amount: {
+                                    currency_code: 'USD',
+                                    value:         usdAmount
+                                }
+                            }]
+                        });
                     });
                 },
 
