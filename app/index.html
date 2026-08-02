@@ -83,6 +83,27 @@
 	<script src="firebase-auth.js"></script>
 	<script src="paypal-checkout.js"></script>
 	<script src="web-app.js?v=14"></script>
+	<script>
+    // Safety stubs — ensure onclick functions always exist even if web-app.js
+    // is served from an old cache. web-app.js overrides these with full versions.
+    if (typeof hbgGoogleSignIn === 'undefined') {
+        window.hbgGoogleSignIn = function () {
+            var retry = function () {
+                if (window.hbgAuth && window.hbgAuth.signInWithGoogle) {
+                    window.hbgAuth.signInWithGoogle().catch(function () {
+                        alert('Google Sign-In failed. Please try email sign-in instead.');
+                    });
+                } else { setTimeout(retry, 400); }
+            };
+            retry();
+        };
+    }
+    if (typeof hbgInstallApp === 'undefined') {
+        window.hbgInstallApp = function () {
+            alert('To install: open your browser menu and tap "Add to Home Screen".');
+        };
+    }
+    </script>
 	<script src="app.js"></script>
 
 </head>
