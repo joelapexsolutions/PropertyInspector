@@ -473,64 +473,61 @@
     //    This section owns the UI only.
     // ----------------------------------------------------------------
 
-    var _isAndroidBrowser = /Android/.test(navigator.userAgent);
-
-    // Show the premium gate screen, optionally with a message about
-    // which feature was blocked (e.g. "PDF reports are a premium feature")
     window.showPremiumGate = function (featureMsg) {
         var screen = document.getElementById('premiumGateScreen');
         if (!screen) return;
-
-        // Set the feature message if provided
         var msgEl = document.getElementById('pgsFeatureMsg');
         if (msgEl && featureMsg) msgEl.textContent = featureMsg;
-
-        // All browser users (Android, iOS, desktop) get sign-in + payment.
-        // Note: Android APK users never reach this code because web-app.js
-        // exits at the top (window.Android is set by the WebView).
-        var androidSection = document.getElementById('pgsAndroidSection');
-        if (androidSection) androidSection.style.display = 'none';
-
-        var signInSection = document.getElementById('pgsSignInSection');
-        var backBtn       = document.getElementById('pgsBackBtn');
-        if (backBtn) backBtn.style.display = 'block';
-
-        // Check if already signed in
-        var user = window.hbgAuth && window.hbgAuth.getCurrentUser
-            ? window.hbgAuth.getCurrentUser() : null;
-        if (user) {
-            pgsShowPlansForUser(user);
-        } else {
-            pgsShowSignIn();
-        }
-
-        // Show the screen
-        document.querySelectorAll('.screen').forEach(function (s) {
-            s.classList.remove('active');
-        });
+        // Reset — hide sign-in and PayPal overlays, show plan list
+        _pgHide('pgsSignInSection');
+        _pgHide('pgsEmailSentSection');
+        _pgHide('pgsPayPalContainer');
+        _pgHide('pgsPremiumSection');
+        document.querySelectorAll('.screen').forEach(function (s) { s.classList.remove('active'); });
         screen.classList.add('active');
     };
 
     window.hidePremiumGate = function () {
         var screen = document.getElementById('premiumGateScreen');
         if (screen) screen.classList.remove('active');
-        // Return to home screen
-        if (typeof window.showScreen === 'function') {
-            window.showScreen('homeScreen');
+        if (typeof window.showScreen === 'function') window.showScreen('homeScreen');
+    };
+
+    // Called when user taps Subscribe on a plan card
+    window.handleSubscribeClick = function (planId) {
+        window._pendingPlanId = planId;
+        var user = window.hbgAuth && window.hbgAuth.getCurrentUser
+            ? window.hbgAuth.getCurrentUser() : null;
+        if (!user) {
+            _pgShow('pgsSignInSection');
+        } else {
+            var emailEl = document.getElementById('pgsUserEmail');
+            if (emailEl) emailEl.textContent = user.email || '';
+            _pgShow('pgsPayPalContainer');
+            if (window.hbgPayPal) window.hbgPayPal.renderButtons(planId);
         }
     };
 
-    // Show the email sign-in section
     window.pgsShowSignIn = function () {
+        _pgHide('pgsEmailSentSection');
         _pgShow('pgsSignInSection');
     };
 
-    // Show plans for a signed-in user
     function pgsShowPlansForUser(user) {
         var emailEl = document.getElementById('pgsUserEmail');
         if (emailEl) emailEl.textContent = user.email || '';
-        _pgShow('pgsPlanSection');
+        if (window._pendingPlanId) {
+            var planId = window._pendingPlanId;
+            window._pendingPlanId = null;
+            _pgHide('pgsSignInSection');
+            _pgHide('pgsEmailSentSection');
+            _pgShow('pgsPayPalContainer');
+            if (window.hbgPayPal) window.hbgPayPal.renderButtons(planId);
+        }
     }
+
+    function _pgShow(id) { var el = document.getElementById(id); if (el) el.style.display = ''; }
+    function _pgHide(id) { var el = document.getElementById(id); if (el) el.style.display = 'none'; }
 
     // Handle "Send Sign-in Link" button
     window.hbgSendMagicLink = function () {
@@ -635,38 +632,90 @@
         }
     };
 
+    // ----------------------------------------------------------------
+    // Update the Subscription section in Settings based on current state
+    // ----------------------------------------------------------------
+    function updateSubscriptionUI(user, premiumData) {
+        var planLabel    = document.getElementById('subscriptionPlanLabel');
+        var expiryLabel  = document.getElementById('subscriptionExpiryLabel');
+        var badge        = document.getElementById('subscriptionBadge');
+        var upgradeRow   = document.getElementById('subscriptionUpgradeRow');
+        var refundRow    = document.getElementById('subscriptionRefundRow');
+        var iconEl       = document.querySelector('#subscriptionStatusRow .stg-row-icon i');
+
+        if (!planLabel) return; // settings screen not yet in DOM
+
+        var PLAN_NAMES = {
+            '1month':  '1 Month Plan',
+            '3month':  '3 Month Plan',
+            '6month':  '6 Month Plan',
+            '1year':   '1 Year Plan',
+            'web-paypal': 'Premium Plan',
+            'free':    'Free Plan'
+        };
+
+        if (user && premiumData && premiumData.isPremium) {
+            var planName = PLAN_NAMES[premiumData.plan] || 'Premium Plan';
+            planLabel.textContent = planName;
+
+            if (premiumData.expiryDate) {
+                var expiry = premiumData.expiryDate.toDate
+                    ? premiumData.expiryDate.toDate()
+                    : new Date(premiumData.expiryDate);
+                expiryLabel.textContent = 'Active until '
+                    + expiry.toLocaleDateString('en-ZA', {
+                        day: 'numeric', month: 'long', year: 'numeric'
+                    });
+            } else {
+                expiryLabel.textContent = 'Premium access active';
+            }
+
+            if (iconEl) { iconEl.className = 'fas fa-crown'; iconEl.style.color = '#F9C74F'; }
+            if (badge)      { badge.style.display = ''; }
+            if (upgradeRow) { upgradeRow.style.display = 'none'; }
+            if (refundRow)  { refundRow.style.display = ''; }
+
+        } else {
+            planLabel.textContent    = 'Free Plan';
+            expiryLabel.textContent  = 'Up to 2 properties · basic assessment';
+            if (iconEl) { iconEl.className = 'fas fa-lock'; iconEl.style.color = '#8bbad4'; }
+            if (badge)      { badge.style.display = 'none'; }
+            if (upgradeRow) { upgradeRow.style.display = ''; }
+            if (refundRow)  { refundRow.style.display = 'none'; }
+        }
+    }
+
     // Auth state changed callback (called by firebase-auth.js)
     window.onHbgAuthStateChanged = function (user, premiumData) {
         var screen = document.getElementById('premiumGateScreen');
         var isVisible = screen && screen.classList.contains('active');
 
+        // Always update the Settings subscription section
+        updateSubscriptionUI(user, premiumData);
+
         if (user && premiumData.isPremium) {
-            // Update expiry display
             var expiryEl = document.getElementById('pgsExpiryMsg');
             if (expiryEl && premiumData.expiryDate) {
                 var expiry = premiumData.expiryDate.toDate
                     ? premiumData.expiryDate.toDate()
                     : new Date(premiumData.expiryDate);
-                expiryEl.textContent = 'Your plan is active until '
-                    + expiry.toLocaleDateString('en-ZA', { year: 'numeric', month: 'long', day: 'numeric' });
+                expiryEl.textContent = 'Next billing: '
+                    + expiry.toLocaleDateString('en-ZA', { day: 'numeric', month: 'long', year: 'numeric' })
+                    + ' · Cancel anytime from Settings';
             }
-            if (isVisible) _pgShow('pgsPremiumSection');
+            if (isVisible) {
+                _pgHide('pgsSignInSection'); _pgHide('pgsEmailSentSection');
+                _pgHide('pgsPayPalContainer'); _pgShow('pgsPremiumSection');
+            }
         } else if (user && !premiumData.isPremium) {
             if (isVisible) pgsShowPlansForUser(user);
         } else {
-            if (isVisible) pgsShowSignIn();
+            if (isVisible) { _pgHide('pgsPayPalContainer'); _pgShow('pgsSignInSection'); }
         }
     };
 
     // Internal helper — hide all pgs sections then show one
-    function _pgShow(sectionId) {
-        var sections = ['pgsSignInSection', 'pgsEmailSentSection',
-                        'pgsPlanSection', 'pgsPremiumSection'];
-        sections.forEach(function (id) {
-            var el = document.getElementById(id);
-            if (el) el.style.display = id === sectionId ? '' : 'none';
-        });
-    }
+
 
     // ----------------------------------------------------------------
     // 8. BOOT (after DOM + premium system are ready)
