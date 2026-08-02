@@ -485,26 +485,23 @@
         var msgEl = document.getElementById('pgsFeatureMsg');
         if (msgEl && featureMsg) msgEl.textContent = featureMsg;
 
-        // Android users → show Play Store redirect, hide sign-in
+        // All browser users (Android, iOS, desktop) get sign-in + payment.
+        // Note: Android APK users never reach this code because web-app.js
+        // exits at the top (window.Android is set by the WebView).
         var androidSection = document.getElementById('pgsAndroidSection');
-        var signInSection  = document.getElementById('pgsSignInSection');
-        var backBtn        = document.getElementById('pgsBackBtn');
+        if (androidSection) androidSection.style.display = 'none';
 
-        if (_isAndroidBrowser) {
-            if (androidSection) androidSection.style.display = 'block';
-            if (signInSection)  signInSection.style.display  = 'none';
-            if (backBtn)        backBtn.style.display         = 'block';
+        var signInSection = document.getElementById('pgsSignInSection');
+        var backBtn       = document.getElementById('pgsBackBtn');
+        if (backBtn) backBtn.style.display = 'block';
+
+        // Check if already signed in
+        var user = window.hbgAuth && window.hbgAuth.getCurrentUser
+            ? window.hbgAuth.getCurrentUser() : null;
+        if (user) {
+            pgsShowPlansForUser(user);
         } else {
-            if (androidSection) androidSection.style.display = 'none';
-            // Check if already signed in
-            var user = window.hbgAuth && window.hbgAuth.getCurrentUser
-                ? window.hbgAuth.getCurrentUser() : null;
-            if (user) {
-                pgsShowPlansForUser(user);
-            } else {
-                pgsShowSignIn();
-            }
-            if (backBtn) backBtn.style.display = 'block';
+            pgsShowSignIn();
         }
 
         // Show the screen
@@ -558,6 +555,46 @@
             });
     };
 
+    // Handle Google Sign-In button
+    window.hbgGoogleSignIn = function () {
+        if (!window.hbgAuth || !window.hbgAuth.signInWithGoogle) {
+            alert('Google Sign-In is loading. Please try again in a moment.');
+            return;
+        }
+        window.hbgAuth.signInWithGoogle().catch(function (err) {
+            console.error('Google sign-in error:', err);
+            alert('Google Sign-In failed. Please try the email option instead.');
+        });
+    };
+
+    // Install app — works even after the PWA was previously uninstalled
+    window.hbgInstallApp = function () {
+        // If native prompt is available (Chrome/Edge before install)
+        if (deferredInstallPrompt) {
+            deferredInstallPrompt.prompt();
+            deferredInstallPrompt.userChoice.then(function () {
+                deferredInstallPrompt = null;
+            });
+            return;
+        }
+        // Already installed (standalone) — let them know
+        if (isStandalone()) {
+            alert('The app is already installed on your device!');
+            return;
+        }
+        // Manual instructions for when browser prompt is unavailable
+        var ua = navigator.userAgent;
+        var msg;
+        if (/iPhone|iPad|iPod/.test(ua) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1)) {
+            msg = 'To install on iOS:\n1. Tap the Share button (box with arrow) at the bottom of your browser\n2. Scroll down and tap "Add to Home Screen"\n3. Tap "Add"';
+        } else if (/Android/.test(ua)) {
+            msg = 'To install on Android:\n1. Tap the 3-dot menu (⋮) in the top-right of your browser\n2. Tap "Add to Home Screen" or "Install App"\n3. Tap "Add"';
+        } else {
+            msg = 'To install on desktop:\n1. Look for the install icon (⊕) in your browser address bar\n2. Click it and select "Install"\n\nOr use Chrome/Edge for the best install experience.';
+        }
+        alert(msg);
+    };
+
     // Handle plan selection — render PayPal buttons for the chosen plan
     window.pgsSelectPlan = function (planId, priceRand) {
         // Highlight selected plan card
@@ -567,9 +604,25 @@
         if (event && event.currentTarget) {
             event.currentTarget.classList.add('pgs-plan-selected');
         }
-        // Load and render PayPal buttons for this plan
+
+        // Show PayPal buttons
         if (window.hbgPayPal && window.hbgPayPal.renderButtons) {
             window.hbgPayPal.renderButtons(planId);
+        } else {
+            // paypal-checkout.js not loaded — show fallback
+            var container = document.getElementById('pgsPayPalContainer');
+            if (container) {
+                container.style.display = 'block';
+                container.innerHTML =
+                    '<p class="pgs-payment-error">' +
+                    '<i class="fas fa-exclamation-triangle"></i> ' +
+                    'Payment not loading. Please hard-refresh the page (Ctrl+Shift+R) ' +
+                    'or contact <a href="mailto:joelapexs@gmail.com" ' +
+                    'style="color:#06D6A0">joelapexs@gmail.com</a> to subscribe.' +
+                    '</p>';
+            }
+            var cs = document.getElementById('pgsComingSoon');
+            if (cs) cs.style.display = 'none';
         }
     };
 
