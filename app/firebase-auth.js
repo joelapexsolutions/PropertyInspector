@@ -161,10 +161,33 @@
 
     // ----------------------------------------------------------------
     // Auto-complete sign-in if this page load is a magic link redirect
+    // Also handle Google redirect result
     // ----------------------------------------------------------------
     document.addEventListener('DOMContentLoaded', function () {
+        // Handle Google redirect sign-in result
+        auth.getRedirectResult().then(function (result) {
+            if (result && result.user) {
+                console.log('hbg-auth: Google redirect sign-in complete');
+            }
+        }).catch(function (err) {
+            if (err.code && err.code !== 'auth/no-current-user') {
+                console.error('hbg-auth: redirect result error', err.message);
+            }
+        });
+
+        // Handle email magic link
         completeSignInFromLink();
     });
+
+    // ----------------------------------------------------------------
+    // Google Sign-In
+    // ----------------------------------------------------------------
+    function signInWithGoogle() {
+        var provider = new firebase.auth.GoogleAuthProvider();
+        provider.setCustomParameters({ prompt: 'select_account' });
+        // Redirect works reliably on all mobile browsers including Safari iOS
+        return auth.signInWithRedirect(provider);
+    }
 
     // ----------------------------------------------------------------
     // Public API — used by web-app.js UI functions
@@ -173,6 +196,7 @@
         sendSignInLink:         sendSignInLink,
         completeSignInFromLink: completeSignInFromLink,
         checkFirestorePremium:  checkFirestorePremium,
+        signInWithGoogle:       signInWithGoogle,
         signOut:        function () { return auth.signOut(); },
         getCurrentUser: function () { return auth.currentUser; },
         onAuthStateChanged: function (cb) { return auth.onAuthStateChanged(cb); }
