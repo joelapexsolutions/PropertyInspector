@@ -1,8 +1,8 @@
 // ====================================================================
-// PAYPAL-CHECKOUT.JS — PayPal payment integration
+// PAYPAL-CHECKOUT.JS — Recurring subscription payments
 // Home Buyers Guide SA PWA
-// Client ID is safe to expose in frontend code.
-// Secret key is NEVER here — it lives only in the Cloud Function.
+// Uses PayPal Subscriptions API — auto-renews until user cancels,
+// exactly like Google Play subscriptions.
 // ====================================================================
 (function () {
     'use strict';
@@ -10,45 +10,13 @@
     var PAYPAL_CLIENT_ID = 'BAAwUsXDGy5cJfkh0AkE8c-5qiUlafv5LODMyEP8p' +
                            'SzCxLUVozIWMyD9Q_crnEW63qG1ZUYkB35lxlfq6E';
 
-    // PayPal SA accounts process in USD. These are the USD equivalents.
-    // The plan cards show ZAR prices — PayPal button shows the USD charge.
-    // ZAR amounts your customers see on the plan cards.
-    // At checkout, the live USD equivalent is fetched from an exchange rate API
-    // so the amount is always accurate — no hardcoded rates.
-    var PLAN_ZAR_AMOUNTS = {
-        '1month': 100,
-        '3month': 250,
-        '6month': 450,
-        '1year':  850
+    // Live PayPal Plan IDs — created in PayPal Business Dashboard
+    var PLAN_IDS = {
+        '1month': 'P-3X13709968877904VNJXVTPI',
+        '3month': 'P-2VU09087LE26726O6NJXVU5I',
+        '6month': 'P-4P7794B4YY078701RNJXVVOQ',
+        '1year':  'P-2A3O5111WW754613DNJXVV4Y'
     };
-
-    // Two-tier exchange rate:
-    //   1. Live API  — open.er-api.com (free, no key, confirmed working)
-    //   2. Hardcoded — exact per-plan USD amounts if API is unavailable
-    var _HARDCODED_USD = {
-        '1month': '6.04',   // R100
-        '3month': '15.10',  // R250
-        '6month': '27.18',  // R450
-        '1year':  '51.34'   // R850
-    };
-
-    function getUSDAmount(zarAmount) {
-        return fetch('https://open.er-api.com/v6/latest/ZAR')
-            .then(function (r) { return r.json(); })
-            .then(function (data) {
-                var rate = data.rates && data.rates.USD;
-                if (!rate || rate <= 0) throw new Error('Invalid rate');
-                var usd = (zarAmount * rate).toFixed(2);
-                console.log('💱 Live rate: R1 = $' + rate.toFixed(4)
-                    + ' | R' + zarAmount + ' = $' + usd);
-                return usd;
-            })
-            .catch(function () {
-                var usd = _HARDCODED_USD[_currentPlanId] || '6.04';
-                console.warn('💱 API unavailable — using hardcoded: $' + usd);
-                return usd;
-            });
-    }
 
     var PLAN_LABELS = {
         '1month': '1 Month Premium — Home Buyers Guide SA',
@@ -57,12 +25,12 @@
         '1year':  '1 Year Premium — Home Buyers Guide SA'
     };
 
-    var _currentPlanId   = null;
-    var _paypalInstance  = null;
-    var _sdkLoaded       = false;
+    var _currentPlanId  = null;
+    var _paypalInstance = null;
+    var _sdkLoaded      = false;
 
     // ----------------------------------------------------------------
-    // Load the PayPal JS SDK once (lazy — only when a plan is selected)
+    // Load PayPal SDK with subscription intent
     // ----------------------------------------------------------------
     function loadSDK(callback) {
         if (_sdkLoaded && window.paypal) { callback(); return; }
@@ -72,7 +40,8 @@
         var script    = document.createElement('script');
         script.id     = 'paypal-sdk';
         script.src    = 'https://www.paypal.com/sdk/js?client-id='
-                      + PAYPAL_CLIENT_ID + '&currency=USD&intent=capture';
+                      + PAYPAL_CLIENT_ID
+                      + '&vault=true&intent=subscription';
         script.onload = function () { _sdkLoaded = true; callback(); };
         script.onerror = function () {
             showError('Could not load PayPal. Check your connection and try again.');
@@ -81,17 +50,17 @@
     }
 
     // ----------------------------------------------------------------
-    // Render PayPal buttons for the selected plan
+    // Render PayPal subscription buttons for the selected plan
     // ----------------------------------------------------------------
     function renderButtons(planId) {
-        if (!PLAN_ZAR_AMOUNTS[planId]) return;
+        if (!PLAN_IDS[planId]) return;
         _currentPlanId = planId;
 
         var container = document.getElementById('pgsPayPalContainer');
         var btnDiv    = document.getElementById('paypal-button-container');
         if (!container || !btnDiv) return;
 
-        // Destroy previous instance
+        // Destroy previous buttons
         if (_paypalInstance) {
             try { _paypalInstance.close(); } catch (e) {}
             _paypalInstance = null;
@@ -100,7 +69,6 @@
             + '<i class="fas fa-spinner fa-spin"></i> Loading payment...</div>';
         container.style.display = 'block';
 
-        // Hide "coming soon" message
         var cs = document.getElementById('pgsComingSoon');
         if (cs) cs.style.display = 'none';
 
@@ -112,32 +80,20 @@
                     layout: 'vertical',
                     color:  'gold',
                     shape:  'rect',
-                    label:  'pay',
+                    label:  'subscribe',
                     height: 50
                 },
 
-                // Step 1 — create the order on PayPal
-                createOrder: function (data, actions) {
-                    var zarAmount = PLAN_ZAR_AMOUNTS[_currentPlanId];
-                    return getUSDAmount(zarAmount).then(function (usdAmount) {
-                        return actions.order.create({
-                            purchase_units: [{
-                                description: PLAN_LABELS[_currentPlanId]
-                                    + ' (R' + zarAmount + ' ZAR)',
-                                amount: {
-                                    currency_code: 'USD',
-                                    value:         usdAmount
-                                }
-                            }]
-                        });
+                // Create subscription using the plan ID
+                createSubscription: function (data, actions) {
+                    return actions.subscription.create({
+                        plan_id: PLAN_IDS[_currentPlanId]
                     });
                 },
 
-                // Step 2 — user approved, capture the payment
-                onApprove: function (data, actions) {
-                    return actions.order.capture().then(function () {
-                        onPaymentCaptured(data.orderID, _currentPlanId);
-                    });
+                // Subscription approved — verify with Cloud Function
+                onApprove: function (data) {
+                    onSubscriptionApproved(data.subscriptionID, _currentPlanId);
                 },
 
                 onError: function (err) {
@@ -146,8 +102,7 @@
                 },
 
                 onCancel: function () {
-                    // User closed PayPal — just leave buttons in place
-                    console.log('PayPal checkout cancelled');
+                    console.log('PayPal subscription cancelled by user');
                 }
             });
 
@@ -156,22 +111,16 @@
     }
 
     // ----------------------------------------------------------------
-    // After PayPal captures the payment — call Cloud Function to grant premium
+    // Subscription approved — call Cloud Function to verify and activate
     // ----------------------------------------------------------------
-    function onPaymentCaptured(orderId, planId) {
-        // Show spinner while we verify
-        var container = document.getElementById('pgsPayPalContainer');
-        if (container) {
-            container.innerHTML = '<div class="pgs-paypal-loading">'
-                + '<i class="fas fa-spinner fa-spin"></i>'
-                + ' Activating your subscription…</div>';
-        }
+    function onSubscriptionApproved(subscriptionId, planId) {
+        showProcessing();
 
-        var verifyFn = firebase.functions().httpsCallable('verifyPayPalPayment');
-        verifyFn({ orderId: orderId, planId: planId })
+        var verifyFn = firebase.functions().httpsCallable('verifyPayPalSubscription');
+        verifyFn({ subscriptionId: subscriptionId, planId: planId })
             .then(function (result) {
                 if (result.data && result.data.success) {
-                    onSubscriptionActivated(planId, result.data.expiryDate);
+                    onActivated(planId, result.data.nextBillingDate);
                 } else {
                     showError('Verification failed. Email homebuyersguidesa@gmail.com with your receipt.');
                 }
@@ -183,21 +132,20 @@
     }
 
     // ----------------------------------------------------------------
-    // Subscription is now live — show confirmation
+    // Subscription activated — show confirmation
     // ----------------------------------------------------------------
-    function onSubscriptionActivated(planId, expiryDateStr) {
-        var expiry      = new Date(expiryDateStr);
-        var expiryLabel = expiry.toLocaleDateString('en-ZA', {
-            year: 'numeric', month: 'long', day: 'numeric'
-        });
+    function onActivated(planId, nextBillingDate) {
+        var expiry = nextBillingDate ? new Date(nextBillingDate) : null;
+        var expiryLabel = expiry
+            ? expiry.toLocaleDateString('en-ZA', { day: 'numeric', month: 'long', year: 'numeric' })
+            : 'active';
 
-        // Update the expiry message in the "You have Premium" section
         var expiryEl = document.getElementById('pgsExpiryMsg');
         if (expiryEl) {
-            expiryEl.textContent = 'Your plan is active until ' + expiryLabel;
+            expiryEl.textContent = 'Next billing date: ' + expiryLabel
+                + ' · Cancel anytime from Settings';
         }
 
-        // Hide plan section, show premium section
         ['pgsSignInSection', 'pgsEmailSentSection', 'pgsPlanSection']
             .forEach(function (id) {
                 var el = document.getElementById(id);
@@ -207,7 +155,16 @@
         var premiumSection = document.getElementById('pgsPremiumSection');
         if (premiumSection) premiumSection.style.display = '';
 
-        console.log('✅ Subscription activated:', planId, 'until', expiryDateStr);
+        console.log('✅ Subscription activated:', planId);
+    }
+
+    function showProcessing() {
+        var container = document.getElementById('pgsPayPalContainer');
+        if (container) {
+            container.innerHTML = '<div class="pgs-paypal-loading">'
+                + '<i class="fas fa-spinner fa-spin"></i>'
+                + ' Activating your subscription…</div>';
+        }
     }
 
     function showError(msg) {
@@ -219,11 +176,11 @@
     }
 
     // ----------------------------------------------------------------
-    // Public API — called by pgsSelectPlan() in web-app.js
+    // Public API
     // ----------------------------------------------------------------
     window.hbgPayPal = {
         renderButtons: renderButtons
     };
 
-    console.log('💳 hbg-paypal: PayPal checkout initialised');
+    console.log('💳 hbg-paypal: Subscription checkout ready');
 })();
