@@ -48,7 +48,7 @@
 	<!-- Onboarding System -->
 	<link rel="stylesheet" href="onboarding.css">
 	<link rel="stylesheet" href="theme.css">
-	<link rel="stylesheet" href="web-app.css?v=21">
+	<link rel="stylesheet" href="web-app.css?v=23">
 	<script src="onboarding.js"></script>
 	
 	<!-- Google Analytics 4 -->
@@ -82,7 +82,7 @@
 	<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-functions-compat.js"></script>
 	<script src="firebase-auth.js"></script>
 	<script src="paypal-checkout.js?v=7"></script>
-	<script src="web-app.js?v=21"></script>
+	<script src="web-app.js?v=23"></script>
 	<script>
     // Safety stubs — ensure onclick functions always exist even if web-app.js
     // is served from an old cache. web-app.js overrides these with full versions.
@@ -749,7 +749,7 @@
             </ul>
 
             <div class="pgs-plans">
-                <div class="pgs-plan-row" onclick="handleSubscribeClick('1month')">
+                <div class="pgs-plan-row" onclick="handleSubscribeClick('1month', this)">
                     <div class="pgs-trial-ribbon">3-DAY FREE TRIAL</div>
                     <div class="pgs-plan-info">
                         <div class="pgs-plan-label">Monthly</div>
@@ -758,7 +758,7 @@
                     <div class="pgs-plan-pricing"><div class="pgs-plan-price pgs-price-free">FREE</div><div class="pgs-plan-sub">for 3 days</div></div>
                     <button class="pgs-sub-btn pgs-btn-trial" tabindex="-1">Try Free</button>
                 </div>
-                <div class="pgs-plan-row" onclick="handleSubscribeClick('3month')">
+                <div class="pgs-plan-row" onclick="handleSubscribeClick('3month', this)">
                     <div class="pgs-plan-info">
                         <div class="pgs-plan-label">3 Months</div>
                         <div class="pgs-plan-period">R83/mo</div>
@@ -766,7 +766,7 @@
                     <div class="pgs-plan-pricing"><div class="pgs-plan-price">R250</div><div class="pgs-plan-save">Save 17%</div></div>
                     <button class="pgs-sub-btn" tabindex="-1">Subscribe</button>
                 </div>
-                <div class="pgs-plan-row pgs-plan-featured" onclick="handleSubscribeClick('6month')">
+                <div class="pgs-plan-row pgs-plan-featured" onclick="handleSubscribeClick('6month', this)">
                     <div class="pgs-featured-badge">MOST POPULAR</div>
                     <div class="pgs-plan-info">
                         <div class="pgs-plan-label pgs-label-featured">6 Months</div>
@@ -775,7 +775,7 @@
                     <div class="pgs-plan-pricing"><div class="pgs-plan-price pgs-price-featured">R450</div><div class="pgs-plan-save">Save 25%</div></div>
                     <button class="pgs-sub-btn pgs-btn-featured" tabindex="-1">Subscribe</button>
                 </div>
-                <div class="pgs-plan-row" onclick="handleSubscribeClick('1year')">
+                <div class="pgs-plan-row" onclick="handleSubscribeClick('1year', this)">
                     <div class="pgs-plan-info">
                         <div class="pgs-plan-label">Annual <span class="pgs-best-tag">BEST VALUE</span></div>
                         <div class="pgs-plan-period">R71/mo</div>
