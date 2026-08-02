@@ -48,7 +48,7 @@
 	<!-- Onboarding System -->
 	<link rel="stylesheet" href="onboarding.css">
 	<link rel="stylesheet" href="theme.css">
-	<link rel="stylesheet" href="web-app.css?v=19">
+	<link rel="stylesheet" href="web-app.css?v=20">
 	<script src="onboarding.js"></script>
 	
 	<!-- Google Analytics 4 -->
@@ -81,8 +81,8 @@
 	<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
 	<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-functions-compat.js"></script>
 	<script src="firebase-auth.js"></script>
-	<script src="paypal-checkout.js?v=5"></script>
-	<script src="web-app.js?v=19"></script>
+	<script src="paypal-checkout.js?v=6"></script>
+	<script src="web-app.js?v=20"></script>
 	<script>
     // Safety stubs — ensure onclick functions always exist even if web-app.js
     // is served from an old cache. web-app.js overrides these with full versions.
@@ -726,146 +726,6 @@
                    onchange="handleCustomConfigImport(event)">
 
             <div style="height:30px"></div>
-        </div>
-    </div>
-
-    <!-- ═══════════════════════════════════════════════════════
-         PREMIUM GATE SCREEN — sign-in + subscription plans
-    ════════════════════════════════════════════════════════════ -->
-    <div id="premiumGateScreen" class="screen pgs-screen">
-        <div class="pgs-sheet">
-
-            <!-- Close button -->
-            <button class="pgs-x-btn" onclick="hidePremiumGate()">&#x2715;</button>
-
-            <!-- Header — always visible -->
-            <div class="pgs-top">
-                <div class="pgs-crown-circle"><i class="fas fa-crown"></i></div>
-                <h2 class="pgs-title">Home Buyers Guide SA</h2>
-                <p class="pgs-subtitle" id="pgsFeatureMsg">Upgrade for unlimited access</p>
-            </div>
-
-            <!-- Feature list — always visible -->
-            <div class="pgs-features">
-                <div class="pgs-feat"><i class="fas fa-check-circle"></i><span><strong>Unlimited Properties</strong> — assess every home with no cap</span></div>
-                <div class="pgs-feat"><i class="fas fa-check-circle"></i><span><strong>No Advertisements</strong> — clean, focused experience</span></div>
-                <div class="pgs-feat"><i class="fas fa-check-circle"></i><span><strong>Full PDF Reports</strong> — photo-backed, shareable documentation</span></div>
-                <div class="pgs-feat"><i class="fas fa-check-circle"></i><span><strong>Full Assessment Results</strong> — detailed scoring &amp; insights</span></div>
-                <div class="pgs-feat"><i class="fas fa-check-circle"></i><span><strong>Custom Assessment</strong> — add your own features, items &amp; questions</span></div>
-            </div>
-
-            <!-- Plan cards — always visible -->
-            <div class="pgs-plan-list">
-
-                <!-- 1 Month — with trial -->
-                <div class="pgs-plan-row" id="planRow_1month" onclick="handleSubscribeClick('1month')">
-                    <div class="pgs-plan-left">
-                        <div class="pgs-plan-name">Monthly <span class="pgs-trial-pill">3-Day Free Trial</span></div>
-                        <div class="pgs-plan-per">per month</div>
-                    </div>
-                    <div class="pgs-plan-right">
-                        <div class="pgs-plan-price">R100</div>
-                        <button class="pgs-sub-btn">Subscribe</button>
-                    </div>
-                </div>
-
-                <!-- 3 Months -->
-                <div class="pgs-plan-row" id="planRow_3month" onclick="handleSubscribeClick('3month')">
-                    <div class="pgs-plan-left">
-                        <div class="pgs-plan-name">3 Months</div>
-                        <div class="pgs-plan-per">R83/mo</div>
-                    </div>
-                    <div class="pgs-plan-right">
-                        <div class="pgs-plan-price">R250</div>
-                        <div class="pgs-plan-save">Save R50</div>
-                        <button class="pgs-sub-btn">Subscribe</button>
-                    </div>
-                </div>
-
-                <!-- 6 Months — Most Popular -->
-                <div class="pgs-plan-row pgs-plan-popular-row" id="planRow_6month" onclick="handleSubscribeClick('6month')">
-                    <div class="pgs-popular-badge">MOST POPULAR</div>
-                    <div class="pgs-plan-left">
-                        <div class="pgs-plan-name pgs-pop-name">6 Months</div>
-                        <div class="pgs-plan-per">R75/mo</div>
-                    </div>
-                    <div class="pgs-plan-right">
-                        <div class="pgs-plan-price pgs-pop-price">R450</div>
-                        <div class="pgs-plan-save">Save R150</div>
-                        <button class="pgs-sub-btn pgs-sub-btn-pop">Subscribe</button>
-                    </div>
-                </div>
-
-                <!-- Annual — Best Value -->
-                <div class="pgs-plan-row" id="planRow_1year" onclick="handleSubscribeClick('1year')">
-                    <div class="pgs-plan-left">
-                        <div class="pgs-plan-name">Annual <span class="pgs-best-pill">BEST VALUE</span></div>
-                        <div class="pgs-plan-per">R71/mo</div>
-                    </div>
-                    <div class="pgs-plan-right">
-                        <div class="pgs-plan-price">R850</div>
-                        <div class="pgs-plan-save">Save R350</div>
-                        <button class="pgs-sub-btn">Subscribe</button>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Sign-in step — shown when user clicks Subscribe but not signed in -->
-            <div id="pgsSignInSection" style="display:none">
-                <p class="pgs-signin-prompt">Sign in to complete your subscription</p>
-                <button class="pgs-google-btn" onclick="hbgGoogleSignIn()">
-                    <svg class="pgs-google-icon" viewBox="0 0 24 24">
-                        <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
-                        <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
-                        <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l3.66-2.84z"/>
-                        <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/>
-                    </svg>
-                    Continue with Google
-                </button>
-                <div class="pgs-divider"><span>or use email</span></div>
-                <input type="email" id="pgsEmailInput" class="pgs-email-input" placeholder="your@email.com" autocomplete="email">
-                <button class="pgs-btn-primary" onclick="hbgSendMagicLink()">
-                    <i class="fas fa-envelope"></i> Send Sign-in Link
-                </button>
-            </div>
-
-            <!-- Email sent -->
-            <div id="pgsEmailSentSection" style="display:none">
-                <div class="pgs-sent-icon"><i class="fas fa-envelope-open-text"></i></div>
-                <h3 class="pgs-sent-title">Check your inbox</h3>
-                <p class="pgs-sent-msg">We sent a sign-in link to<br><strong id="pgsSentEmail"></strong></p>
-                <p class="pgs-sent-hint">Check spam if you don't see it.</p>
-                <button class="pgs-btn-secondary" onclick="pgsShowSignIn()">
-                    <i class="fas fa-arrow-left"></i> Use a different email
-                </button>
-            </div>
-
-            <!-- PayPal buttons — appear after plan selected + signed in -->
-            <div id="pgsPayPalContainer" style="display:none">
-                <div class="pgs-signed-bar">
-                    <span>Signed in as <strong id="pgsUserEmail"></strong></span>
-                    <button class="pgs-sign-out-link" onclick="hbgSignOut()">Sign out</button>
-                </div>
-                <div id="paypal-button-container"></div>
-                <p class="pgs-billing-info" id="pgsBillingInfo" style="display:none"></p>
-            </div>
-
-            <!-- Premium active screen -->
-            <div id="pgsPremiumSection" style="display:none">
-                <div class="pgs-premium-icon"><i class="fas fa-crown"></i></div>
-                <h3 class="pgs-premium-title">You have Premium!</h3>
-                <p class="pgs-expiry" id="pgsExpiryMsg"></p>
-                <button class="pgs-btn-primary" onclick="hidePremiumGate()">
-                    <i class="fas fa-check"></i> Continue
-                </button>
-                <button class="pgs-sign-out-link" onclick="hbgSignOut()">Sign out</button>
-            </div>
-
-            <!-- Free plan button -->
-            <button class="pgs-free-btn" onclick="hidePremiumGate()">
-                Continue with free plan
-            </button>
-
         </div>
     </div>
 
