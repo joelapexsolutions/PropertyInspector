@@ -956,3 +956,53 @@ body.web-mode .pgs-divider span {
     font-size: 0.75rem;
     white-space: nowrap;
 }
+
+/* --------------------------------------------------------------------
+   12. PREMIUM GATE LAYOUT FIXES — spacing cleanup
+   -------------------------------------------------------------------- */
+body.web-mode #pgsPlanSection {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    width: 100%;
+}
+
+body.web-mode .pgs-signed-as {
+    font-size: 0.78rem;
+    color: var(--text-secondary, #8bbad4);
+    text-align: center;
+    padding: 8px 16px;
+    background: rgba(255,255,255,0.04);
+    border-radius: 10px;
+    border: 1px solid rgba(255,255,255,0.08);
+    margin: 0;
+}
+
+body.web-mode .pgs-user-email {
+    color: #06D6A0;
+    font-weight: 700;
+    word-break: break-all;
+}
+
+body.web-mode .pgs-plans {
+    gap: 12px;
+}
+
+body.web-mode #pgsSignInSection {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    width: 100%;
+}
+
+body.web-mode .pgs-sub {
+    margin: 0;
+}
+
+body.web-mode .pgs-email-input {
+    margin-bottom: 0;
+}
+
+body.web-mode .pgs-coming-soon {
+    margin: 0;
+}
