@@ -48,7 +48,7 @@
 	<!-- Onboarding System -->
 	<link rel="stylesheet" href="onboarding.css">
 	<link rel="stylesheet" href="theme.css">
-	<link rel="stylesheet" href="web-app.css?v=16">
+	<link rel="stylesheet" href="web-app.css?v=17">
 	<script src="onboarding.js"></script>
 	
 	<!-- Google Analytics 4 -->
@@ -81,8 +81,8 @@
 	<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
 	<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-functions-compat.js"></script>
 	<script src="firebase-auth.js"></script>
-	<script src="paypal-checkout.js?v=2"></script>
-	<script src="web-app.js?v=16"></script>
+	<script src="paypal-checkout.js?v=3"></script>
+	<script src="web-app.js?v=17"></script>
 	<script>
     // Safety stubs — ensure onclick functions always exist even if web-app.js
     // is served from an old cache. web-app.js overrides these with full versions.
@@ -526,6 +526,47 @@
                     <div class="stg-toggle" id="assessmentGuideToggle">
                         <div class="stg-toggle-knob"></div>
                     </div>
+                </div>
+            </div>
+
+            <!-- ── Subscription ── -->
+            <div class="stg-section-label">Subscription</div>
+            <div class="stg-card" id="subscriptionCard">
+                <!-- Populated by web-app.js based on auth/premium state -->
+                <div class="stg-row" id="subscriptionStatusRow">
+                    <div class="stg-row-icon" style="background:rgba(249,199,79,0.15)">
+                        <i class="fas fa-crown" style="color:#F9C74F"></i>
+                    </div>
+                    <div class="stg-row-info">
+                        <span class="stg-row-title" id="subscriptionPlanLabel">Free Plan</span>
+                        <span class="stg-row-sub" id="subscriptionExpiryLabel">Up to 2 properties</span>
+                    </div>
+                    <span id="subscriptionBadge" class="stg-premium-tag" style="display:none">
+                        <i class="fas fa-check-circle"></i> Active
+                    </span>
+                </div>
+                <!-- Upgrade button — shown when on free plan -->
+                <div id="subscriptionUpgradeRow" class="stg-row" onclick="showPremiumGate('Upgrade to get unlimited access')" style="display:none">
+                    <div class="stg-row-icon" style="background:rgba(6,214,160,0.15)">
+                        <i class="fas fa-arrow-circle-up" style="color:#06D6A0"></i>
+                    </div>
+                    <div class="stg-row-info">
+                        <span class="stg-row-title">Upgrade to Premium</span>
+                        <span class="stg-row-sub">Unlimited properties, PDF reports & more</span>
+                    </div>
+                    <i class="fas fa-chevron-right stg-chevron"></i>
+                </div>
+                <!-- Refund/contact row — shown when premium -->
+                <div id="subscriptionRefundRow" class="stg-row" style="display:none"
+                     onclick="window.location='mailto:homebuyersguidesa@gmail.com?subject=Subscription%20Query&body=Hi%2C%20I%20would%20like%20to%20enquire%20about%20my%20subscription.'">
+                    <div class="stg-row-icon" style="background:rgba(255,107,107,0.1)">
+                        <i class="fas fa-envelope" style="color:#FF6B6B"></i>
+                    </div>
+                    <div class="stg-row-info">
+                        <span class="stg-row-title">Contact Us</span>
+                        <span class="stg-row-sub">Refund requests · subscription queries</span>
+                    </div>
+                    <i class="fas fa-chevron-right stg-chevron"></i>
                 </div>
             </div>
 
