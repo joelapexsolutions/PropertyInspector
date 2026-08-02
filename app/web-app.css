@@ -1034,3 +1034,35 @@ body.web-mode .pgs-free-btn {
         margin-bottom: 0;
     }
 }
+
+/* ====================================================================
+   14. WEB PAYMENT INJECTION — styles for sign-in + PayPal injected
+       into the existing #premiumModal pm-sheet from premium-system.js
+   ==================================================================== */
+body.web-mode .pm-web-section {
+    border-top: 1px solid rgba(255,255,255,0.08);
+    padding-top: 14px;
+    margin-top: 12px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+body.web-mode .pm-web-title {
+    color: var(--text-secondary, #8bbad4);
+    font-size: 0.82rem;
+    text-align: center;
+    margin: 0;
+    font-weight: 600;
+}
+
+body.web-mode .pm-web-signed {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    font-size: 0.75rem;
+    color: var(--text-secondary, #8bbad4);
+    padding: 8px 12px;
+    background: rgba(255,255,255,0.04);
+    border-radius: 8px;
+}
