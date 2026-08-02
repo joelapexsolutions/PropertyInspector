@@ -502,7 +502,7 @@
             var emailEl = document.getElementById('pgsUserEmail');
             if (emailEl) emailEl.textContent = user.email || '';
             _pgShow('pgsPayPalContainer');
-            if (window.hbgPayPal) window.hbgPayPal.renderButtons(planId);
+            if (window.hbgPayFast) window.hbgPayFast.showPayButton(planId);
         }
     };
 
@@ -520,7 +520,7 @@
             _pgHide('pgsSignInSection');
             _pgHide('pgsEmailSentSection');
             _pgShow('pgsPayPalContainer');
-            if (window.hbgPayPal) window.hbgPayPal.renderButtons(planId);
+            if (window.hbgPayFast) window.hbgPayFast.showPayButton(planId);
         }
     }
 
@@ -662,6 +662,24 @@
         setTimeout(showFullscreenRestoreBtn, 2000);
         setTimeout(showFullscreenPrompt, 3000);
         setTimeout(showInstallBanner, 8000);
+
+        // Handle PayFast return — user redirected back after payment
+        (function () {
+            var params = new URLSearchParams(window.location.search);
+            var pfStatus = params.get('pf');
+            if (pfStatus === 'success') {
+                history.replaceState({}, '', window.location.pathname);
+                // Show gate with processing message — closes automatically
+                // when Firestore confirms isPremium via onHbgAuthStateChanged
+                setTimeout(function () {
+                    if (typeof window.showPremiumGate === 'function') {
+                        window.showPremiumGate('Payment complete! Activating your subscription...');
+                    }
+                }, 600);
+            } else if (pfStatus === 'cancel') {
+                history.replaceState({}, '', window.location.pathname);
+            }
+        })();
 
         console.log('web-app: ready');
     }
