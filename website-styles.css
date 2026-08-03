@@ -1880,3 +1880,22 @@ button.btn-nav-download[aria-expanded="true"] .nav-chevron {
         justify-content: center;
     }
 }
+/* ── DUAL-DL ALIGNMENT FIX ─────────────────────────────────────────
+   Google Play <img> defaults to vertical-align:baseline which adds
+   a few invisible descender pixels, pushing it out of line with
+   the Web App button. Force both to identical flex/block behaviour.
+   ────────────────────────────────────────────────────────────────── */
+.dual-dl .btn-download-image {
+    display: inline-flex;
+    align-items: center;
+    height: 52px;
+    box-sizing: border-box;
+    padding: 0;
+}
+
+.dual-dl .btn-download-image img {
+    display: block;
+    height: 52px;
+    width: auto;
+    vertical-align: middle;
+}
