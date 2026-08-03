@@ -48,7 +48,7 @@
     function submitToPayFast(formData) {
         var form = document.createElement('form');
         form.method = 'POST';
-        form.action = 'https://www.payfast.co.za/eng/process';
+        form.action = 'https://sandbox.payfast.co.za/eng/process'; // SANDBOX — switch to live when bank verified
 
         Object.keys(formData).forEach(function (key) {
             var input = document.createElement('input');
