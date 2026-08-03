@@ -90,6 +90,35 @@ function initializeNavigation() {
     });
 
     window.addEventListener('scroll', highlightActiveNavLink);
+
+    // ── Nav download dropdown ─────────────────────────────────────
+    var navDlWrap = document.getElementById('navDlWrap');
+    var navDlBtn  = document.getElementById('navDlBtn');
+    var navDlDrop = document.getElementById('navDlDrop');
+
+    if (navDlBtn && navDlDrop) {
+        navDlBtn.addEventListener('click', function(e) {
+            e.stopPropagation();
+            var isOpen = navDlDrop.classList.contains('open');
+            navDlDrop.classList.toggle('open');
+            navDlBtn.setAttribute('aria-expanded', String(!isOpen));
+        });
+
+        document.addEventListener('click', function(e) {
+            if (navDlWrap && !navDlWrap.contains(e.target)) {
+                navDlDrop.classList.remove('open');
+                if (navDlBtn) navDlBtn.setAttribute('aria-expanded', 'false');
+            }
+        });
+
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape' && navDlDrop.classList.contains('open')) {
+                navDlDrop.classList.remove('open');
+                navDlBtn.setAttribute('aria-expanded', 'false');
+                navDlBtn.focus();
+            }
+        });
+    }
 }
 
 function highlightActiveNavLink() {
