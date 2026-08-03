@@ -593,11 +593,13 @@
         var refundRow   = document.getElementById('subscriptionRefundRow');
         var iconEl      = document.querySelector('#subscriptionStatusRow .stg-row-icon i');
         if (!planLabel) return;
+
         var PLAN_NAMES = {
             '1month':'1 Month Plan','3month':'3 Month Plan',
             '6month':'6 Month Plan','1year':'1 Year Plan',
             'web-paypal':'Premium Plan','free':'Free Plan'
         };
+
         if (user && premiumData && premiumData.isPremium) {
             planLabel.textContent = PLAN_NAMES[premiumData.plan] || 'Premium Plan';
             var d = premiumData.nextBillingDate || premiumData.expiryDate;
@@ -612,6 +614,28 @@
             if (badge) badge.style.display='';
             if (upgradeRow) upgradeRow.style.display='none';
             if (refundRow) refundRow.style.display='';
+
+            // ── Inject Cancel Subscription row (once, before Contact Us) ──
+            if (!document.getElementById('subscriptionCancelRow') && refundRow && refundRow.parentNode) {
+                var cancelEl = document.createElement('div');
+                cancelEl.id = 'subscriptionCancelRow';
+                cancelEl.className = 'stg-row stg-row-danger';
+                cancelEl.innerHTML =
+                    '<div class="stg-row-icon stg-icon-danger">' +
+                        '<i class="fas fa-times-circle"></i>' +
+                    '</div>' +
+                    '<div class="stg-row-info">' +
+                        '<span class="stg-row-title stg-title-danger">Cancel Subscription</span>' +
+                        '<span class="stg-row-sub">Stop recurring billing</span>' +
+                    '</div>' +
+                    '<div class="stg-row-chevron"><i class="fas fa-chevron-right" style="color:#DC2626"></i></div>';
+                cancelEl.addEventListener('click', hbgCancelSubscription);
+                refundRow.parentNode.insertBefore(cancelEl, refundRow);
+            } else {
+                var existingCancel = document.getElementById('subscriptionCancelRow');
+                if (existingCancel) existingCancel.style.display = '';
+            }
+
         } else {
             planLabel.textContent   = 'Free Plan';
             expiryLabel.textContent = 'Up to 2 properties';
@@ -619,7 +643,126 @@
             if (badge) badge.style.display='none';
             if (upgradeRow) upgradeRow.style.display='';
             if (refundRow) refundRow.style.display='none';
+            var cr = document.getElementById('subscriptionCancelRow');
+            if (cr) cr.style.display = 'none';
         }
+    }
+
+    // ----------------------------------------------------------------
+    // Cancel Subscription — confirmation sheet + Cloud Function call
+    // ----------------------------------------------------------------
+    function hbgCancelSubscription() {
+        // Inject animation keyframes once
+        if (!document.getElementById('hbgCancelStyles')) {
+            var s = document.createElement('style');
+            s.id = 'hbgCancelStyles';
+            s.textContent =
+                '@keyframes hbgFadeIn{from{opacity:0}to{opacity:1}}' +
+                '@keyframes hbgSlideUp{from{transform:translateY(100%)}to{transform:translateY(0)}}';
+            document.head.appendChild(s);
+        }
+
+        // Build bottom-sheet overlay
+        var overlay = document.createElement('div');
+        overlay.style.cssText =
+            'position:fixed;top:0;left:0;right:0;bottom:0;' +
+            'background:rgba(0,0,0,0.72);z-index:99999;' +
+            'display:flex;align-items:flex-end;justify-content:center;' +
+            'animation:hbgFadeIn 0.2s ease;';
+
+        var sheet = document.createElement('div');
+        sheet.style.cssText =
+            'background:var(--bg-2,#1a1f2e);border-radius:20px 20px 0 0;' +
+            'padding:16px 24px 40px;width:100%;max-width:480px;' +
+            'box-shadow:0 -8px 40px rgba(0,0,0,0.45);' +
+            'animation:hbgSlideUp 0.28s ease;';
+
+        sheet.innerHTML =
+            '<div style="width:40px;height:4px;background:rgba(255,255,255,0.12);' +
+                'border-radius:2px;margin:0 auto 22px;"></div>' +
+            '<div style="text-align:center;margin-bottom:24px;">' +
+                '<div style="width:60px;height:60px;border-radius:50%;' +
+                    'background:rgba(220,38,38,0.12);display:flex;align-items:center;' +
+                    'justify-content:center;margin:0 auto 14px;">' +
+                    '<i class="fas fa-times-circle" style="font-size:1.7rem;color:#DC2626;"></i>' +
+                '</div>' +
+                '<h3 style="color:var(--text-1,#fff);font-size:1.15rem;font-weight:700;' +
+                    'margin:0 0 10px;font-family:inherit;">Cancel Subscription?</h3>' +
+                '<p style="color:var(--text-3,rgba(255,255,255,0.52));font-size:0.88rem;' +
+                    'line-height:1.55;margin:0;font-family:inherit;">' +
+                    'Your premium access will end immediately. ' +
+                    'No future payments will be charged.' +
+                '</p>' +
+            '</div>' +
+            '<button id="hbgCsConfirm" style="width:100%;padding:15px;border:none;' +
+                'border-radius:13px;background:#DC2626;color:#fff;font-size:1rem;' +
+                'font-weight:700;cursor:pointer;margin-bottom:12px;font-family:inherit;">' +
+                'Yes, Cancel Subscription' +
+            '</button>' +
+            '<button id="hbgCsKeep" style="width:100%;padding:15px;border:1.5px solid ' +
+                'rgba(255,255,255,0.14);border-radius:13px;background:transparent;' +
+                'color:var(--text-1,#fff);font-size:1rem;font-weight:600;' +
+                'cursor:pointer;font-family:inherit;">' +
+                'Keep My Premium' +
+            '</button>';
+
+        overlay.appendChild(sheet);
+        document.body.appendChild(overlay);
+
+        function closeSheet() { if (overlay.parentNode) overlay.parentNode.removeChild(overlay); }
+
+        overlay.addEventListener('click', function(e) { if (e.target === overlay) closeSheet(); });
+        document.getElementById('hbgCsKeep').addEventListener('click', closeSheet);
+
+        document.getElementById('hbgCsConfirm').addEventListener('click', function() {
+            var btn     = document.getElementById('hbgCsConfirm');
+            var keepBtn = document.getElementById('hbgCsKeep');
+            btn.disabled = keepBtn.disabled = true;
+            btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Cancelling…';
+
+            firebase.functions().httpsCallable('cancelPayFastSubscription')({})
+                .then(function() {
+                    // Success state
+                    sheet.innerHTML =
+                        '<div style="text-align:center;padding:20px 0 12px;">' +
+                            '<div style="width:60px;height:60px;border-radius:50%;' +
+                                'background:rgba(0,196,140,0.12);display:flex;align-items:center;' +
+                                'justify-content:center;margin:0 auto 14px;">' +
+                                '<i class="fas fa-check-circle" style="font-size:1.7rem;color:#00C48C;"></i>' +
+                            '</div>' +
+                            '<h3 style="color:var(--text-1,#fff);font-size:1.1rem;font-weight:700;' +
+                                'margin:0 0 10px;font-family:inherit;">Subscription Cancelled</h3>' +
+                            '<p style="color:var(--text-3,rgba(255,255,255,0.52));font-size:0.87rem;' +
+                                'line-height:1.5;margin:0 0 26px;font-family:inherit;">' +
+                                'Your subscription has been cancelled and no further payments will be charged.' +
+                            '</p>' +
+                            '<button id="hbgCsDone" style="width:100%;padding:15px;border:none;' +
+                                'border-radius:13px;background:var(--brand-green,#00C48C);color:#fff;' +
+                                'font-size:1rem;font-weight:700;cursor:pointer;font-family:inherit;">' +
+                                'Done' +
+                            '</button>' +
+                        '</div>';
+                    document.getElementById('hbgCsDone').addEventListener('click', closeSheet);
+                    // Hide cancel row in settings
+                    var cr = document.getElementById('subscriptionCancelRow');
+                    if (cr) cr.style.display = 'none';
+                })
+                .catch(function(err) {
+                    console.error('Cancel subscription error:', err);
+                    btn.disabled = keepBtn.disabled = false;
+                    btn.innerHTML = 'Yes, Cancel Subscription';
+                    var errEl = sheet.querySelector('.hbg-cs-error');
+                    if (!errEl) {
+                        errEl = document.createElement('p');
+                        errEl.className = 'hbg-cs-error';
+                        errEl.style.cssText =
+                            'color:#DC2626;font-size:0.82rem;text-align:center;' +
+                            'margin:12px 0 0;font-family:inherit;';
+                        sheet.appendChild(errEl);
+                    }
+                    errEl.textContent = 'Could not cancel. Please try again or email joelapexs@gmail.com';
+                });
+        });
     }
 
     // Auth state changed callback (called by firebase-auth.js)
