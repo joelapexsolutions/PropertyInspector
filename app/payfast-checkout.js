@@ -35,7 +35,11 @@
         var getFormFn = firebase.functions().httpsCallable('getPayFastForm');
         getFormFn({ planId: planId, userEmail: user.email })
             .then(function (result) {
-                submitToPayFast(result.data);
+                // result.data.fields is an ordered array [{key, val}, ...]
+                // The Cloud Function returns an array (not a plain object) to
+                // guarantee the field order is preserved through JSON serialisation.
+                // Field order must match the signature computation order exactly.
+                submitToPayFast(result.data.fields);
             })
             .catch(function (err) {
                 console.error('PayFast form error:', err);
@@ -44,24 +48,21 @@
             });
     }
 
-    // Build and auto-submit a POST form to PayFast
-    // IMPORTANT: only include non-empty values — must exactly match
-    // what the Cloud Function included when computing the signature.
-    // Including extra empty fields causes a signature mismatch.
-    function submitToPayFast(formData) {
+    // Build and auto-submit a POST form to PayFast.
+    // fields = ordered array [{key, val}, ...] from the Cloud Function.
+    // Fields are appended to the form in array order — same order as signature
+    // computation — so PayFast's re-computed signature will match ours.
+    function submitToPayFast(fields) {
         var form = document.createElement('form');
         form.method = 'POST';
         form.action = 'https://sandbox.payfast.co.za/eng/process'; // SANDBOX — switch to live when bank verified
 
-        Object.keys(formData).forEach(function (key) {
-            var val = formData[key];
-            if (val !== '' && val !== null && val !== undefined) {
-                var input = document.createElement('input');
-                input.type  = 'hidden';
-                input.name  = key;
-                input.value = val;
-                form.appendChild(input);
-            }
+        fields.forEach(function (field) {
+            var input = document.createElement('input');
+            input.type  = 'hidden';
+            input.name  = field.key;
+            input.value = field.val;
+            form.appendChild(input);
         });
 
         document.body.appendChild(form);
