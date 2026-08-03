@@ -45,17 +45,23 @@
     }
 
     // Build and auto-submit a POST form to PayFast
+    // IMPORTANT: only include non-empty values — must exactly match
+    // what the Cloud Function included when computing the signature.
+    // Including extra empty fields causes a signature mismatch.
     function submitToPayFast(formData) {
         var form = document.createElement('form');
         form.method = 'POST';
         form.action = 'https://sandbox.payfast.co.za/eng/process'; // SANDBOX — switch to live when bank verified
 
         Object.keys(formData).forEach(function (key) {
-            var input = document.createElement('input');
-            input.type  = 'hidden';
-            input.name  = key;
-            input.value = formData[key];
-            form.appendChild(input);
+            var val = formData[key];
+            if (val !== '' && val !== null && val !== undefined) {
+                var input = document.createElement('input');
+                input.type  = 'hidden';
+                input.name  = key;
+                input.value = val;
+                form.appendChild(input);
+            }
         });
 
         document.body.appendChild(form);
