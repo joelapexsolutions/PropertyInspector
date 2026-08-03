@@ -27,7 +27,7 @@ const APP_SHELL = [
   './help-guide.css',
   './onboarding.css',
   './theme.css',
-  './web-app.css?v=27',
+  './web-app.css?v=28',
   // JS (exact filenames referenced by index.html)
   './onboarding.js',
   './app.js',
