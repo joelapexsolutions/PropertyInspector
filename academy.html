@@ -1,0 +1,682 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <!-- Primary SEO -->
+    <title>Home Buyers Guide SA Academy | Free Property Buying Tutorials</title>
+    <meta name="description" content="Free video tutorials for South African home buyers. Learn how to use the Home Buyers Guide SA app to assess properties, spot red flags, and buy with confidence.">
+    <meta name="keywords" content="home buyers guide SA academy, property inspection tutorial, house viewing tips South Africa, property assessment app tutorial, home buying tutorial SA">
+    <link rel="canonical" href="https://propertyinspector.site/academy.html">
+
+    <!-- Open Graph -->
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="Home Buyers Guide SA Academy — Free Property Tutorials">
+    <meta property="og:description" content="Learn how to inspect properties like a pro. Step-by-step video lessons for South African home buyers.">
+    <meta property="og:url" content="https://propertyinspector.site/academy.html">
+    <meta property="og:image" content="https://propertyinspector.site/images/app_banner.png">
+    <meta property="og:site_name" content="Home Buyers Guide SA">
+
+    <!-- Fonts & Icons -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+    <!-- Styles -->
+    <link rel="stylesheet" href="website-styles.css">
+    <link rel="icon" type="image/png" href="images/transparent_logo.png">
+
+    <!-- Anti-FOUC -->
+    <script>
+        (function(){
+            var t=localStorage.getItem('hbg-theme');
+            if(t){document.documentElement.setAttribute('data-theme',t);}
+            else if(window.matchMedia&&window.matchMedia('(prefers-color-scheme:dark)').matches){
+                document.documentElement.setAttribute('data-theme','dark');
+            }
+        })();
+    </script>
+
+    <!-- Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-2MN5R2QXNC"></script>
+    <script>
+        window.dataLayer=window.dataLayer||[];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js',new Date());
+        gtag('config','G-2MN5R2QXNC');
+    </script>
+
+    <style>
+        /* ── Academy hero ─────────────────────────────────────────── */
+        .academy-hero {
+            background: linear-gradient(135deg, #0d1b2a 0%, #1a3a4a 50%, #0d4a3a 100%);
+            padding: 140px 0 70px;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+        .academy-hero::before {
+            content: '';
+            position: absolute;
+            top: -40%; left: -10%;
+            width: 60%; height: 140%;
+            background: radial-gradient(ellipse, rgba(0,196,140,0.08) 0%, transparent 70%);
+            pointer-events: none;
+        }
+        .academy-hero::after {
+            content: '';
+            position: absolute;
+            bottom: -30%; right: -10%;
+            width: 50%; height: 120%;
+            background: radial-gradient(ellipse, rgba(46,134,171,0.07) 0%, transparent 70%);
+            pointer-events: none;
+        }
+
+        .academy-hero-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: rgba(0,196,140,0.12);
+            border: 1px solid rgba(0,196,140,0.25);
+            color: #00C48C;
+            font-size: 0.82rem;
+            font-weight: 700;
+            letter-spacing: 0.06em;
+            text-transform: uppercase;
+            padding: 6px 16px;
+            border-radius: 40px;
+            margin-bottom: 22px;
+        }
+
+        .academy-hero h1 {
+            font-size: clamp(2rem, 4.5vw, 3rem);
+            color: #fff;
+            font-weight: 800;
+            margin-bottom: 16px;
+            line-height: 1.15;
+        }
+
+        .academy-hero h1 span { color: #00C48C; }
+
+        .academy-hero p {
+            font-size: clamp(1rem, 2vw, 1.18rem);
+            color: rgba(255,255,255,0.72);
+            max-width: 560px;
+            margin: 0 auto 32px;
+            line-height: 1.65;
+        }
+
+        .academy-hero-stats {
+            display: flex;
+            justify-content: center;
+            gap: 40px;
+            flex-wrap: wrap;
+            margin-top: 36px;
+        }
+
+        .academy-stat {
+            text-align: center;
+        }
+
+        .academy-stat strong {
+            display: block;
+            font-size: 1.7rem;
+            font-weight: 800;
+            color: #00C48C;
+            line-height: 1;
+        }
+
+        .academy-stat span {
+            font-size: 0.82rem;
+            color: rgba(255,255,255,0.55);
+            margin-top: 4px;
+            display: block;
+        }
+
+        /* ── Lessons section ──────────────────────────────────────── */
+        .lessons-section {
+            padding: 72px 0 80px;
+            background: var(--bg-main);
+        }
+
+        .lessons-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 28px;
+            margin-top: 48px;
+        }
+
+        /* ── Lesson card ──────────────────────────────────────────── */
+        .lesson-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-lg);
+            overflow: hidden;
+            transition: var(--transition);
+            display: flex;
+            flex-direction: column;
+        }
+
+        .lesson-card:hover {
+            transform: translateY(-4px);
+            box-shadow: var(--shadow-md);
+            border-color: var(--teal-border);
+        }
+
+        /* Video facade inside card */
+        .lesson-video {
+            position: relative;
+            aspect-ratio: 16 / 9;
+            background: #0a1722;
+            cursor: pointer;
+            overflow: hidden;
+        }
+
+        .lesson-video img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+            transition: transform 0.35s ease;
+        }
+
+        .lesson-card:hover .lesson-video img {
+            transform: scale(1.04);
+        }
+
+        .lesson-video iframe {
+            width: 100%;
+            height: 100%;
+            display: block;
+            border: none;
+        }
+
+        .lesson-play {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background: rgba(0,196,140,0.92);
+            border: none;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #fff;
+            font-size: 1.25rem;
+            box-shadow: 0 6px 24px rgba(0,0,0,0.4);
+            transition: var(--transition);
+            pointer-events: none;
+        }
+
+        .lesson-play i { margin-left: 4px; }
+
+        .lesson-card:hover .lesson-play {
+            background: #06D6A0;
+            transform: translate(-50%, -50%) scale(1.1);
+        }
+
+        .lesson-number {
+            position: absolute;
+            top: 12px;
+            left: 12px;
+            background: rgba(0,0,0,0.7);
+            color: #00C48C;
+            font-size: 0.75rem;
+            font-weight: 800;
+            padding: 4px 10px;
+            border-radius: 20px;
+            letter-spacing: 0.04em;
+            text-transform: uppercase;
+            backdrop-filter: blur(4px);
+        }
+
+        /* Card body */
+        .lesson-body {
+            padding: 20px 22px 22px;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .lesson-title {
+            font-size: 1rem;
+            font-weight: 700;
+            color: var(--text-heading);
+            line-height: 1.4;
+            margin: 0;
+        }
+
+        .lesson-desc {
+            font-size: 0.87rem;
+            color: var(--text-sub);
+            line-height: 1.6;
+            margin: 0;
+            flex: 1;
+        }
+
+        .lesson-watch-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 7px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: var(--teal);
+            text-decoration: none;
+            margin-top: 6px;
+            transition: var(--transition);
+        }
+
+        .lesson-watch-link:hover {
+            color: var(--teal-dark);
+            gap: 10px;
+        }
+
+        /* ── Featured / intro video ───────────────────────────────── */
+        .academy-featured {
+            padding: 0 0 20px;
+            background: var(--bg-main);
+        }
+
+        .featured-video-wrap {
+            max-width: 860px;
+            margin: 0 auto;
+            border-radius: var(--radius-lg);
+            overflow: hidden;
+            box-shadow: 0 12px 48px rgba(0,0,0,0.2);
+            aspect-ratio: 16 / 9;
+            position: relative;
+            background: #0a1722;
+            cursor: pointer;
+        }
+
+        .featured-video-wrap img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+        }
+
+        .featured-video-wrap iframe {
+            width: 100%;
+            height: 100%;
+            display: block;
+            border: none;
+        }
+
+        .featured-play {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            background: rgba(0,196,140,0.92);
+            border: none;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #fff;
+            font-size: 1.8rem;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.4);
+            transition: var(--transition);
+            pointer-events: none;
+        }
+
+        .featured-play i { margin-left: 6px; }
+
+        .featured-video-wrap:hover .featured-play {
+            background: #06D6A0;
+            transform: translate(-50%, -50%) scale(1.08);
+        }
+
+        .featured-label {
+            text-align: center;
+            margin-top: 16px;
+            font-size: 1rem;
+            color: var(--text-sub);
+        }
+
+        .featured-label strong {
+            color: var(--text-heading);
+        }
+
+        /* ── YouTube CTA ──────────────────────────────────────────── */
+        .youtube-cta {
+            background: var(--bg-alt);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-lg);
+            padding: 36px;
+            text-align: center;
+            margin-top: 48px;
+        }
+
+        .youtube-cta h3 {
+            font-size: 1.15rem;
+            font-weight: 700;
+            color: var(--text-heading);
+            margin-bottom: 10px;
+        }
+
+        .youtube-cta p {
+            font-size: 0.92rem;
+            color: var(--text-sub);
+            margin-bottom: 22px;
+        }
+
+        .btn-youtube {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            background: #FF0000;
+            color: #fff;
+            padding: 13px 28px;
+            border-radius: 10px;
+            font-size: 0.95rem;
+            font-weight: 700;
+            text-decoration: none;
+            transition: var(--transition);
+            box-shadow: 0 4px 16px rgba(255,0,0,0.25);
+        }
+
+        .btn-youtube:hover {
+            background: #cc0000;
+            color: #fff;
+            transform: translateY(-2px);
+            box-shadow: 0 8px 24px rgba(255,0,0,0.3);
+        }
+
+        /* ── Academy CTA (download) ───────────────────────────────── */
+        .academy-cta {
+            background: linear-gradient(135deg, #0d4a3a 0%, #0d1b2a 100%);
+            border-radius: var(--radius-lg);
+            padding: 48px 36px;
+            text-align: center;
+            margin-top: 48px;
+        }
+
+        .academy-cta h3 {
+            font-size: 1.5rem;
+            font-weight: 800;
+            color: #fff;
+            margin-bottom: 12px;
+        }
+
+        .academy-cta p {
+            font-size: 0.95rem;
+            color: rgba(255,255,255,0.7);
+            margin-bottom: 28px;
+            max-width: 480px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        /* ── Responsive ───────────────────────────────────────────── */
+        @media (max-width: 768px) {
+            .lessons-grid { grid-template-columns: 1fr; }
+            .academy-hero-stats { gap: 24px; }
+            .academy-cta { padding: 36px 24px; }
+            .youtube-cta { padding: 28px 20px; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Navigation -->
+    <nav class="navbar" id="navbar">
+        <div class="container">
+            <div class="nav-content">
+                <a href="index.html" class="nav-logo">
+                    <img src="images/transparent_logo.png" alt="Home Buyers Guide SA">
+                    <span>Home Buyers Guide SA</span>
+                </a>
+
+                <button class="nav-toggle" id="navToggle" aria-label="Toggle navigation">
+                    <i class="fas fa-bars"></i>
+                </button>
+
+                <ul class="nav-menu" id="navMenu">
+                    <li><a href="index.html#features" class="nav-link">Features</a></li>
+                    <li><a href="home-buyers-journey.html" class="nav-link">Journey</a></li>
+                    <li><a href="calculator.html" class="nav-link">Calculator</a></li>
+                    <li><a href="academy.html" class="nav-link active">Academy</a></li>
+                    <li><a href="blog.html" class="nav-link">Blog</a></li>
+                    <li><a href="faq.html" class="nav-link">FAQ</a></li>
+                    <li class="nav-mobile-dl-sep"></li>
+                    <li><a href="https://play.google.com/store/apps/details?id=com.joelapexs.propertyinspector" target="_blank" class="nav-link nav-link-dl"><i class="fab fa-google-play"></i> Android App</a></li>
+                    <li><a href="https://propertyinspector.site/app/" target="_blank" class="nav-link nav-link-dl"><i class="fas fa-globe"></i> Web App &mdash; iOS &amp; Desktop</a></li>
+                </ul>
+
+                <div class="nav-right">
+                    <button class="theme-toggle" id="themeToggle" aria-label="Switch to dark mode">
+                        <i class="fas fa-moon"></i>
+                    </button>
+                    <div class="nav-dl-wrap" id="navDlWrap">
+                        <button class="btn-nav-download" id="navDlBtn" aria-expanded="false" aria-haspopup="true">
+                            <i class="fas fa-download"></i> Get the App <i class="fas fa-chevron-down nav-chevron"></i>
+                        </button>
+                        <div class="nav-dl-drop" id="navDlDrop" role="menu">
+                            <a href="https://play.google.com/store/apps/details?id=com.joelapexs.propertyinspector" target="_blank" class="nav-dl-option" role="menuitem">
+                                <span class="nav-dl-icon"><i class="fab fa-google-play"></i></span>
+                                <span class="nav-dl-text"><span class="nav-dl-label">Android App</span><span class="nav-dl-sub">Google Play Store</span></span>
+                            </a>
+                            <div class="nav-dl-divider"></div>
+                            <a href="https://propertyinspector.site/app/" target="_blank" class="nav-dl-option" role="menuitem">
+                                <span class="nav-dl-icon"><i class="fas fa-globe"></i></span>
+                                <span class="nav-dl-text"><span class="nav-dl-label">Web App</span><span class="nav-dl-sub">iOS &middot; iPad &middot; Desktop &middot; Adds to Home Screen</span></span>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero -->
+    <header class="academy-hero">
+        <div class="container">
+            <div class="academy-hero-badge">
+                <i class="fas fa-play-circle"></i> Free Training
+            </div>
+            <h1>Home Buyers Guide SA<br><span>Academy</span></h1>
+            <p>Step-by-step video lessons that teach you how to use the app and inspect any property like a professional — before you sign anything.</p>
+            <div class="academy-hero-stats">
+                <div class="academy-stat">
+                    <strong>4</strong>
+                    <span>Lessons</span>
+                </div>
+                <div class="academy-stat">
+                    <strong>Free</strong>
+                    <span>Always</span>
+                </div>
+                <div class="academy-stat">
+                    <strong>SA</strong>
+                    <span>Focused</span>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Lessons -->
+    <section class="lessons-section">
+        <div class="container">
+
+            <div class="section-header centered">
+                <h2>Course Lessons</h2>
+                <p>Watch in order for the best experience — each lesson builds on the previous one</p>
+            </div>
+
+            <div class="lessons-grid">
+
+                <!-- Lesson 1 -->
+                <article class="lesson-card">
+                    <div class="lesson-video yt-facade" data-yt-id="WdiLn0nVI7U" data-yt-title="Home Buyers Guide SA Academy | Lesson 1: How to Add a Property">
+                        <span class="lesson-number">Lesson 1</span>
+                        <img src="https://img.youtube.com/vi/WdiLn0nVI7U/maxresdefault.jpg"
+                             alt="Lesson 1 — Home Buyers Guide SA Academy"
+                             loading="lazy"
+                             onerror="this.src='https://img.youtube.com/vi/WdiLn0nVI7U/hqdefault.jpg'">
+                        <button class="lesson-play" aria-label="Play Lesson 1">
+                            <i class="fas fa-play"></i>
+                        </button>
+                    </div>
+                    <div class="lesson-body">
+                        <h3 class="lesson-title">Lesson 1: How to Add a Property</h3>
+                        <p class="lesson-desc">Learn how to add a new property to the app and set it up ready for your assessment visit.</p>
+                        <a href="https://youtu.be/WdiLn0nVI7U?list=PLEn5sE56di2c" target="_blank" class="lesson-watch-link">
+                            <i class="fab fa-youtube"></i> Watch on YouTube <i class="fas fa-arrow-right"></i>
+                        </a>
+                    </div>
+                </article>
+
+                <!-- Lesson 2 -->
+                <article class="lesson-card">
+                    <div class="lesson-video yt-facade" data-yt-id="QCC7gbd8vpQ" data-yt-title="Home Buyers Guide SA Academy | Lesson 2: Managing Your Property">
+                        <span class="lesson-number">Lesson 2</span>
+                        <img src="https://img.youtube.com/vi/QCC7gbd8vpQ/maxresdefault.jpg"
+                             alt="Lesson 2 — Home Buyers Guide SA Academy"
+                             loading="lazy"
+                             onerror="this.src='https://img.youtube.com/vi/QCC7gbd8vpQ/hqdefault.jpg'">
+                        <button class="lesson-play" aria-label="Play Lesson 2">
+                            <i class="fas fa-play"></i>
+                        </button>
+                    </div>
+                    <div class="lesson-body">
+                        <h3 class="lesson-title">Lesson 2: Managing Your Property</h3>
+                        <p class="lesson-desc">See how to view, edit, and manage your saved properties, photos, and assessment progress within the app.</p>
+                        <a href="https://youtu.be/QCC7gbd8vpQ?list=PLEn5sE56di2c" target="_blank" class="lesson-watch-link">
+                            <i class="fab fa-youtube"></i> Watch on YouTube <i class="fas fa-arrow-right"></i>
+                        </a>
+                    </div>
+                </article>
+
+                <!-- Lesson 3 -->
+                <article class="lesson-card">
+                    <div class="lesson-video yt-facade" data-yt-id="rSQloN_H-3g" data-yt-title="Home Buyers Guide SA Academy | Lesson 3: Customise Your Property">
+                        <span class="lesson-number">Lesson 3</span>
+                        <img src="https://img.youtube.com/vi/rSQloN_H-3g/maxresdefault.jpg"
+                             alt="Lesson 3 — Home Buyers Guide SA Academy"
+                             loading="lazy"
+                             onerror="this.src='https://img.youtube.com/vi/rSQloN_H-3g/hqdefault.jpg'">
+                        <button class="lesson-play" aria-label="Play Lesson 3">
+                            <i class="fas fa-play"></i>
+                        </button>
+                    </div>
+                    <div class="lesson-body">
+                        <h3 class="lesson-title">Lesson 3: Customise Your Property</h3>
+                        <p class="lesson-desc">Tailor the assessment checklist to match any property type by adding your own custom features, items and questions.</p>
+                        <a href="https://youtu.be/rSQloN_H-3g?list=PLEn5sE56di2c" target="_blank" class="lesson-watch-link">
+                            <i class="fab fa-youtube"></i> Watch on YouTube <i class="fas fa-arrow-right"></i>
+                        </a>
+                    </div>
+                </article>
+
+                <!-- Lesson 4 -->
+                <article class="lesson-card">
+                    <div class="lesson-video yt-facade" data-yt-id="KLWQ6JnFGj4" data-yt-title="Home Buyers Guide Academy | Lesson 4: Property Assessment Overview">
+                        <span class="lesson-number">Lesson 4</span>
+                        <img src="https://img.youtube.com/vi/KLWQ6JnFGj4/maxresdefault.jpg"
+                             alt="Lesson 4 — Home Buyers Guide SA Academy"
+                             loading="lazy"
+                             onerror="this.src='https://img.youtube.com/vi/KLWQ6JnFGj4/hqdefault.jpg'">
+                        <button class="lesson-play" aria-label="Play Lesson 4">
+                            <i class="fas fa-play"></i>
+                        </button>
+                    </div>
+                    <div class="lesson-body">
+                        <h3 class="lesson-title">Lesson 4: Property Assessment Overview</h3>
+                        <p class="lesson-desc">Walk through a complete property assessment from start to finish — rooms, scoring, photos, and generating your PDF report.</p>
+                        <a href="https://youtu.be/KLWQ6JnFGj4?list=PLEn5sE56di2c" target="_blank" class="lesson-watch-link">
+                            <i class="fab fa-youtube"></i> Watch on YouTube <i class="fas fa-arrow-right"></i>
+                        </a>
+                    </div>
+                </article>
+
+            </div>
+
+            <!-- YouTube channel CTA -->
+            <div class="youtube-cta">
+                <h3><i class="fab fa-youtube" style="color:#FF0000;margin-right:8px;"></i> More Videos Coming</h3>
+                <p>Subscribe to the channel so you&rsquo;re notified when new lessons are published.</p>
+                <a href="https://www.youtube.com/playlist?list=PLEn5sE56di2c" target="_blank" class="btn-youtube">
+                    <i class="fab fa-youtube"></i> Watch Full Playlist on YouTube
+                </a>
+            </div>
+
+            <!-- App download CTA -->
+            <div class="academy-cta">
+                <h3>Ready to Inspect Your First Property?</h3>
+                <p>Download the app and follow along with the lessons during your next property viewing.</p>
+                <div class="dual-dl">
+                    <a href="https://play.google.com/store/apps/details?id=com.joelapexs.propertyinspector"
+                       target="_blank" class="btn-download-image" aria-label="Get it on Google Play">
+                        <img src="images/google-play-badge.png" alt="Get it on Google Play" class="play-badge-large" style="height:52px;">
+                    </a>
+                    <a href="https://propertyinspector.site/app/" target="_blank" class="btn-webapp">
+                        <span class="btn-webapp-icon"><i class="fas fa-globe"></i></span>
+                        <span class="btn-webapp-txt">
+                            <span class="btn-webapp-main">Web App</span>
+                            <span class="btn-webapp-sub">iOS &middot; iPad &middot; Desktop</span>
+                        </span>
+                    </a>
+                </div>
+                <p style="margin-top:14px;font-size:0.8rem;color:rgba(255,255,255,0.45);">
+                    &#10003; Free to use &nbsp;&middot;&nbsp; No account needed &nbsp;&middot;&nbsp; Web app adds to Home Screen
+                </p>
+            </div>
+
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-strip">
+                <div class="footer-logo">
+                    <img src="images/transparent_logo.png" alt="Home Buyers Guide SA">
+                    <span>Home Buyers Guide SA</span>
+                </div>
+                <nav class="footer-nav" aria-label="Footer navigation">
+                    <a href="privacy.html">Privacy Policy</a>
+                    <a href="mailto:homebuyersguidesa@gmail.com">Contact</a>
+                    <a href="https://www.youtube.com/playlist?list=PLEn5sE56di2c" target="_blank">YouTube Academy</a>
+                    <a href="https://www.facebook.com/profile.php?id=61581616425555" target="_blank">Facebook</a>
+                    <a href="https://www.tiktok.com/@homebuyerguidesa" target="_blank">TikTok</a>
+                    <a href="https://play.google.com/store/apps/details?id=com.joelapexs.propertyinspector" target="_blank">Google Play</a>
+                </nav>
+                <p class="footer-copy">&copy; 2026 Joel Apex Solutions. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="website-main.js"></script>
+
+    <script>
+        // Lesson card video facades (click to load iframe)
+        document.querySelectorAll('.lesson-video.yt-facade').forEach(function(el) {
+            el.addEventListener('click', function() {
+                var id    = el.getAttribute('data-yt-id');
+                var title = el.getAttribute('data-yt-title') || 'YouTube video';
+                if (!id) return;
+                var iframe = document.createElement('iframe');
+                iframe.src = 'https://www.youtube.com/embed/' + id + '?autoplay=1&rel=0';
+                iframe.title = title;
+                iframe.setAttribute('frameborder', '0');
+                iframe.setAttribute('allow', 'accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture');
+                iframe.setAttribute('allowfullscreen', '');
+                el.innerHTML = '';
+                el.appendChild(iframe);
+                el.classList.remove('yt-facade');
+                el.style.cursor = 'default';
+            });
+        });
+    </script>
+
+</body>
+</html>
