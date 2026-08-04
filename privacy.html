@@ -120,6 +120,40 @@
             font-size: 0.8rem; color: var(--text-sub);
             text-align: center; padding: 20px 0 0;
         }
+
+        /* ── Platform badges ────────────────────────────────────── */
+        .plat-badge {
+            display: inline-flex; align-items: center; gap: 5px;
+            font-size: 0.7rem; font-weight: 700; padding: 2px 9px;
+            border-radius: 20px; margin-left: 6px; vertical-align: middle;
+            letter-spacing: 0.04em; text-transform: uppercase;
+        }
+        .plat-android { background: rgba(61,220,132,0.12); color: #3DDC84; border: 1px solid rgba(61,220,132,0.25); }
+        .plat-web     { background: var(--teal-bg); color: var(--teal); border: 1px solid var(--teal-border); }
+        .plat-both    { background: rgba(130,130,130,0.1); color: var(--text-sub); border: 1px solid var(--border); }
+
+        .platform-split {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+            margin: 14px 0;
+        }
+        @media(max-width: 600px) { .platform-split { grid-template-columns: 1fr; } }
+
+        .platform-block {
+            background: var(--bg-alt);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-sm);
+            padding: 16px 18px;
+        }
+        .platform-block-title {
+            font-size: 0.8rem; font-weight: 700; text-transform: uppercase;
+            letter-spacing: 0.06em; margin-bottom: 10px; display: flex; align-items: center; gap: 8px;
+        }
+        .platform-block-title.android { color: #3DDC84; }
+        .platform-block-title.web     { color: var(--teal); }
+        .platform-block ul { padding-left: 18px; margin: 0; }
+        .platform-block li { font-size: 0.88rem; color: var(--text-body); margin-bottom: 6px; line-height: 1.55; }
     </style>
 </head>
 <body>
@@ -145,9 +179,22 @@
                     <button class="theme-toggle" id="themeToggle" aria-label="Switch to dark mode">
                         <i class="fas fa-moon"></i>
                     </button>
-                    <a href="https://play.google.com/store/apps/details?id=com.joelapexs.propertyinspector" target="_blank" class="btn-nav-download">
-                        <i class="fas fa-download"></i> Download App
-                    </a>
+                    <div class="nav-dl-wrap" id="navDlWrap">
+                        <button class="btn-nav-download" id="navDlBtn" aria-expanded="false" aria-haspopup="true">
+                            <i class="fas fa-download"></i> Get the App <i class="fas fa-chevron-down nav-chevron"></i>
+                        </button>
+                        <div class="nav-dl-drop" id="navDlDrop" role="menu">
+                            <a href="https://play.google.com/store/apps/details?id=com.joelapexs.propertyinspector" target="_blank" class="nav-dl-option" role="menuitem">
+                                <span class="nav-dl-icon"><i class="fab fa-google-play"></i></span>
+                                <span class="nav-dl-text"><span class="nav-dl-label">Android App</span><span class="nav-dl-sub">Google Play Store</span></span>
+                            </a>
+                            <div class="nav-dl-divider"></div>
+                            <a href="https://propertyinspector.site/app/" target="_blank" class="nav-dl-option" role="menuitem">
+                                <span class="nav-dl-icon"><i class="fas fa-globe"></i></span>
+                                <span class="nav-dl-text"><span class="nav-dl-label">Web App</span><span class="nav-dl-sub">iOS &middot; iPad &middot; Desktop &middot; Adds to Home Screen</span></span>
+                            </a>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -157,7 +204,7 @@
     <header class="privacy-hero">
         <div class="container">
             <h1>Privacy Policy</h1>
-            <p>Your data stays on your device. Here&rsquo;s exactly what we collect and why.</p>
+            <p>Your assessment data stays on your device. Here&rsquo;s exactly what we collect and why.</p>
         </div>
     </header>
 
@@ -169,6 +216,7 @@
             <h4>Contents</h4>
             <a href="#overview">Overview</a>
             <a href="#info-collect">Information We Collect</a>
+            <a href="#payment">Payment Processing</a>
             <a href="#data-storage">Data Storage</a>
             <a href="#data-security">Data Security</a>
             <a href="#data-sharing">Data Sharing</a>
@@ -186,16 +234,24 @@
             <div class="privacy-section" id="overview">
                 <h2><i class="fas fa-shield-alt"></i> Overview</h2>
                 <div class="privacy-highlight">
-                    <p><strong>The short version:</strong> Home Buyers Guide SA stores all your property assessment data locally on your device. We don&rsquo;t sell your data, we don&rsquo;t share it with third parties for advertising, and you can delete everything at any time.</p>
+                    <p><strong>The short version:</strong> Your property assessment data is stored locally on your device and never leaves it. For premium subscribers, your email address and subscription status are stored securely in the cloud (Firebase). All payments are processed by PayFast &mdash; we never see your card details. We don&rsquo;t sell your data.</p>
                 </div>
                 <p>This Privacy Policy describes how Joel Apex Solutions (&ldquo;we&rdquo;, &ldquo;our&rdquo;, or &ldquo;us&rdquo;) collects, uses, and protects information in connection with the Home Buyers Guide SA mobile application and website (propertyinspector.site).</p>
-                <p><strong>Effective date:</strong> 1 January 2026 &nbsp;&middot;&nbsp; <strong>Last updated:</strong> June 2026</p>
+                <p><strong>Effective date:</strong> 1 January 2026 &nbsp;&middot;&nbsp; <strong>Last updated:</strong> August 2026</p>
             </div>
 
             <div class="privacy-section" id="info-collect">
                 <h2><i class="fas fa-database"></i> Information We Collect</h2>
-                <h3>Information you provide</h3>
-                <p>All property assessment data you create in the app &mdash; property details, room assessments, photos, scores, and notes &mdash; is stored <strong>locally on your device only</strong>. This data never leaves your device unless you explicitly export or share it.</p>
+                <h3>Assessment data (free &amp; premium users)</h3>
+                <p>All property assessment data you create &mdash; property details, room assessments, photos, scores, and notes &mdash; is stored <strong>locally on your device only</strong>. This data never leaves your device unless you explicitly export or share it.</p>
+                <h3>Account &amp; subscription data (premium subscribers only)</h3>
+                <p>When you subscribe to a premium plan, we collect and store:</p>
+                <ul>
+                    <li><strong>Email address</strong> &mdash; used for account authentication (Firebase Auth passwordless sign-in) and subscription management</li>
+                    <li><strong>Subscription status</strong> &mdash; your plan type, activation date, next billing date, and subscription status (active / cancelled)</li>
+                    <li><strong>PayFast subscription token</strong> &mdash; a reference token issued by PayFast to manage your recurring billing. We do not store card numbers or payment details.</li>
+                </ul>
+                <p>This account data is stored securely in <strong>Google Firebase Firestore</strong> (a cloud database) and is associated with your email address.</p>
                 <h3>Automatically collected information</h3>
                 <p>We collect limited analytics data to improve the app experience:</p>
                 <ul>
@@ -203,32 +259,69 @@
                     <li><strong>AdMob:</strong> anonymous advertising identifiers for serving relevant ads to free-tier users.</li>
                     <li><strong>Crash reports:</strong> anonymous crash data to help us fix bugs.</li>
                 </ul>
-                <p>We do <strong>not</strong> collect: names, email addresses, phone numbers, financial information, location data, or any personally identifiable information.</p>
+                <p>We do <strong>not</strong> collect: names, phone numbers, location data, or financial information. We do <strong>not</strong> store credit card numbers or bank details at any point.</p>
             </div>
 
-            <div class="privacy-section" id="data-storage">
-                <h2><i class="fas fa-hdd"></i> Data Storage</h2>
-                <div class="privacy-highlight">
-                    <p>All property data is stored in your device&rsquo;s local storage (IndexedDB). It never leaves your device unless you choose to export it.</p>
+            <div class="privacy-section" id="payment">
+                <h2><i class="fas fa-credit-card"></i> Payment Processing</h2>
+                <p>Premium subscriptions are processed exclusively by <strong>PayFast</strong>, South Africa&rsquo;s leading payment gateway. PayFast is a registered Payment Service Provider compliant with PCI-DSS standards.</p>
+                <h3>What PayFast handles</h3>
+                <ul>
+                    <li>All credit/debit card details, Instant EFT, and Capitec Pay transactions</li>
+                    <li>Recurring billing for your subscription plan</li>
+                    <li>Refund processing</li>
+                </ul>
+                <h3>What we receive from PayFast</h3>
+                <ul>
+                    <li>Confirmation that a payment was completed</li>
+                    <li>A subscription token (anonymous reference ID for managing renewals)</li>
+                    <li>The email address you used at checkout</li>
+                </ul>
+                <p>We <strong>never</strong> see or store your card number, CVV, bank account details, or any raw payment credentials. These are handled entirely by PayFast on their secure servers.</p>
+                <div class="privacy-warning">
+                    <p>PayFast is subject to their own Privacy Policy. View it at <a href="https://www.payfast.co.za/privacy-policy" target="_blank">payfast.co.za/privacy-policy</a>.</p>
                 </div>
+                <h3>Subscription cancellation</h3>
+                <p>You can cancel your subscription at any time from within the app (Settings &rarr; Cancel Subscription) or by contacting us at <a href="mailto:joelapexs@gmail.com">joelapexs@gmail.com</a>. Upon cancellation, your premium access ends immediately and no further payments are charged.</p>
+            </div>
+
+                        <div class="privacy-section" id="data-storage">
+                <h2><i class="fas fa-hdd"></i> Data Storage</h2>
+                <h3>On-device storage (all users)</h3>
+                <div class="privacy-highlight">
+                    <p>All property assessment data is stored in your device&rsquo;s local storage (IndexedDB). It never leaves your device unless you choose to export it.</p>
+                </div>
+                <p>Photos you attach to assessments are stored locally on your device, embedded in the app&rsquo;s database. They are not uploaded to any server.</p>
                 <p>Exported PDF reports are generated entirely on-device and are only shared when you actively choose to share them (via email, WhatsApp, etc.). We do not have access to any reports you generate.</p>
-                <p>Photos you attach to assessments are stored in your device&rsquo;s local storage, embedded in the app&rsquo;s database. They are not uploaded to any server.</p>
+                <h3>Cloud storage (premium subscribers only)</h3>
+                <p>If you subscribe to a premium plan, the following is stored in <strong>Google Firebase Firestore</strong> (cloud):</p>
+                <ul>
+                    <li>Your email address</li>
+                    <li>Your subscription plan and status</li>
+                    <li>Your PayFast subscription token (for billing management)</li>
+                    <li>Next billing date</li>
+                </ul>
+                <p>Assessment content (property data, photos, notes) is <strong>never</strong> stored in the cloud, even for premium subscribers.
             </div>
 
             <div class="privacy-section" id="data-security">
                 <h2><i class="fas fa-lock"></i> Data Security</h2>
-                <p>Because all your property data is stored locally on your device, its security depends on your device&rsquo;s security settings (screen lock, encryption, etc.).</p>
-                <p>Analytics data transmitted to Firebase and AdMob is encrypted in transit using industry-standard TLS encryption.</p>
-                <p>If you uninstall the app, all locally stored data is permanently deleted from your device.</p>
+                <p>Assessment data stored locally on your device is protected by your device&rsquo;s own security (screen lock, encryption, etc.).</p>
+                <p>All data transmitted between the app and our cloud services (Firebase Auth, Firestore, Cloud Functions) is encrypted in transit using industry-standard TLS encryption. Firebase services comply with ISO 27001, SOC 1, SOC 2, and SOC 3 security standards.</p>
+                <p>Payment data is processed exclusively by PayFast on their PCI-DSS compliant infrastructure. We do not transmit or store payment credentials on our servers.</p>
+                <p>If you uninstall the app, all locally stored assessment data is permanently deleted from your device. Cloud account data (for premium subscribers) is retained until you request deletion by contacting us.</p>
             </div>
 
             <div class="privacy-section" id="data-sharing">
                 <h2><i class="fas fa-share-alt"></i> Data Sharing</h2>
                 <p>We do <strong>not</strong> sell, trade, or rent your personal information to third parties.</p>
-                <div class="privacy-warning">
-                    <p>The only third-party services that receive any data are Firebase Analytics (Google) and AdMob (Google), and only anonymous, non-identifiable usage data.</p>
-                </div>
-                <p>We may disclose information if required by law, but given that we don&rsquo;t collect identifiable personal data, this would be limited to anonymous analytics.</p>
+                <p>Data is shared with the following service providers <strong>only to the extent necessary</strong> to operate the app:</p>
+                <ul>
+                    <li><strong>Google Firebase</strong> (Google LLC) &mdash; authentication, cloud database (Firestore), analytics, and cloud functions. Receives your email address and subscription data for premium subscribers.</li>
+                    <li><strong>PayFast</strong> (DPO Group) &mdash; payment processing. Receives your email address and processes your payment. We do not control what PayFast stores; refer to their Privacy Policy.</li>
+                    <li><strong>Google AdMob</strong> (Google LLC) &mdash; in-app advertising for free-tier users only. Receives anonymous device advertising identifiers.</li>
+                </ul>
+                <p>We may disclose information if required by South African law (POPIA) or court order. In such cases, we will notify you unless prohibited from doing so.</p>
             </div>
 
             <div class="privacy-section" id="permissions">
@@ -236,10 +329,13 @@
                 <p>The app requests the following Android permissions:</p>
                 <ul>
                     <li><strong>Camera / Photo access:</strong> to capture photos during property assessments. Photos are stored locally only.</li>
+                    <li><strong>Microphone / Record Audio:</strong> to enable voice note capture during assessments (speech-to-text transcription, processed on-device). Audio is never uploaded or stored as a recording &mdash; only the transcribed text is saved.</li>
                     <li><strong>Storage read/write:</strong> to save and read assessment data and exported PDFs on your device.</li>
-                    <li><strong>Internet:</strong> for analytics, ads, and in-app purchase verification via Google Play Billing.</li>
+                    <li><strong>Internet:</strong> for analytics, ads, Firebase authentication, subscription verification, and PayFast payment processing.</li>
+                    <li><strong>Notifications:</strong> to send optional assessment reminder notifications. You can disable these in Settings.</li>
                 </ul>
                 <p>Location permissions are <strong>not</strong> requested or used.</p>
+                <p>The <strong>Web App</strong> (propertyinspector.site/app/) version uses the same permissions via browser APIs rather than native Android permissions.</p>
             </div>
 
             <div class="privacy-section" id="childrens-privacy">
@@ -252,8 +348,10 @@
                 <p>You have full control over all data within the app:</p>
                 <ul>
                     <li><strong>Delete properties:</strong> remove individual assessments and all associated data from within the app.</li>
-                    <li><strong>Clear all data:</strong> uninstalling the app permanently removes all locally stored data.</li>
+                    <li><strong>Clear all data:</strong> uninstalling the app permanently removes all locally stored assessment data.</li>
+                    <li><strong>Cancel subscription:</strong> cancel anytime from Settings &rarr; Cancel Subscription. No further charges will occur.</li>
                     <li><strong>Export:</strong> generate a PDF report at any time to share or keep a record externally.</li>
+                    <li><strong>Delete your account &amp; cloud data:</strong> email us at <a href="mailto:joelapexs@gmail.com">joelapexs@gmail.com</a> to request permanent deletion of your email and subscription data from Firebase Firestore.</li>
                 </ul>
                 <p>To opt out of analytics tracking, you can use Android&rsquo;s standard &ldquo;Opt out of Ads Personalisation&rdquo; setting in your device&rsquo;s Google settings.</p>
             </div>
@@ -262,9 +360,13 @@
                 <h2><i class="fas fa-external-link-alt"></i> Third-Party Services</h2>
                 <p>The app uses the following third-party services, each with their own privacy policies:</p>
                 <ul>
+                    <li><a href="https://policies.google.com/privacy" target="_blank">Google Firebase Authentication</a> &mdash; passwordless email sign-in for premium accounts</li>
+                    <li><a href="https://policies.google.com/privacy" target="_blank">Google Firebase Firestore</a> &mdash; secure cloud storage for subscription data (premium users)</li>
                     <li><a href="https://policies.google.com/privacy" target="_blank">Google Firebase Analytics</a> &mdash; anonymous usage analytics</li>
+                    <li><a href="https://policies.google.com/privacy" target="_blank">Google Cloud Functions</a> &mdash; server-side payment signature generation and ITN processing</li>
                     <li><a href="https://policies.google.com/privacy" target="_blank">Google AdMob</a> &mdash; in-app advertising (free tier only)</li>
-                    <li><a href="https://play.google.com/about/play-terms/" target="_blank">Google Play Billing</a> &mdash; premium subscription management</li>
+                    <li><a href="https://www.payfast.co.za/privacy-policy" target="_blank">PayFast (DPO Group)</a> &mdash; payment processing and recurring subscription billing</li>
+                    <li><a href="https://play.google.com/about/play-terms/" target="_blank">Google Play Billing</a> &mdash; in-app purchases via the Google Play Store (Android)</li>
                 </ul>
                 <p>This website (propertyinspector.site) uses Google Analytics to understand traffic patterns. Standard browser cookies may be used for this purpose.</p>
             </div>
