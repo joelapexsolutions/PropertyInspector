@@ -60,12 +60,12 @@
             display: block;
         }
 
-        /* Desktop: cap height so banner doesn't fill the whole screen */
-        @media (min-width: 768px) {
+        /* Mobile: banner is 2.5:1 so enforce a minimum height at small screens */
+        @media (max-width: 480px) {
             .academy-hero-img {
-                max-height: 480px;
+                min-height: 210px;
                 object-fit: cover;
-                object-position: center top; /* keep logo + heading visible, crop bottom */
+                object-position: center;
             }
         }
 
@@ -438,8 +438,8 @@
              class="academy-hero-img"
              loading="eager"
              fetchpriority="high"
-             width="1651"
-             height="953">
+             width="1983"
+             height="793">
     </header>
 
     <!-- Lessons -->
