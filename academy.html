@@ -60,6 +60,15 @@
             display: block;
         }
 
+        /* Desktop: cap height so banner doesn't fill the whole screen */
+        @media (min-width: 768px) {
+            .academy-hero-img {
+                max-height: 480px;
+                object-fit: cover;
+                object-position: center top; /* keep logo + heading visible, crop bottom */
+            }
+        }
+
         /* Visually hidden heading — SEO + accessibility only */
         .sr-only {
             position: absolute;
