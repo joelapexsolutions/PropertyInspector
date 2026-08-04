@@ -179,16 +179,31 @@
                     <li><a href="academy.html" class="nav-link">Academy</a></li>
                     <li><a href="blog.html" class="nav-link">Blog</a></li>
                     <li><a href="faq.html" class="nav-link">FAQ</a></li>
+                    <li class="nav-mobile-dl-sep"></li>
+                    <li><a href="https://play.google.com/store/apps/details?id=com.joelapexs.propertyinspector" target="_blank" class="nav-link nav-link-dl"><i class="fab fa-google-play"></i> Android App</a></li>
+                    <li><a href="https://propertyinspector.site/app/" target="_blank" class="nav-link nav-link-dl"><i class="fas fa-globe"></i> Web App &mdash; iOS &amp; Desktop</a></li>
                 </ul>
 
                 <div class="nav-right">
                     <button class="theme-toggle" id="themeToggle" aria-label="Switch to dark mode">
                         <i class="fas fa-moon"></i>
                     </button>
-                    <a href="https://play.google.com/store/apps/details?id=com.joelapexs.propertyinspector"
-                       target="_blank" class="btn-nav-download">
-                        <i class="fas fa-download"></i> Download App
-                    </a>
+                    <div class="nav-dl-wrap" id="navDlWrap">
+                        <button class="btn-nav-download" id="navDlBtn" aria-expanded="false" aria-haspopup="true">
+                            <i class="fas fa-download"></i> Get the App <i class="fas fa-chevron-down nav-chevron"></i>
+                        </button>
+                        <div class="nav-dl-drop" id="navDlDrop" role="menu">
+                            <a href="https://play.google.com/store/apps/details?id=com.joelapexs.propertyinspector" target="_blank" class="nav-dl-option" role="menuitem">
+                                <span class="nav-dl-icon"><i class="fab fa-google-play"></i></span>
+                                <span class="nav-dl-text"><span class="nav-dl-label">Android App</span><span class="nav-dl-sub">Google Play Store</span></span>
+                            </a>
+                            <div class="nav-dl-divider"></div>
+                            <a href="https://propertyinspector.site/app/" target="_blank" class="nav-dl-option" role="menuitem">
+                                <span class="nav-dl-icon"><i class="fas fa-globe"></i></span>
+                                <span class="nav-dl-text"><span class="nav-dl-label">Web App</span><span class="nav-dl-sub">iOS &middot; iPad &middot; Desktop &middot; Adds to Home Screen</span></span>
+                            </a>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -340,12 +355,20 @@
             <div class="cta-box">
                 <h3><i class="fas fa-mobile-alt"></i> Get the App for Every Viewing</h3>
                 <p>Home Buyers Guide SA walks you through every step on-site — room by room, question by question — so you never miss a red flag.</p>
-                <a href="https://play.google.com/store/apps/details?id=com.joelapexs.propertyinspector"
-                   target="_blank" class="btn-download-image" aria-label="Get it on Google Play">
-                    <img src="images/google-play-badge.png" alt="Get it on Google Play" class="play-badge-large" style="height:52px;">
-                </a>
+                <div class="dual-dl">
+                    <a href="https://play.google.com/store/apps/details?id=com.joelapexs.propertyinspector" target="_blank" class="btn-download-image" aria-label="Get it on Google Play">
+                        <img src="images/google-play-badge.png" alt="Get it on Google Play" class="play-badge-large" style="height:52px;">
+                    </a>
+                    <a href="https://propertyinspector.site/app/" target="_blank" class="btn-webapp">
+                        <span class="btn-webapp-icon"><i class="fas fa-globe"></i></span>
+                        <span class="btn-webapp-txt">
+                            <span class="btn-webapp-main">Web App</span>
+                            <span class="btn-webapp-sub">iOS &middot; iPad &middot; Desktop</span>
+                        </span>
+                    </a>
+                </div>
                 <p style="margin-top:12px;font-size:0.8rem;color:rgba(255,255,255,0.55);">
-                    &#10003; Free to download &nbsp;&middot;&nbsp; No account needed
+                    &#10003; Free to use &nbsp;&middot;&nbsp; No account needed &nbsp;&middot;&nbsp; <em>Web app adds to Home Screen</em>
                 </p>
             </div>
         </div>
