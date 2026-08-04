@@ -184,13 +184,12 @@
 
                     <li><a href="calculator.html" class="nav-link">Calculator</a></li>
 
+                    <li><a href="academy.html" class="nav-link">Academy</a></li>
+
                     <li><a href="blog.html" class="nav-link">Blog</a></li>
 
                     <li><a href="faq.html" class="nav-link">FAQ</a></li>
 
-                    <li class="nav-mobile-dl-sep"></li>
-                    <li><a href="https://play.google.com/store/apps/details?id=com.joelapexs.propertyinspector" target="_blank" class="nav-link nav-link-dl"><i class="fab fa-google-play"></i> Android App</a></li>
-                    <li><a href="https://propertyinspector.site/app/" target="_blank" class="nav-link nav-link-dl"><i class="fas fa-globe"></i> Web App &mdash; iOS &amp; Desktop</a></li>
                 </ul>
 
 
@@ -203,22 +202,13 @@
 
                     </button>
 
-                    <div class="nav-dl-wrap" id="navDlWrap">
-                        <button class="btn-nav-download" id="navDlBtn" aria-expanded="false" aria-haspopup="true">
-                            <i class="fas fa-download"></i> Get the App <i class="fas fa-chevron-down nav-chevron"></i>
-                        </button>
-                        <div class="nav-dl-drop" id="navDlDrop" role="menu">
-                            <a href="https://play.google.com/store/apps/details?id=com.joelapexs.propertyinspector" target="_blank" class="nav-dl-option" role="menuitem">
-                                <span class="nav-dl-icon"><i class="fab fa-google-play"></i></span>
-                                <span class="nav-dl-text"><span class="nav-dl-label">Android App</span><span class="nav-dl-sub">Google Play Store</span></span>
-                            </a>
-                            <div class="nav-dl-divider"></div>
-                            <a href="https://propertyinspector.site/app/" target="_blank" class="nav-dl-option" role="menuitem">
-                                <span class="nav-dl-icon"><i class="fas fa-globe"></i></span>
-                                <span class="nav-dl-text"><span class="nav-dl-label">Web App</span><span class="nav-dl-sub">iOS &middot; iPad &middot; Desktop &middot; Adds to Home Screen</span></span>
-                            </a>
-                        </div>
-                    </div>
+                    <a href="https://play.google.com/store/apps/details?id=com.joelapexs.propertyinspector"
+
+                       target="_blank" class="btn-nav-download">
+
+                        <i class="fas fa-download"></i> Download App
+
+                    </a>
 
                 </div>
 
@@ -278,24 +268,22 @@
 
                     <div class="hero-cta">
 
-                        <div class="dual-dl dual-dl--hero">
-                            <a href="https://play.google.com/store/apps/details?id=com.joelapexs.propertyinspector"
-                               target="_blank" class="btn-download-image"
-                               aria-label="Download Home Buyers Guide SA from Google Play">
-                                <img src="images/google-play-badge.png" alt="Get it on Google Play" class="play-badge-large">
-                            </a>
-                            <a href="https://propertyinspector.site/app/" target="_blank" class="btn-webapp">
-                                <span class="btn-webapp-icon"><i class="fas fa-globe"></i></span>
-                                <span class="btn-webapp-txt">
-                                    <span class="btn-webapp-main">Web App</span>
-                                    <span class="btn-webapp-sub">iOS &middot; iPad &middot; Desktop</span>
-                                </span>
-                            </a>
-                        </div>
+                        <a href="https://play.google.com/store/apps/details?id=com.joelapexs.propertyinspector"
+
+                           target="_blank" class="btn-download-image"
+
+                           aria-label="Download Home Buyers Guide SA from Google Play">
+
+                            <img src="images/google-play-badge.png" alt="Get it on Google Play" class="play-badge-large">
+
+                        </a>
 
                         <a href="blog.html" class="btn btn-secondary">
+
                             <i class="fas fa-exclamation-circle"></i>
+
                             SA Property Pitfalls
+
                         </a>
 
                     </div>
@@ -1031,33 +1019,34 @@
 
 
 
-            <!-- Desktop: 16:9 YouTube video (lazy facade — loads on click) -->
+            <!-- Two videos side by side — lazy facade, loads on click -->
+            <div class="video-two-up">
 
-            <div class="video-wrap video-desktop yt-facade" data-yt-id="I1wNhRoinkA" data-yt-title="Home Buyers Guide SA — App Demo">
+                <div class="video-two-item">
+                    <div class="video-wrap yt-facade" data-yt-id="I1wNhRoinkA" data-yt-title="Home Buyers Guide SA — App Demo">
+                        <img src="https://img.youtube.com/vi/I1wNhRoinkA/maxresdefault.jpg"
+                             alt="Home Buyers Guide SA App Demo"
+                             class="yt-facade-thumb" loading="lazy"
+                             onerror="this.src='https://img.youtube.com/vi/I1wNhRoinkA/hqdefault.jpg'">
+                        <button type="button" class="yt-facade-play" aria-label="Play: App Demo">
+                            <i class="fas fa-play"></i>
+                        </button>
+                    </div>
+                    <p class="video-two-label">App Demo — See How It Works</p>
+                </div>
 
-                <img src="https://img.youtube.com/vi/I1wNhRoinkA/hqdefault.jpg" alt="Home Buyers Guide SA App Demo video thumbnail" class="yt-facade-thumb" loading="lazy">
-
-                <button type="button" class="yt-facade-play" aria-label="Play video: Home Buyers Guide SA App Demo">
-
-                    <i class="fas fa-play"></i>
-
-                </button>
-
-            </div>
-
-
-
-            <!-- Mobile: 9:16 YouTube Short (lazy facade — loads on click) -->
-
-            <div class="video-wrap video-mobile yt-facade" data-yt-id="1-U0-4BtE9s" data-yt-title="Home Buyers Guide SA — App Short">
-
-                <img src="https://img.youtube.com/vi/1-U0-4BtE9s/hqdefault.jpg" alt="Home Buyers Guide SA App Short video thumbnail" class="yt-facade-thumb" loading="lazy">
-
-                <button type="button" class="yt-facade-play" aria-label="Play video: Home Buyers Guide SA App Short">
-
-                    <i class="fas fa-play"></i>
-
-                </button>
+                <div class="video-two-item">
+                    <div class="video-wrap yt-facade" data-yt-id="aY-7lGqn9JI" data-yt-title="Home Buyers Guide SA — Know Before You Buy">
+                        <img src="https://img.youtube.com/vi/aY-7lGqn9JI/maxresdefault.jpg"
+                             alt="Home Buyers Guide SA — Know Before You Buy"
+                             class="yt-facade-thumb" loading="lazy"
+                             onerror="this.src='https://img.youtube.com/vi/aY-7lGqn9JI/hqdefault.jpg'">
+                        <button type="button" class="yt-facade-play" aria-label="Play: Know Before You Buy">
+                            <i class="fas fa-play"></i>
+                        </button>
+                    </div>
+                    <p class="video-two-label">Know Before You Buy — What to Look For</p>
+                </div>
 
             </div>
 
@@ -1117,26 +1106,17 @@
 
                     </div>
 
-                    <div class="dual-dl dual-dl--dl">
-                        <a href="https://play.google.com/store/apps/details?id=com.joelapexs.propertyinspector"
-                           target="_blank" class="btn-download-image"
-                           aria-label="Download Home Buyers Guide SA from Google Play">
-                            <img src="images/google-play-badge.png" alt="Get it on Google Play" class="play-badge-large">
-                        </a>
-                        <a href="https://propertyinspector.site/app/" target="_blank" class="btn-webapp">
-                            <span class="btn-webapp-icon"><i class="fas fa-globe"></i></span>
-                            <span class="btn-webapp-txt">
-                                <span class="btn-webapp-main">Web App</span>
-                                <span class="btn-webapp-sub">iOS &middot; iPad &middot; Desktop</span>
-                            </span>
-                        </a>
-                    </div>
-                    <p class="download-note">
-                        <i class="fab fa-android"></i> Android 5.0+ &nbsp;&middot;&nbsp;
-                        <i class="fab fa-apple"></i> iPhone &amp; iPad &nbsp;&middot;&nbsp;
-                        <i class="fas fa-desktop"></i> Mac &amp; Windows &nbsp;&middot;&nbsp;
-                        <a href="blog.html" class="link-inline-muted-small">Read SA Property Pitfalls &rarr;</a>
-                    </p>
+                    <a href="https://play.google.com/store/apps/details?id=com.joelapexs.propertyinspector"
+
+                       target="_blank" class="btn-download-image"
+
+                       aria-label="Download Home Buyers Guide SA from Google Play">
+
+                        <img src="images/google-play-badge.png" alt="Get it on Google Play" class="play-badge-large">
+
+                    </a>
+
+                    <p class="download-note">Available for Android devices running Android 5.0+ &nbsp;&middot;&nbsp; <a href="blog.html" class="link-inline-muted-small">Read SA Property Pitfalls &rarr;</a></p>
 
                 </div>
 
