@@ -1899,3 +1899,41 @@ button.btn-nav-download[aria-expanded="true"] .nav-chevron {
     width: auto;
     vertical-align: middle;
 }
+
+/* ====================================================================
+   TWO-UP VIDEO GRID (See the App in Action section)
+   ==================================================================== */
+.video-two-up {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 24px;
+    max-width: 1060px;
+    margin: 0 auto;
+}
+
+.video-two-item {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+}
+
+.video-two-item .video-wrap {
+    aspect-ratio: 16 / 9;
+    width: 100%;
+}
+
+.video-two-label {
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: var(--text-heading);
+    text-align: center;
+    margin: 0;
+    line-height: 1.4;
+}
+
+@media (max-width: 768px) {
+    .video-two-up {
+        grid-template-columns: 1fr;
+        max-width: 560px;
+    }
+}
