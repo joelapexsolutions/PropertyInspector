@@ -1430,7 +1430,7 @@ section{padding:84px 0;position:relative;}
     overflow: hidden;
     box-shadow: var(--shadow-md);
 }
-.video-wrap iframe { display: block; border: none; width: 100%; height: 100%; }
+.video-wrap iframe { display: block; border: none; }
 
 .video-desktop {
     display: block;
@@ -1920,6 +1920,17 @@ button.btn-nav-download[aria-expanded="true"] .nav-chevron {
 .video-two-item .video-wrap {
     aspect-ratio: 16 / 9;
     width: 100%;
+    position: relative; /* required for absolute iframe sizing */
+}
+
+/* iframe fills the container after facade click */
+.video-two-item .video-wrap iframe {
+    position: absolute;
+    top: 0; left: 0;
+    width: 100%;
+    height: 100%;
+    display: block;
+    border: none;
 }
 
 .video-two-label {
