@@ -189,6 +189,9 @@
                     <li><a href="blog.html" class="nav-link">Blog</a></li>
 
                     <li><a href="faq.html" class="nav-link">FAQ</a></li>
+                    <li class="nav-mobile-dl-sep"></li>
+                    <li><a href="https://play.google.com/store/apps/details?id=com.joelapexs.propertyinspector" target="_blank" class="nav-link nav-link-dl"><i class="fab fa-google-play"></i> Android App</a></li>
+                    <li><a href="https://propertyinspector.site/app/" target="_blank" class="nav-link nav-link-dl"><i class="fas fa-globe"></i> Web App &mdash; iOS &amp; Desktop</a></li>
 
                 </ul>
 
@@ -202,13 +205,22 @@
 
                     </button>
 
-                    <a href="https://play.google.com/store/apps/details?id=com.joelapexs.propertyinspector"
-
-                       target="_blank" class="btn-nav-download">
-
-                        <i class="fas fa-download"></i> Download App
-
-                    </a>
+                    <div class="nav-dl-wrap" id="navDlWrap">
+                        <button class="btn-nav-download" id="navDlBtn" aria-expanded="false" aria-haspopup="true">
+                            <i class="fas fa-download"></i> Get the App <i class="fas fa-chevron-down nav-chevron"></i>
+                        </button>
+                        <div class="nav-dl-drop" id="navDlDrop" role="menu">
+                            <a href="https://play.google.com/store/apps/details?id=com.joelapexs.propertyinspector" target="_blank" class="nav-dl-option" role="menuitem">
+                                <span class="nav-dl-icon"><i class="fab fa-google-play"></i></span>
+                                <span class="nav-dl-text"><span class="nav-dl-label">Android App</span><span class="nav-dl-sub">Google Play Store</span></span>
+                            </a>
+                            <div class="nav-dl-divider"></div>
+                            <a href="https://propertyinspector.site/app/" target="_blank" class="nav-dl-option" role="menuitem">
+                                <span class="nav-dl-icon"><i class="fas fa-globe"></i></span>
+                                <span class="nav-dl-text"><span class="nav-dl-label">Web App</span><span class="nav-dl-sub">iOS &middot; iPad &middot; Desktop &middot; Adds to Home Screen</span></span>
+                            </a>
+                        </div>
+                    </div>
 
                 </div>
 
@@ -268,15 +280,20 @@
 
                     <div class="hero-cta">
 
-                        <a href="https://play.google.com/store/apps/details?id=com.joelapexs.propertyinspector"
-
-                           target="_blank" class="btn-download-image"
-
-                           aria-label="Download Home Buyers Guide SA from Google Play">
-
-                            <img src="images/google-play-badge.png" alt="Get it on Google Play" class="play-badge-large">
-
-                        </a>
+                        <div class="dual-dl dual-dl--hero">
+                            <a href="https://play.google.com/store/apps/details?id=com.joelapexs.propertyinspector"
+                               target="_blank" class="btn-download-image"
+                               aria-label="Download Home Buyers Guide SA from Google Play">
+                                <img src="images/google-play-badge.png" alt="Get it on Google Play" class="play-badge-large">
+                            </a>
+                            <a href="https://propertyinspector.site/app/" target="_blank" class="btn-webapp">
+                                <span class="btn-webapp-icon"><i class="fas fa-globe"></i></span>
+                                <span class="btn-webapp-txt">
+                                    <span class="btn-webapp-main">Web App</span>
+                                    <span class="btn-webapp-sub">iOS &middot; iPad &middot; Desktop</span>
+                                </span>
+                            </a>
+                        </div>
 
                         <a href="blog.html" class="btn btn-secondary">
 
@@ -1106,17 +1123,24 @@
 
                     </div>
 
-                    <a href="https://play.google.com/store/apps/details?id=com.joelapexs.propertyinspector"
-
-                       target="_blank" class="btn-download-image"
-
-                       aria-label="Download Home Buyers Guide SA from Google Play">
-
-                        <img src="images/google-play-badge.png" alt="Get it on Google Play" class="play-badge-large">
-
-                    </a>
-
-                    <p class="download-note">Available for Android devices running Android 5.0+ &nbsp;&middot;&nbsp; <a href="blog.html" class="link-inline-muted-small">Read SA Property Pitfalls &rarr;</a></p>
+                    <div class="dual-dl dual-dl--dl">
+                        <a href="https://play.google.com/store/apps/details?id=com.joelapexs.propertyinspector"
+                           target="_blank" class="btn-download-image"
+                           aria-label="Download Home Buyers Guide SA from Google Play">
+                            <img src="images/google-play-badge.png" alt="Get it on Google Play" class="play-badge-large">
+                        </a>
+                        <a href="https://propertyinspector.site/app/" target="_blank" class="btn-webapp">
+                            <span class="btn-webapp-icon"><i class="fas fa-globe"></i></span>
+                            <span class="btn-webapp-txt">
+                                <span class="btn-webapp-main">Web App</span>
+                                <span class="btn-webapp-sub">iOS &middot; iPad &middot; Desktop</span>
+                            </span>
+                        </a>
+                    </div>
+                    <p class="download-note">
+                        <i class="fab fa-android"></i> Android 5.0+ &nbsp;&middot;&nbsp;
+                        <i class="fab fa-apple"></i> iPhone &amp; iPad &nbsp;&middot;&nbsp;
+                        <i class="fas fa-desktop"></i> Mac &amp; Windows &nbsp;&middot;&nbsp; <a href="blog.html" class="link-inline-muted-small">Read SA Property Pitfalls &rarr;</a></p>
 
                 </div>
 
