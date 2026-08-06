@@ -760,7 +760,9 @@
                             'margin:12px 0 0;font-family:inherit;';
                         sheet.appendChild(errEl);
                     }
-                    errEl.textContent = 'Could not cancel. Please try again or email joelapexs@gmail.com';
+                    // Show PayFast's actual error or fallback message
+                    var msg = (err && err.message) ? err.message : 'Could not cancel automatically. Please email homebuyersguidesa@gmail.com with subject "Cancel Subscription".';
+                    errEl.textContent = msg;
                 });
         });
     }
